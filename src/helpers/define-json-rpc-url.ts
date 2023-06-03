@@ -9,7 +9,7 @@ import {
 const defineJSONRpcUrl = ({ chainId } : { chainId: number }) => {
   const networkName = defineNetworkName(chainId)
 
-  if (networkName === 'matic') {
+  if (networkName === 'polygon') {
     return polygonJSONRPCUrl
   } else if (networkName === 'mumbai') {
     return mumbaiJSONRPCUrl

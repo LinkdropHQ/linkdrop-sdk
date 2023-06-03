@@ -4,7 +4,7 @@ import { TBatchItem, TLinkItem } from '../../types'
 type TGetBatchesResponse = {
   success: boolean
   creator_address: string
-  batches: TBatchItem[]
+  batches: []
 }
 
 type TGetBatchResponse = {

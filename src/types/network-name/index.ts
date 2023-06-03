@@ -1,1 +1,1 @@
-export type TNetworkName = 'mainnet' | 'polygon'
+export type TNetworkName = 'mainnet' | 'polygon' | 'goerli' | 'mumbai'

@@ -1,4 +1,4 @@
-import { ILinkdropSDK, ICampaign, IBatch } from './modules'
+import { ILinkdropSDK, ICampaign, IBatch, ILinkSDK, ILink } from './modules'
 import  { TNetworkName } from './network-name'
 import { TTokenType } from './token-type'
 import { TLinkdropSigner } from './linkdrop-signer'
@@ -16,6 +16,7 @@ import { TLinkStatusResult } from './link-status-result'
 
 export {
   ILinkdropSDK,
+  ILinkSDK,
   TLinkStatusResult,
   TLinkParsed,
   TLinkItem,
@@ -31,5 +32,6 @@ export {
   TLinkStatusResponse,
   IBatch,
   TAsset,
-  TCreateLinkResult
+  TCreateLinkResult,
+  ILink
 }
