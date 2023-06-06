@@ -1,0 +1,52 @@
+{
+  "name": "linkdrop-payment-link-sdk",
+  "version": "0.0.1",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rm -rf ./dist && webpack && yarn build:types",
+    "build:types": "tsc --emitDeclarationOnly"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LinkdropHQ/linkdrop-payment-link-sdk.git"
+  },
+  "author": "spacehaz <spacehaz@gmail.com>",
+  "license": "MIT",
+  "description": "",
+  "bugs": {
+    "url": "https://github.com/LinkdropHQ/linkdrop-payment-link-sdk/issues"
+  },
+  "engines": {
+    "node": ">=16.x"
+  },
+  "homepage": "https://github.com/LinkdropHQ/linkdrop-payment-link-sdk#readme",
+  "keywords": [],
+  "dependencies": {
+    "@stablelib/x25519": "^1.0.3",
+    "@walletconnect/utils": "2.0.0-beta.100",
+    "axios": "^0.27.2",
+    "babel-loader": "8.1.0",
+    "ethereumjs-wallet": "^1.0.2",
+    "ethers": "^5.7.0",
+    "mathjs": "^11.5.1",
+    "typescript": "^4.8.2",
+    "uint8arrays": "^3.1.1"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.20.7",
+    "@babel/core": "^7.20.12",
+    "@babel/plugin-proposal-optional-chaining": "^7.20.7",
+    "@babel/preset-env": "^7.20.2",
+    "@babel/preset-typescript": "^7.18.6",
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.1"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead"
+  ]
+}
