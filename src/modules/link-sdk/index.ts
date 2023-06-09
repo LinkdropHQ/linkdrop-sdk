@@ -1,7 +1,7 @@
 import { Signer, ethers } from 'ethers'
 import ILinkSDK, { TCreateLinkdrop, TFetchHistory, TGetCurrentFee, TGetDepositAmount, TGetLinkdrop, TRedeem } from './types'
 import Linkdrop from '../linkdrop'
-import { generateReceiverSig } from "./../../utils/payment-link-utils"
+import { generateReceiverSig } from "../../utils"
 import axios from 'axios'
 import { escrowABI } from '../../abi'
 import { escrowAddress } from '../../configs'
