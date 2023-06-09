@@ -1,7 +1,6 @@
+import { ethers } from 'ethers'
 
-
-
-async function generateReceiverSig(linkKey, receiver) {
+const generateReceiverSig = async (linkKey: string, receiver: string) => {
   const wallet = new ethers.Wallet(linkKey)
   const messageHash = ethers.utils.solidityKeccak256(
     ['address'],
@@ -12,8 +11,4 @@ async function generateReceiverSig(linkKey, receiver) {
   return signature
 }
 
-
-module.exports = {
-  generateLinkKeyandSignature,
-  generateReceiverSig
-}
+export default generateReceiverSig
