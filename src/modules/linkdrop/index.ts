@@ -113,9 +113,8 @@ class Linkdrop implements ILinkdrop {
             verifyingContract: this.escrow.address,
         }
         const { linkKey, linkKeyId, senderSig } = await generateLinkKeyandSignature(this.signer, this.transferId, escroPaymentDomain)
-        return { linkKey, linkKeyId, senderSig }
+        return { linkKey, linkKeyId, senderSig, transferId: this.transferId, sender: this.signer.address }
     }
-
 }
 
 export default Linkdrop
