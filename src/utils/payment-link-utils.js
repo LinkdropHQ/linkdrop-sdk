@@ -4,12 +4,8 @@ const ethers = require('ethers');
 
 async function generateLinkKeyandSignature(sender, transferId, domain) { 
   // Generate a new private key
-  console.log({ sender })
-  console.log(generateKeyPair)
   const { privateKey } = generateKeyPair()
-  console.log({ privateKey })
   const linkKey = new ethers.Wallet(privateKey)
-  console.log({ linkKey })  
   // Create the data to sign
   const types = {
     Transfer: [
