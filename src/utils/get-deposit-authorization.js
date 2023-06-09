@@ -10,11 +10,11 @@ function getNonce(from, transferId, amount, expiration) {
 }
 
 function getValidAfterAndValidBefore() {
-   const now = Math.floor(Date.now() / 1000);
-   const validAfter = now - 60 * 60; // valid 1 hour ago                                                                                                                                                      
-   const validBefore = now + 60 * 60 * 24; // valid for the next 24 hours                                                                                                                                     
-   return [validAfter, validBefore];   
- }
+  const now = Math.floor(Date.now() / 1000);
+  const validAfter = now - 60 * 60; // valid 1 hour ago                                                                                                                                                      
+  const validBefore = now + 60 * 60 * 24; // valid for the next 24 hours                                                                                                                                     
+  return [validAfter, validBefore];   
+}
 
 
 // // The EIP-712 data
@@ -27,16 +27,16 @@ function getValidAfterAndValidBefore() {
 async function getAuthorization(user, to, amount, validAfter, validBefore, transferId, expiration, domain) {
   console.log({ user, to, amount, validAfter, validBefore, transferId, expiration, domain })
     // The EIP-712 type data
-    const types = {
-        TransferWithAuthorization: [
-            { name: 'from', type: 'address' },
-            { name: 'to', type: 'address' },
-            { name: 'value', type: 'uint256' },
-            { name: 'validAfter', type: 'uint256' },
-            { name: 'validBefore', type: 'uint256' },
-            { name: 'nonce', type: 'bytes32' },
-        ],
-    };
+  const types = {
+      TransferWithAuthorization: [
+        { name: 'from', type: 'address' },
+        { name: 'to', type: 'address' },
+        { name: 'value', type: 'uint256' },
+        { name: 'validAfter', type: 'uint256' },
+        { name: 'validBefore', type: 'uint256' },
+        { name: 'nonce', type: 'bytes32' },
+      ],
+  }
   const nonce = getNonce(user.address, transferId, amount, expiration)
   console.log({ nonce })
   const message = {
@@ -51,14 +51,13 @@ async function getAuthorization(user, to, amount, validAfter, validBefore, trans
   const signature = await user._signTypedData(domain, types, message);
   const signatureSplit = ethers.utils.splitSignature(signature);
 
-  
-    // Encode the authorization
-    const authorization = ethers.utils.defaultAbiCoder.encode(
-        ['address', 'address', 'uint256', 'uint256', 'uint256', 'bytes32', 'uint8', 'bytes32', 'bytes32'],
-        [message.from, message.to, message.value, message.validAfter, message.validBefore, message.nonce, signatureSplit.v, signatureSplit.r, signatureSplit.s]
-    );
-  
-    return authorization;
+  // Encode the authorization
+  const authorization = ethers.utils.defaultAbiCoder.encode(
+      ['address', 'address', 'uint256', 'uint256', 'uint256', 'bytes32', 'uint8', 'bytes32', 'bytes32'],
+      [message.from, message.to, message.value, message.validAfter, message.validBefore, message.nonce, signatureSplit.v, signatureSplit.r, signatureSplit.s]
+  );
+
+  return authorization
 }
 
 module.exports = {

@@ -9,16 +9,12 @@ type TDepositResponse = {
 
 type TDeposit = (
   apiHost: string,
-  from: string,
-  token: string,
-  to: string,
+  sender: string,
+  escrow: string,
+  transfer_id: string,
+  expiration: number,
   amount: string,
-  validAfter: number,
-  validBefore: number,
-  nonce: string,
-  v: string,
-  r: string,
-  s: string
+  authorization: string
 ) => Promise<
   AxiosResponse<
     TDepositResponse
@@ -36,11 +32,10 @@ type TRedeemLink = (
   apiHost: string,
   receiver: string,
   sender: string,
-  token: string,
-  transferId: string,
-  expiration: number,
-  receiverSig: string,
-  senderSig: string
+  escrow: string,
+  transfer_id: string,
+  receiver_sig: string,
+  sender_sig: string
 ) => Promise<
   AxiosResponse<
     TRedeemLinkResponse
