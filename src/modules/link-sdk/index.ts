@@ -1,42 +1,52 @@
-import { providers } from 'ethers'
+import { Signer, ethers } from 'ethers'
 import ILinkSDK, { TCreateLinkdrop, TFetchHistory, TGetCurrentFee, TGetDepositAmount, TGetLinkdrop } from './types'
 import Linkdrop from '../linkdrop'
 import axios from 'axios'
 
 class LinkSDK implements ILinkSDK {
-  apiKey: string
-  provider: providers.Web3Provider
+    apiKey: string
+    signer: Signer
+    escrow: any
 
-  constructor(
-    apiKey: string,
-    provider: providers.Web3Provider
-  ) {
-    this.apiKey = apiKey
-    this.provider = provider
-  }
+    constructor(
+        apiKey: string,
+        signer: Signer
+    ) {
+        this.apiKey = apiKey
+        this.signer = signer
 
-  getLinkdrop: TGetLinkdrop = ({ token, sender, transferId }) => {
-    return new Linkdrop({ token, sender, transferId })
-  }
+        const ABI = ["function getDeposit(address sender_, uint256 transferId_) view returns (uint128 amount, uint128 expiration)"]
+        const escrowAddr = "0x89C0123826AD31f0BcE61d6f28Bd2175F46e8b74"
+        this.escrow = new ethers.Contract(escrowAddr, ABI, this.signer);
+    }
 
-  createLinkdrop: TCreateLinkdrop = ({ token, sender, amount }) => {
-    return new Linkdrop({ token, sender, amount })
-  }
+    getLinkdrop: TGetLinkdrop = ({ token, transferId }) => {
+        return new Linkdrop({ token, transferId })
+    }
 
-  fetchHistory: TFetchHistory = async ({ sender, token }) => {
-    const linkdrops = await axios.get('')
-    return linkdrops
-  }
+    createLinkdrop: TCreateLinkdrop = async ({ token, amount, expiration }) => {
+        const options = { signer: this.signer, escrow: this.escrow }
+        const linkdrop = new Linkdrop({ token, amount, expiration, options })
+        await linkdrop.initialize()
+        return linkdrop
+    }
 
-  getCurrentFee: TGetCurrentFee = async (token) => { 
-    // const fee = await LinkdropEscrow.getFee()  // SC call
-    return '100'
-  }
+    fetchHistory: TFetchHistory = async ({ sender, token }) => {
+        const linkdrops = await axios.get('')
+        return linkdrops
+    }
 
-  getDepositAmount: TGetDepositAmount = async (link) => { 
-    // todo
-    return '100'
-  }
+    getCurrentFee: TGetCurrentFee = async (token) => {
+        return '0'
+    }
+
+    getDepositAmount: TGetDepositAmount = async (link) => {
+        // todo
+        const transferId = "1345678"
+        const sender = "0x4D0714544Ede1BE9bc39d73846B0fF2233DE79c8"
+        const { amount, expiration } = await this.escrow.getDeposit(sender, transferId)
+        return amount
+    }
 }
 
 export default LinkSDK
