@@ -1,5 +1,7 @@
 import ILinkdrop, { TInitialize, TGetNextTransferId, TGetDepositAmount } from './types'
 import { getAuthorization, getValidAfterAndValidBefore } from "./../../utils/get-deposit-authorization"
+import { generateLinkKeyandSignature } from "./../../utils/payment-link-utils"
+
 
 class Linkdrop implements ILinkdrop {
     sender: string
@@ -9,6 +11,7 @@ class Linkdrop implements ILinkdrop {
     expiration?: number
     signer: any
     escrow: any
+    chainId: any
 
     constructor({
         token,
@@ -52,6 +55,15 @@ class Linkdrop implements ILinkdrop {
             }
         }
 
+        if (!this.chainId && this.signer) {
+            const chainId = await this.signer.getChainId()
+            if (chainId) {
+                console.log({ chainId })
+                this.chainId = chainId
+            }
+        }
+
+
     }
 
     _getNextTransferId: TGetNextTransferId = async () => {
@@ -92,6 +104,18 @@ class Linkdrop implements ILinkdrop {
 
         return "tx hash"
     }
+
+    generateLink = async () => {
+        const escroPaymentDomain = {
+            name: "LinkdropEscrow",
+            version: "1",
+            chainId: this.chainId, // Replace with your actual chainid
+            verifyingContract: this.escrow.address,
+        }
+        const { linkKey, linkKeyId, senderSig } = await generateLinkKeyandSignature(this.signer, this.transferId, escroPaymentDomain)
+        return { linkKey, linkKeyId, senderSig }
+    }
+
 }
 
 export default Linkdrop
