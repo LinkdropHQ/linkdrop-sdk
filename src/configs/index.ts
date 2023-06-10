@@ -9,4 +9,4 @@ export const mumbaiJSONRPCUrl = 'https://rpc-mumbai.maticvigil.com/v1/f592ae2e5a
 
 export const escrowAddress = "0x89C0123826AD31f0BcE61d6f28Bd2175F46e8b74"
 
-export const claimHost = 'https://localhost:3000'
+export const claimHost = 'http://localhost:3000'
