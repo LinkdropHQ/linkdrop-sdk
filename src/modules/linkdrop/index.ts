@@ -1,8 +1,10 @@
-import ILinkdrop, { TInitialize, TGetNextTransferId, TGetDepositAmount } from './types'
+import ILinkdrop, { TInitialize, TGetNextTransferId, TGetDepositAmount, TGenerateLink } from './types'
 import { getDepositAuthorization, getValidAfterAndValidBefore, generateLinkKeyandSignature } from "../../utils"
 import { ethers } from 'ethers'
-import { TDomain, TEscrowPaymentDomain } from '../../types'
+import { TDomain, TEscrowPaymentDomain, TLink } from '../../types'
 import { linkApi } from '../../api'
+import { encodeLink } from '../../helpers'
+import { claimHost } from '../../configs'
 
 class Linkdrop implements ILinkdrop {
     sender: string
@@ -42,30 +44,30 @@ class Linkdrop implements ILinkdrop {
 
     initialize: TInitialize = async () => {
       if (!this.transferId) {
-          const transferId = await this._getNextTransferId()
-          if (transferId) {
-              this.transferId = transferId
-          }
+        const transferId = await this._getNextTransferId()
+        if (transferId) {
+            this.transferId = transferId
+        }
       }
       if (!this.amount) {
-          const amount = await this.getDepositAmount()
-          if (amount) {
-              this.amount = amount
-          }
+        const amount = await this.getDepositAmount()
+        if (amount) {
+            this.amount = amount
+        }
       }
 
       if (!this.sender && this.signer) {
-          const sender = await this.signer.getAddress();
-          if (sender) {
-            this.sender = sender
-          }
+        const sender = await this.signer.getAddress();
+        if (sender) {
+          this.sender = sender
+        }
       }
 
       if (!this.chainId && this.signer) {
-          const chainId = await this.signer.getChainId()
-          if (chainId) {
-              this.chainId = chainId
-          }
+        const chainId = await this.signer.getChainId()
+        if (chainId) {
+            this.chainId = chainId
+        }
       }
     }
 
@@ -126,7 +128,7 @@ class Linkdrop implements ILinkdrop {
       }
     }
 
-    generateLink = async () => {
+    generateLink: TGenerateLink = async () => {
       if (!this.escrow) {
         return alert('escrow contract not provided')
       }
@@ -148,13 +150,15 @@ class Linkdrop implements ILinkdrop {
       const result = await generateLinkKeyandSignature(this.signer, this.transferId, escrowPaymentDomain)
       if (result) {
         const { linkKey, linkKeyId, senderSig } = result
-        return {
+        const linkParams: TLink = {
           linkKey,
           linkKeyId,
           senderSig,
           transferId: this.transferId,
           sender: this.sender
         }
+
+        return encodeLink(claimHost, linkParams)
       }
       
     }

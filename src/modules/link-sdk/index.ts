@@ -1,11 +1,13 @@
 import { Signer, ethers } from 'ethers'
-import ILinkSDK, { TCreateLinkdrop, TFetchHistory, TGetCurrentFee, TGetDepositAmount, TGetLinkdrop, TRedeem } from './types'
+import ILinkSDK, { TGetApiHost, TCreateLinkdrop, TParseURL, TFetchHistory, TGetCurrentFee, TGetDepositAmount, TGetLinkdrop, TRedeem } from './types'
 import Linkdrop from '../linkdrop'
 import { generateReceiverSig } from "../../utils"
 import axios from 'axios'
 import { escrowABI } from '../../abi'
 import { escrowAddress } from '../../configs'
 import { linkApi } from '../../api'
+import { mumbaiApiUrl, polygonApiUrl } from '../../configs'
+import { decodeLink } from '../../helpers'
 
 class LinkSDK implements ILinkSDK {
     apiKey: string
@@ -20,8 +22,18 @@ class LinkSDK implements ILinkSDK {
     ) {
       this.apiKey = apiKey
       this.signer = signer
+      this.apiHost = apiHost
       this.escrow = new ethers.Contract(escrowAddress, escrowABI, signer)
-      this.apiHost = apiHost || 'https://mumbai.escrow-payment-api.linkdrop.io'
+    }
+
+    getApiHost: TGetApiHost = async () => {
+      if (this.apiHost) { return this.apiHost }
+      const chainId = await this.signer.getChainId()
+      if (chainId === 80001) {
+        return mumbaiApiUrl
+      } else if ( chainId === 137) {
+        return polygonApiUrl
+      }
     }
 
     getLinkdrop: TGetLinkdrop = ({ token, transferId }) => {
@@ -29,6 +41,8 @@ class LinkSDK implements ILinkSDK {
     }
 
     createLinkdrop: TCreateLinkdrop = async ({ token, amount, expiration }) => {
+      const apiHost = await this.getApiHost()
+      if (!apiHost) { throw new Error('Api host is not provided or chain_id is not appropriate for SDK. Use Polygon or Mumbai') }
       const options = {
         signer: this.signer,
         escrow: this.escrow,
@@ -56,7 +70,8 @@ class LinkSDK implements ILinkSDK {
     }
 
     redeem: TRedeem = async (link, to) => {
-      const { senderSig, linkKey, transferId, sender } = this._parseUrl(link)
+      const decodedLinkParams = this._parseUrl(link)
+      const { senderSig, linkKey, transferId, sender } = decodedLinkParams
       const receiverSig = await generateReceiverSig(linkKey, to)
       const redeem = await linkApi.redeemLink(
         this.apiHost,
@@ -71,9 +86,8 @@ class LinkSDK implements ILinkSDK {
       return data
     }
 
-    _parseUrl(link) {
-      const { senderSig, linkKey, transferId, sender } = link
-      return { senderSig, linkKey, transferId, sender }
+    _parseUrl: TParseURL = (link) => {
+      return decodeLink(link)
     }
 }
 
