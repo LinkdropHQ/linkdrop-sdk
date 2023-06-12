@@ -80,21 +80,21 @@ class LinkSDK implements ILinkSDK {
   }
 
   redeem: TRedeem = async (link, to) => {
-      const decodedLinkParams = this._parseUrl(link)
-      const { senderSig, linkKey, transferId, sender } = decodedLinkParams
-      const receiverSig = await generateReceiverSig(linkKey, to)
-      const apiHost = await this.getApiHost()
-      const redeem = await linkApi.redeemLink(
-          apiHost,
-          to,
-          sender,
-          this.escrow.address,
-          transferId,
-          receiverSig,
-          senderSig
-      )
-      const { data } = redeem
-      return data
+    const decodedLinkParams = this._parseUrl(link)
+    const { senderSig, linkKey, transferId, sender } = decodedLinkParams
+    const receiverSig = await generateReceiverSig(linkKey, to)
+    const apiHost = await this.getApiHost()
+    const redeem = await linkApi.redeemLink(
+      apiHost,
+      to,
+      sender,
+      this.escrow.address,
+      transferId,
+      receiverSig,
+      senderSig
+    )
+    const { data } = redeem
+    return data
   }
 
   _parseUrl: TParseURL = (link) => {
