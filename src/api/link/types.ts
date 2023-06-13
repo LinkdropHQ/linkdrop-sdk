@@ -2,23 +2,17 @@ import { AxiosResponse } from 'axios'
 
 type TDepositResponse = {
   success: boolean,
-  data: {
-    tx_hash: string
-  }
+  txHash: string
 }
 
 type TDeposit = (
   apiHost: string,
-  from: string,
-  token: string,
-  to: string,
+  sender: string,
+  escrow: string,
+  transfer_id: string,
+  expiration: string,
   amount: string,
-  validAfter: number,
-  validBefore: number,
-  nonce: string,
-  v: string,
-  r: string,
-  s: string
+  authorization: string
 ) => Promise<
   AxiosResponse<
     TDepositResponse
@@ -27,20 +21,17 @@ type TDeposit = (
 
 type TRedeemLinkResponse = {
   success: boolean,
-  data: {
-    tx_hash: string
-  }
+  txHash: string
 }
 
 type TRedeemLink = (
   apiHost: string,
   receiver: string,
   sender: string,
-  token: string,
-  transferId: string,
-  expiration: number,
-  receiverSig: string,
-  senderSig: string
+  escrow: string,
+  transfer_id: string,
+  receiver_sig: string,
+  sender_sig: string
 ) => Promise<
   AxiosResponse<
     TRedeemLinkResponse
@@ -48,6 +39,6 @@ type TRedeemLink = (
 >
 
 export type TRequests = {
-  redeemLink: TRedeemLink
-  deposit: TDeposit
+    redeemLink: TRedeemLink
+    deposit: TDeposit
 }

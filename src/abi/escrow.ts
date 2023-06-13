@@ -1,0 +1,1 @@
+export default ["function getDeposit(address sender_, uint256 transferId_) view returns (uint128 amount, uint128 expiration)"]
