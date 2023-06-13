@@ -16,6 +16,7 @@ class Linkdrop implements ILinkdrop {
     escrow?: ethers.Contract
     chainId: number
     apiHost: string
+    linkHost: string
 
     constructor({
       token,
@@ -31,9 +32,10 @@ class Linkdrop implements ILinkdrop {
       options: {
         signer: ethers.Signer,
         escrow: ethers.Contract,
-        apiHost: string
+        apiHost: string,
+        linkHost?: string
       }
-      }) {
+    }) {
       this.transferId = transferId
       this.amount = amount
       this.token = token
@@ -41,6 +43,7 @@ class Linkdrop implements ILinkdrop {
       this.signer = options.signer
       this.escrow = options.escrow
       this.apiHost = options.apiHost
+      this.linkHost = options.linkHost || claimHost
     }
 
     initialize: TInitialize = async () => {
@@ -115,7 +118,7 @@ class Linkdrop implements ILinkdrop {
         domain
       )
       if (auth) {
-        const redeem = await linkApi.deposit(
+        const result = await linkApi.deposit(
           this.apiHost,
           this.sender,
           this.escrow.address,
@@ -124,7 +127,7 @@ class Linkdrop implements ILinkdrop {
           this.amount,
           auth
         )
-        const { data } = redeem
+        const { data } = result
         return data
       }
     }
