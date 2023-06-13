@@ -94,7 +94,10 @@ class LinkSDK implements ILinkSDK {
       senderSig
     )
     const { data } = redeem
-    return data
+    return {
+      ...data,
+      transferId
+    }
   }
 
   _parseUrl: TParseURL = (link) => {

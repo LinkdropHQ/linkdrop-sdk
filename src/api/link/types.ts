@@ -21,9 +21,7 @@ type TDeposit = (
 
 type TRedeemLinkResponse = {
   success: boolean,
-  data: {
-      tx_hash: string
-  }
+  txHash: string
 }
 
 type TRedeemLink = (
