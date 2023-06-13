@@ -7,46 +7,36 @@ const requests: TRequests = {
     apiHost,
     receiver,
     sender,
-    token,
-    transferId,
-    expiration,
-    receiverSig,
-    senderSig
+    escrow,
+    transfer_id,
+    receiver_sig,
+    sender_sig
   ) => {
-    return axios.post(`${apiHost}/redeem`, {
+    return axios.post(`${apiHost}/api/v1/escrow-payments/redeem`, {
       receiver,
       sender,
-      token,
-      transferId,
-      expiration,
-      receiverSig,
-      senderSig
+      escrow,
+      transfer_id,
+      receiver_sig,
+      sender_sig
     })
   },
   deposit: (
     apiHost,
-    from,
-    token,
-    to,
+    sender,
+    escrow,
+    transfer_id,
+    expiration,
     amount,
-    validAfter,
-    validBefore,
-    nonce,
-    v,
-    r,
-    s
+    authorization
   ) => {
-    return axios.post(`${apiHost}/deposit`, {
-      from,
-      token,
-      to,
+    return axios.post(`${apiHost}/api/v1/escrow-payments/deposit`, {
+      sender,
+      escrow,
+      transfer_id,
+      expiration,
       amount,
-      validAfter,
-      validBefore,
-      nonce,
-      v,
-      r,
-      s
+      authorization
     })
   },
 }
