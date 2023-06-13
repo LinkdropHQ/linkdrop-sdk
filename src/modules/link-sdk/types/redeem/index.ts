@@ -1,5 +1,5 @@
 import { TLink } from "../../../../types"
 
-type TRedeem= (link: string, to: string) => Promise<{success: boolean, data: { tx_hash: string }}>
+type TRedeem= (link: string, to: string) => Promise<{transferId: string, success: boolean, txHash: string }>
 
 export default TRedeem

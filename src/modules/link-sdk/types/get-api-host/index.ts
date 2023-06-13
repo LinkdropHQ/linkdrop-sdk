@@ -1,3 +1,3 @@
-type TGetApiHost = () => Promise<string | void>
+type TGetApiHost = () => Promise<string>
 
 export default TGetApiHost

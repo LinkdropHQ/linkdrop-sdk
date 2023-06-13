@@ -2,9 +2,7 @@ import { AxiosResponse } from 'axios'
 
 type TDepositResponse = {
   success: boolean,
-  data: {
-    tx_hash: string
-  }
+  txHash: string
 }
 
 type TDeposit = (
@@ -12,7 +10,7 @@ type TDeposit = (
   sender: string,
   escrow: string,
   transfer_id: string,
-  expiration: number,
+  expiration: string,
   amount: string,
   authorization: string
 ) => Promise<
@@ -23,9 +21,7 @@ type TDeposit = (
 
 type TRedeemLinkResponse = {
   success: boolean,
-  data: {
-    tx_hash: string
-  }
+  txHash: string
 }
 
 type TRedeemLink = (
@@ -43,6 +39,6 @@ type TRedeemLink = (
 >
 
 export type TRequests = {
-  redeemLink: TRedeemLink
-  deposit: TDeposit
+    redeemLink: TRedeemLink
+    deposit: TDeposit
 }

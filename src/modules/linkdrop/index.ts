@@ -11,7 +11,7 @@ class Linkdrop implements ILinkdrop {
     token: string
     transferId?: string
     amount?: string
-    expiration?: number
+    expiration?: string
     signer?: ethers.Signer
     escrow?: ethers.Contract
     chainId: number
@@ -22,24 +22,25 @@ class Linkdrop implements ILinkdrop {
       transferId,
       amount,
       expiration,
-      options = {}
+      options
     }: {
       token: string
       transferId?: string
       amount?: string,
-      expiration?: number,
-      options?: {
-        signer?: ethers.Signer,
-        escrow?: ethers.Contract,
-        apiHost?: string
+      expiration?: string,
+      options: {
+        signer: ethers.Signer,
+        escrow: ethers.Contract,
+        apiHost: string
       }
-    }) {
+      }) {
       this.transferId = transferId
       this.amount = amount
       this.token = token
       this.expiration = expiration
       this.signer = options.signer
       this.escrow = options.escrow
+      this.apiHost = options.apiHost
     }
 
     initialize: TInitialize = async () => {
@@ -59,7 +60,7 @@ class Linkdrop implements ILinkdrop {
       if (!this.sender && this.signer) {
         const sender = await this.signer.getAddress();
         if (sender) {
-          this.sender = sender
+            this.sender = sender
         }
       }
 
@@ -151,16 +152,15 @@ class Linkdrop implements ILinkdrop {
       if (result) {
         const { linkKey, linkKeyId, senderSig } = result
         const linkParams: TLink = {
-          linkKey,
-          linkKeyId,
-          senderSig,
-          transferId: this.transferId,
-          sender: this.sender
+            linkKey,
+            linkKeyId,
+            senderSig,
+            transferId: this.transferId,
+            sender: this.sender
         }
 
         return encodeLink(claimHost, linkParams)
       }
-      
     }
 }
 
