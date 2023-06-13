@@ -162,7 +162,7 @@ class Linkdrop implements ILinkdrop {
             sender: this.sender
         }
 
-        return encodeLink(claimHost, linkParams)
+        return encodeLink(this.linkHost, linkParams)
       }
     }
 }
