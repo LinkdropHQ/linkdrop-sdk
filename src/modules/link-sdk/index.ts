@@ -14,19 +14,23 @@ class LinkSDK implements ILinkSDK {
   signer: Signer
   escrow: ethers.Contract
   apiHost?: string
+  linkHost?: string
 
   constructor({
     apiKey,
     apiHost,
-    signer
+    signer,
+    linkHost
   }: {
     apiKey: string,
     apiHost?: string,
-    signer: Signer
+    signer: Signer,
+    linkHost?: string
   }) {
     this.apiKey = apiKey
     this.signer = signer
     this.apiHost = apiHost
+    this.linkHost = linkHost
     this.escrow = new ethers.Contract(escrowAddress, escrowABI, signer)
   }
 
@@ -47,6 +51,7 @@ class LinkSDK implements ILinkSDK {
       apiHost: apiHost,
       signer: this.signer,
       escrow: this.escrow,
+      linkHost: this.linkHost
     }
     return new Linkdrop({ token, transferId, options })
   }
@@ -56,7 +61,8 @@ class LinkSDK implements ILinkSDK {
     const options = {
       signer: this.signer,
       escrow: this.escrow,
-      apiHost: apiHost
+      apiHost: apiHost,
+      linkHost: this.linkHost
     }
     const linkdrop = new Linkdrop({ token, amount, expiration, options })
     await linkdrop.initialize()
@@ -101,7 +107,7 @@ class LinkSDK implements ILinkSDK {
   }
 
   _parseUrl: TParseURL = (link) => {
-      return decodeLink(link)
+    return decodeLink(link)
   }
 }
 
