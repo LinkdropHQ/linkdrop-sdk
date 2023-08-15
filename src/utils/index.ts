@@ -6,14 +6,16 @@ import getValidAfterAndValidBefore from './get-valid-after-and-valid-before'
 import getDepositAuthorization from './get-deposit-authorization'
 import generateLinkKeyandSignature from './generate-link-key-and-signature'
 import generateReceiverSig from './generate-receiver-sig'
+import decodeSenderAddress from './decode-sender-address'
 
 export {
-  generateKeyPair,
-  crypto,
-  generateAccount,
-  generateReceiverSig,
-  getNonce,
-  getValidAfterAndValidBefore,
-  getDepositAuthorization,
-  generateLinkKeyandSignature
+    generateKeyPair,
+    crypto,
+    generateAccount,
+    generateReceiverSig,
+    getNonce,
+    getValidAfterAndValidBefore,
+    getDepositAuthorization,
+    generateLinkKeyandSignature,
+    decodeSenderAddress
 }

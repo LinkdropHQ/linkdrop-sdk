@@ -1,7 +1,8 @@
 import { Signer, ethers } from 'ethers'
-import ILinkSDK, { TGetApiHost, TCreateLinkdrop, TParseURL, TFetchHistory, TGetCurrentFee, TGetDepositAmount, TGetLinkdrop, TRedeem } from './types'
+import ILinkSDK, { TGetApiHost, TCreateLinkdrop, TParseURL, TFetchHistory, TGetCurrentFee, TGetDepositAmount, TGetLinkdrop, TRedeem, TGetChainId } from './types'
+import { TEscrowPaymentDomain } from '../../types'
 import Linkdrop from '../linkdrop'
-import { generateReceiverSig } from "../../utils"
+import { generateReceiverSig, decodeSenderAddress } from "../../utils"
 import axios from 'axios'
 import { escrowABI } from '../../abi'
 import { escrowAddress } from '../../configs'
@@ -10,105 +11,132 @@ import { mumbaiApiUrl, polygonApiUrl } from '../../configs'
 import { decodeLink } from '../../helpers'
 
 class LinkSDK implements ILinkSDK {
-  apiKey: string
-  signer: Signer
-  escrow: ethers.Contract
-  apiHost?: string
-  linkHost?: string
-
-  constructor({
-    apiKey,
-    apiHost,
-    signer,
-    linkHost
-  }: {
-    apiKey: string,
-    apiHost?: string,
-    signer: Signer,
+    apiKey: string
+    signer: Signer
+    escrow: ethers.Contract
+    apiHost?: string
     linkHost?: string
-  }) {
-    this.apiKey = apiKey
-    this.signer = signer
-    this.apiHost = apiHost
-    this.linkHost = linkHost
-    this.escrow = new ethers.Contract(escrowAddress, escrowABI, signer)
-  }
+    chainId?: number
 
-  getApiHost: TGetApiHost = async () => {
-    if (this.apiHost) { return this.apiHost }
-    const chainId = await this.signer.getChainId()
-    if (chainId === 80001) {
-      return mumbaiApiUrl
-    } else if (chainId === 137) {
-      return polygonApiUrl
+    constructor({
+        apiKey,
+        apiHost,
+        signer,
+        linkHost
+    }: {
+            apiKey: string,
+            apiHost?: string,
+            signer: Signer,
+            linkHost?: string
+        }) {
+        this.apiKey = apiKey
+        this.signer = signer
+        this.apiHost = apiHost
+        this.linkHost = linkHost
+        this.escrow = new ethers.Contract(escrowAddress, escrowABI, signer)
     }
-    throw new Error('Api host is not provided or chain_id is not appropriate for SDK. Use Polygon or Mumbai')
-  }
 
-  getLinkdrop: TGetLinkdrop = async ({ token, transferId }) => {
-    const apiHost = await this.getApiHost()
-    const options = {
-      apiHost: apiHost,
-      signer: this.signer,
-      escrow: this.escrow,
-      linkHost: this.linkHost
+    getChainId: TGetChainId = async () => {
+        if (this.chainId) { return this.chainId }
+        this.chainId = await this.signer.getChainId()
+        return this.chainId
     }
-    return new Linkdrop({ token, transferId, options })
-  }
 
-  createLinkdrop: TCreateLinkdrop = async ({ token, amount, expiration }) => {
-    const apiHost = await this.getApiHost()
-    const options = {
-      signer: this.signer,
-      escrow: this.escrow,
-      apiHost: apiHost,
-      linkHost: this.linkHost
+    getApiHost: TGetApiHost = async () => {
+        if (this.apiHost) { return this.apiHost }
+        const chainId = await this.getChainId()
+        if (chainId === 80001) {
+            return mumbaiApiUrl
+        } else if (chainId === 137) {
+            return polygonApiUrl
+        }
+        throw new Error('Api host is not provided or chain_id is not appropriate for SDK. Use Polygon or Mumbai')
     }
-    const linkdrop = new Linkdrop({ token, amount, expiration, options })
-    await linkdrop.initialize()
-    return linkdrop
-  }
 
-  fetchHistory: TFetchHistory = async ({ sender, token }) => {
-    const linkdrops = await axios.get('')
-    return linkdrops
-  }
-
-  getCurrentFee: TGetCurrentFee = async (token) => {
-    return '0'
-  }
-
-  getDepositAmount: TGetDepositAmount = async (link) => {
-    const decodedLinkParams = this._parseUrl(link)
-    const { transferId, sender } = decodedLinkParams
-    const { amount, expiration } = await this.escrow.getDeposit(sender, transferId)
-    return { amount, expiration }
-  }
-
-  redeem: TRedeem = async (link, to) => {
-    const decodedLinkParams = this._parseUrl(link)
-    const { senderSig, linkKey, transferId, sender } = decodedLinkParams
-    const receiverSig = await generateReceiverSig(linkKey, to)
-    const apiHost = await this.getApiHost()
-    const redeem = await linkApi.redeemLink(
-      apiHost,
-      to,
-      sender,
-      this.escrow.address,
-      transferId,
-      receiverSig,
-      senderSig
-    )
-    const { data } = redeem
-    return {
-      ...data,
-      transferId
+    getLinkdrop: TGetLinkdrop = async ({ token, transferId }) => {
+        const apiHost = await this.getApiHost()
+        const options = {
+            apiHost: apiHost,
+            signer: this.signer,
+            escrow: this.escrow,
+            linkHost: this.linkHost
+        }
+        return new Linkdrop({ token, transferId, options })
     }
-  }
 
-  _parseUrl: TParseURL = (link) => {
-    return decodeLink(link)
-  }
+    createLinkdrop: TCreateLinkdrop = async ({ token, amount, expiration }) => {
+        const apiHost = await this.getApiHost()
+        const options = {
+            signer: this.signer,
+            escrow: this.escrow,
+            apiHost: apiHost,
+            linkHost: this.linkHost
+        }
+        const linkdrop = new Linkdrop({ token, amount, expiration, options })
+        await linkdrop.initialize()
+        return linkdrop
+    }
+
+    fetchHistory: TFetchHistory = async ({ sender, token }) => {
+        const linkdrops = await axios.get('')
+        return linkdrops
+    }
+
+    getCurrentFee: TGetCurrentFee = async (token) => {
+        return '0'
+    }
+
+    getDepositAmount: TGetDepositAmount = async (link) => {
+        const decodedLinkParams = await this._parseUrl(link)
+        const { transferId, sender } = decodedLinkParams
+        const { amount, expiration } = await this.escrow.getDeposit(sender, transferId)
+        return { amount, expiration }
+    }
+
+    redeem: TRedeem = async (link, to) => {
+        const decodedLinkParams = await this._parseUrl(link)
+        const { senderSig, linkKey, transferId, sender } = decodedLinkParams
+        const receiverSig = await generateReceiverSig(linkKey, to)
+        const apiHost = await this.getApiHost()
+        const redeem = await linkApi.redeemLink(
+            apiHost,
+            to,
+            sender,
+            this.escrow.address,
+            transferId,
+            receiverSig,
+            senderSig
+        )
+        const { data } = redeem
+        return {
+            ...data,
+            transferId
+        }
+    }
+
+    _parseUrl: TParseURL = async (link) => {
+        const decodedLink = decodeLink(link)
+        const linkKeyId = (new ethers.Wallet(decodedLink.linkKey)).address
+        const chainId = await this.getChainId()
+        const escrowPaymentDomain: TEscrowPaymentDomain = {
+            name: "LinkdropEscrow",
+            version: "1",
+            chainId: chainId,
+            verifyingContract: this.escrow.address,
+        }
+
+        const sender = decodeSenderAddress(
+            linkKeyId,
+            decodedLink.transferId,
+            decodedLink.senderSig,
+            escrowPaymentDomain
+        )
+        return {
+            senderSig: decodedLink.senderSig,
+            linkKey: decodedLink.linkKey,
+            transferId: decodedLink.transferId,
+            sender
+        }
+    }
 }
-
 export default LinkSDK
