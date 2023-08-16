@@ -92,8 +92,8 @@ class LinkSDK implements ILinkSDK {
     getDepositAmount: TGetDepositAmount = async (link) => {
         const decodedLinkParams = await this._parseUrl(link)
         const { transferId, sender } = decodedLinkParams
-        const { amount, expiration } = await this.escrow.getDeposit(sender, transferId)
-        return { amount, expiration }
+        const { token, amount, expiration } = await this.escrow.getDeposit(sender, transferId)
+        return { token, amount, expiration }
     }
 
     redeem: TRedeem = async (link, to) => {
