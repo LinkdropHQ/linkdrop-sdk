@@ -169,9 +169,8 @@ class Linkdrop implements ILinkdrop {
                 transferId: this.transferId,
                 chainId: this.chainId
             }
-
-            return encodeLink(claimHost, linkParams)
-        }
+        return encodeLink(this.linkHost, linkParams)
+      }
     }
 }
 
