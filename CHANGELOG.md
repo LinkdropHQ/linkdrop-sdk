@@ -1,7 +1,7 @@
 # Linkdrop Payment Link SDK
 
 ## 0.0.5
-- fix for deposit data fix
+- fix for deposit data method
 
 ## 0.0.4
 - update for claim link
