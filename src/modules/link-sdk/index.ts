@@ -5,7 +5,7 @@ import Linkdrop from '../linkdrop'
 import { generateReceiverSig, decodeSenderAddress } from "../../utils"
 import axios from 'axios'
 import { escrowABI } from '../../abi'
-import { escrowAddress } from '../../configs'
+import { mumbaiEscrowAddress, polygonEscrowAddress } from '../../configs'
 import { linkApi } from '../../api'
 import { mumbaiApiUrl, polygonApiUrl } from '../../configs'
 import { decodeLink } from '../../helpers'
@@ -33,7 +33,8 @@ class LinkSDK implements ILinkSDK {
         this.signer = signer
         this.apiHost = apiHost
         this.linkHost = linkHost
-        this.escrow = new ethers.Contract(escrowAddress, escrowABI, signer)
+        this.getApiHost()
+        this.escrow = new ethers.Contract(polygonEscrowAddress, escrowABI, this.signer)
     }
 
     getChainId: TGetChainId = async () => {
@@ -46,8 +47,10 @@ class LinkSDK implements ILinkSDK {
         if (this.apiHost) { return this.apiHost }
         const chainId = await this.getChainId()
         if (chainId === 80001) {
+            this.escrow = new ethers.Contract(mumbaiEscrowAddress, escrowABI, this.signer)
             return mumbaiApiUrl
         } else if (chainId === 137) {
+            this.escrow = new ethers.Contract(polygonEscrowAddress, escrowABI, this.signer)
             return polygonApiUrl
         }
         throw new Error('Api host is not provided or chain_id is not appropriate for SDK. Use Polygon or Mumbai')

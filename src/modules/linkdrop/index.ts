@@ -84,11 +84,20 @@ class Linkdrop implements ILinkdrop {
     }
 
     depositWithAuthorization = async () => {
-        const domain: TDomain = {
+        let domain: TDomain = {
             name: 'USD Coin (PoS)',
             version: '1',
-            verifyingContract: '0x0FA8781a83E46826621b3BC094Ea2A0212e71B23',
-            salt: '0x0000000000000000000000000000000000000000000000000000000000013881'
+            verifyingContract: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
+            salt: '0x0000000000000000000000000000000000000000000000000000000000000089'
+        }
+
+        if (this.chainId === 80001) {
+            domain = {
+                name: 'USD Coin (PoS)',
+                version: '1',
+                verifyingContract: '0x0FA8781a83E46826621b3BC094Ea2A0212e71B23',
+                salt: '0x0000000000000000000000000000000000000000000000000000000000013881'
+            }
         }
 
         const [validAfter, validBefore] = getValidAfterAndValidBefore()
@@ -148,7 +157,7 @@ class Linkdrop implements ILinkdrop {
         const escrowPaymentDomain: TEscrowPaymentDomain = {
             name: "LinkdropEscrow",
             version: "1",
-            chainId: this.chainId, // Replace with your actual chainid
+            chainId: this.chainId,
             verifyingContract: this.escrow.address,
         }
         const result = await generateLinkKeyandSignature(this.signer, this.transferId, escrowPaymentDomain)
