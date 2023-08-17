@@ -1,5 +1,8 @@
 # Linkdrop Payment Link SDK
 
+## 0.0.7
+- update for generate link method return
+
 ## 0.0.6
 - update for contract address
 
