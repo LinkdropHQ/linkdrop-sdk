@@ -30,10 +30,10 @@ class Linkdrop implements ILinkdrop {
         amount?: string,
         expiration?: string,
         options: {
-            signer: ethers.Signer,
-            escrow: ethers.Contract,
-            apiHost: string,
-            linkHost?: string
+          signer: ethers.Signer,
+          escrow: ethers.Contract,
+          apiHost: string,
+          linkHost?: string
         }
       }) {
       this.transferId = transferId
@@ -84,61 +84,61 @@ class Linkdrop implements ILinkdrop {
     }
 
     depositWithAuthorization = async () => {
-        let domain: TDomain = {
+      let domain: TDomain = {
+        name: 'USD Coin (PoS)',
+        version: '1',
+        verifyingContract: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
+        salt: '0x0000000000000000000000000000000000000000000000000000000000000089'
+      }
+
+      if (this.chainId === 80001) {
+        domain = {
           name: 'USD Coin (PoS)',
           version: '1',
-          verifyingContract: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
-          salt: '0x0000000000000000000000000000000000000000000000000000000000000089'
+          verifyingContract: '0x0FA8781a83E46826621b3BC094Ea2A0212e71B23',
+          salt: '0x0000000000000000000000000000000000000000000000000000000000013881'
         }
+      }
 
-        if (this.chainId === 80001) {
-          domain = {
-            name: 'USD Coin (PoS)',
-            version: '1',
-            verifyingContract: '0x0FA8781a83E46826621b3BC094Ea2A0212e71B23',
-            salt: '0x0000000000000000000000000000000000000000000000000000000000013881'
-          }
-        }
-
-        const [validAfter, validBefore] = getValidAfterAndValidBefore()
-        if (!this.escrow) {
-            return alert('escrow contract not provided')
-        }
-        if (!this.transferId) {
-            return alert('transferId not provided')
-        }
-        if (!this.expiration) {
-            return alert('expiration not provided')
-        }
-        if (!this.amount) {
-            return alert('amount not provided')
-        }
-        if (!this.signer) {
-            return alert('signer not provided')
-        }
-        const auth = await getDepositAuthorization(
-          this.signer,
+      const [validAfter, validBefore] = getValidAfterAndValidBefore()
+      if (!this.escrow) {
+          return alert('escrow contract not provided')
+      }
+      if (!this.transferId) {
+          return alert('transferId not provided')
+      }
+      if (!this.expiration) {
+          return alert('expiration not provided')
+      }
+      if (!this.amount) {
+          return alert('amount not provided')
+      }
+      if (!this.signer) {
+          return alert('signer not provided')
+      }
+      const auth = await getDepositAuthorization(
+        this.signer,
+        this.escrow.address,
+        this.amount,
+        validAfter,
+        validBefore,
+        this.transferId,
+        this.expiration,
+        domain
+      )
+      if (auth) {
+        const result = await linkApi.deposit(
+          this.apiHost,
+          this.sender,
           this.escrow.address,
-          this.amount,
-          validAfter,
-          validBefore,
           this.transferId,
           this.expiration,
-          domain
+          this.amount,
+          auth
         )
-        if (auth) {
-          const result = await linkApi.deposit(
-            this.apiHost,
-            this.sender,
-            this.escrow.address,
-            this.transferId,
-            this.expiration,
-            this.amount,
-            auth
-          )
-          const { data } = result
-          return data
-        }
+        const { data } = result
+        return data
+      }
     }
 
     generateLink: TGenerateLink = async () => {
