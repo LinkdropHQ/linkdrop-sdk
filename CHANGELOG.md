@@ -1,5 +1,8 @@
 # Linkdrop Payment Link SDK
 
+## 0.0.6
+- update for contract address
+
 ## 0.0.5
 - fix for deposit data method
 
