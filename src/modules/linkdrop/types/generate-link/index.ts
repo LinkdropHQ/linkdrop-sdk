@@ -1,3 +1,3 @@
-type TGenerateLink = () => Promise<string | void>
+type TGenerateLink = () => Promise<{link: string, transferId: string } | void>
 
 export default TGenerateLink

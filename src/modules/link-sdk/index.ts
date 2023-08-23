@@ -64,7 +64,9 @@ class LinkSDK implements ILinkSDK {
             escrow: this.escrow,
             linkHost: this.linkHost
         }
-        return new Linkdrop({ token, transferId, options })
+        const linkdrop = new Linkdrop({ token, transferId, options })
+        await linkdrop.initialize()
+        return linkdrop
     }
 
     createLinkdrop: TCreateLinkdrop = async ({ token, amount, expiration }) => {
