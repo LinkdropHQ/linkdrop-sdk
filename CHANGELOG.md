@@ -1,5 +1,8 @@
 # Linkdrop Payment Link SDK
 
+## 0.0.9
+- added update for encodeLink/decodeLink methods
+
 ## 0.0.8
 - added initialization for get linkdrop method
 
