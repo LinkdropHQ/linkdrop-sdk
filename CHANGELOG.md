@@ -1,5 +1,8 @@
 # Linkdrop Payment Link SDK
 
+## 0.0.8
+- added initialization for get linkdrop method
+
 ## 0.0.7
 - update for generate link method return
 
