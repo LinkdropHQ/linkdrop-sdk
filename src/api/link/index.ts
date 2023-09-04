@@ -1,6 +1,5 @@
 import axios from 'axios'
 import { TRequests } from './types'
-import { defineRequestKeyHeader } from '../../helpers'
 
 const requests: TRequests = {
   redeemLink: (
@@ -12,7 +11,7 @@ const requests: TRequests = {
     receiver_sig,
     sender_sig
   ) => {
-    return axios.post(`${apiHost}/api/v1/escrow-payments/redeem`, {
+    return axios.post(`${apiHost}/redeem`, {
       receiver,
       sender,
       escrow,
@@ -30,7 +29,7 @@ const requests: TRequests = {
     amount,
     authorization
   ) => {
-    return axios.post(`${apiHost}/api/v1/escrow-payments/deposit`, {
+    return axios.post(`${apiHost}/deposit`, {
       sender,
       escrow,
       transfer_id,
@@ -39,6 +38,13 @@ const requests: TRequests = {
       authorization
     })
   },
+  getTransferStatus: (
+    apiHost,
+    sender,
+    transfer_id
+  ) => {
+    return axios.get(`${apiHost}/get-payment-status/${sender}/${transfer_id}`)
+  }
 }
 
 export default requests

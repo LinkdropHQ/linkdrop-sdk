@@ -1,7 +1,6 @@
 import TCreateLinkdrop from './create-linkdrop'
 import TGetLinkdrop from './get-linkdrop'
 import TGetCurrentFee from './get-current-fee'
-import TFetchHistory from './fetch-history'
 import TGetDepositAmount from './get-deposit-amount'
 import TRedeem from './redeem'
 import TGetApiHost from './get-api-host'
@@ -10,7 +9,6 @@ import TGetChainId from './get-chain-id'
 
 interface ILinkSDK {
     createLinkdrop: TCreateLinkdrop
-    fetchHistory: TFetchHistory
     getCurrentFee: TGetCurrentFee
     getDepositAmount: TGetDepositAmount
     getLinkdrop: TGetLinkdrop
@@ -19,5 +17,5 @@ interface ILinkSDK {
     _parseUrl: TParseURL,
 }
 
-export { TCreateLinkdrop, TFetchHistory, TGetCurrentFee, TGetDepositAmount, TGetLinkdrop, TRedeem, TGetApiHost, TParseURL, TGetChainId }
+export { TCreateLinkdrop, TGetCurrentFee, TGetDepositAmount, TGetLinkdrop, TRedeem, TGetApiHost, TParseURL, TGetChainId }
 export default ILinkSDK

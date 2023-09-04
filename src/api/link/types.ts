@@ -1,4 +1,5 @@
 import { AxiosResponse } from 'axios'
+import { TTransferStatus } from '../../types'
 
 type TDepositResponse = {
   success: boolean,
@@ -38,7 +39,23 @@ type TRedeemLink = (
   >
 >
 
+type TGetTransferDataResponse = {
+  status: TTransferStatus,
+  amount: string
+  expiration: string
+  success: boolean
+}
+
+type TGetTransferData = (
+  apiHost: string,
+  sender: string,
+  transfer_id: string,
+  chain_name: string
+) => Promise<AxiosResponse<TGetTransferDataResponse>>
+
+
 export type TRequests = {
-    redeemLink: TRedeemLink
-    deposit: TDeposit
+  redeemLink: TRedeemLink
+  deposit: TDeposit
+  getTransferStatus: TGetTransferData
 }
