@@ -1,11 +1,10 @@
-export const polygonApiUrl = 'https://polygon.escrow-payment-api.linkdrop.io'
-export const mumbaiApiUrl = 'https://mumbai.escrow-payment-api.linkdrop.io'
+export const polygonApiUrl = 'https://escrow-api.linkdrop.io/polygon'
+export const mumbaiApiUrl = 'https://escrow-api.linkdrop.io/mumbai'
 
-
-export const polygonJSONRPCUrl = 'https://rpc-mainnet.maticvigil.com/v1/ad4cd2ea018ddb1ccd0418ffa43c27b3d99fbd55'
-export const mainnetJSONRPCUrl = 'https://mainnet.infura.io/v3/620c738fbe1843a18f47ada0e60e738a'
-export const goerliJSONRPCUrl = 'https://goeli.infura.io/v3/620c738fbe1843a18f47ada0e60e738a'
-export const mumbaiJSONRPCUrl = 'https://rpc-mumbai.maticvigil.com/v1/f592ae2e5afb3bebe39314e9bd0949de5b74cd2f'
+export const polygonJSONRPCUrl = 'https://polygon-mainnet.infura.io/v3/f5f8608d75874e5fbcdd4ee9657b8ab5'
+export const mainnetJSONRPCUrl = 'https://mainnet.infura.io/v3/f5f8608d75874e5fbcdd4ee9657b8ab5'
+export const goerliJSONRPCUrl = 'https://goeli.infura.io/v3/f5f8608d75874e5fbcdd4ee9657b8ab5'
+export const mumbaiJSONRPCUrl = 'https://polygon-mumbai.infura.io/v3/f5f8608d75874e5fbcdd4ee9657b8ab5'
 
 export const mumbaiEscrowAddress = "0x85dF066235BC89D25d78FF5e98cbCc5Fc91e7e05"
 export const polygonEscrowAddress = "0x3013e9c3a86c23f74c9d885f070e28d69b1e09f5"

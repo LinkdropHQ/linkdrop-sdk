@@ -1,5 +1,14 @@
 # Linkdrop Payment Link SDK
 
+## 0.0.12
+- added getLinkStatus method
+
+## 0.0.11
+- big fix for api url suffix
+
+## 0.0.10
+- added new api urls + new jsonrpc urls
+
 ## 0.0.9
 - added update for encodeLink/decodeLink methods
 
