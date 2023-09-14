@@ -4,9 +4,9 @@ import { TEscrowPaymentDomain } from '../../types'
 import Linkdrop from '../linkdrop'
 import { generateReceiverSig, decodeSenderAddress } from "../../utils"
 import { escrowABI } from '../../abi'
-import { mumbaiEscrowAddress, polygonEscrowAddress } from '../../configs'
+import { mumbaiEscrowAddress, polygonEscrowAddress, baseEscrowAddress } from '../../configs'
 import { linkApi } from '../../api'
-import { mumbaiApiUrl, polygonApiUrl } from '../../configs'
+import { mumbaiApiUrl, polygonApiUrl, baseApiUrl } from '../../configs'
 import { decodeLink } from '../../helpers'
 
 class LinkSDK implements ILinkSDK {
@@ -51,6 +51,9 @@ class LinkSDK implements ILinkSDK {
     } else if (chainId === 137) {
       this.escrow = new ethers.Contract(polygonEscrowAddress, escrowABI, this.signer)
       return polygonApiUrl
+    } else if (chainId === 8453) {
+      this.escrow = new ethers.Contract(baseEscrowAddress, escrowABI, this.signer)
+      return baseApiUrl
     }
     throw new Error('Api host is not provided or chain_id is not appropriate for SDK. Use Polygon or Mumbai')
   }
