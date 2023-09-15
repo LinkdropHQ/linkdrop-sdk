@@ -76,11 +76,11 @@ class Linkdrop implements ILinkdrop {
     }
 
     _getNextTransferId: TGetNextTransferId = async () => {
-        return String(+new Date())
+      return String(+new Date())
     }
 
     getDepositAmount: TGetDepositAmount = async () => {
-        return String(+new Date())
+      return String(+new Date())
     }
 
     depositWithAuthorization = async () => {
@@ -97,6 +97,13 @@ class Linkdrop implements ILinkdrop {
           version: '1',
           verifyingContract: '0x0FA8781a83E46826621b3BC094Ea2A0212e71B23',
           salt: '0x0000000000000000000000000000000000000000000000000000000000013881'
+        }
+      } else if (this.chainId === 8453) {
+        domain = {
+          name: 'USD Coin (PoS)',
+          version: '1',
+          verifyingContract: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+          salt: '0x0000000000000000000000000000000000000000000000000000000000002105'
         }
       }
 
