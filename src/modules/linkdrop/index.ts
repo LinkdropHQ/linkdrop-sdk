@@ -100,8 +100,8 @@ class Linkdrop implements ILinkdrop {
         }
       } else if (this.chainId === 8453) {
         domain = {
-          name: 'USD Coin (PoS)',
-          version: '1',
+          name: 'USD Coin',
+          version: '2',
           verifyingContract: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
           salt: '0x0000000000000000000000000000000000000000000000000000000000002105'
         }
