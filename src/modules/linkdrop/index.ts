@@ -84,26 +84,26 @@ class Linkdrop implements ILinkdrop {
     }
 
     depositWithAuthorization = async () => {
-      let domain: TDomain = {
-        name: 'USD Coin (PoS)',
+      let domain: TDomain = { 
+        name: 'USD Coin (PoS)',  // Polygon Mainnet
         version: '1',
         verifyingContract: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
         salt: '0x0000000000000000000000000000000000000000000000000000000000000089'
       }
 
-      if (this.chainId === 80001) {
+      if (this.chainId === 80001) { // Mumbai
         domain = {
           name: 'USD Coin (PoS)',
           version: '1',
           verifyingContract: '0x0FA8781a83E46826621b3BC094Ea2A0212e71B23',
           salt: '0x0000000000000000000000000000000000000000000000000000000000013881'
         }
-      } else if (this.chainId === 8453) {
+      } else if (this.chainId === 8453) { // Base
         domain = {
           name: 'USD Coin',
           version: '2',
-          verifyingContract: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
-          salt: '0x0000000000000000000000000000000000000000000000000000000000002105'
+          chainId: 8453,
+          verifyingContract: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913'          
         }
       }
 
