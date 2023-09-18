@@ -8,13 +8,13 @@ import TParseURL from './parse-url'
 import TGetChainId from './get-chain-id'
 
 interface ILinkSDK {
-    createLinkdrop: TCreateLinkdrop
-    getCurrentFee: TGetCurrentFee
-    getDepositAmount: TGetDepositAmount
-    getLinkdrop: TGetLinkdrop
-    redeem: TRedeem
-    getApiHost: TGetApiHost
-    _parseUrl: TParseURL,
+  createLinkdrop: TCreateLinkdrop
+  getCurrentFee: TGetCurrentFee
+  getDepositAmount: TGetDepositAmount
+  getLinkdrop: TGetLinkdrop
+  redeem: TRedeem
+  getApiHost: TGetApiHost
+  _parseUrl: TParseURL
 }
 
 export { TCreateLinkdrop, TGetCurrentFee, TGetDepositAmount, TGetLinkdrop, TRedeem, TGetApiHost, TParseURL, TGetChainId }

@@ -1,5 +1,11 @@
 # Linkdrop Payment Link SDK
 
+## 0.0.16
+- updates related to Base network
+
+## 0.0.13
+- added Base chain support
+
 ## 0.0.12
 - added getLinkStatus method
 

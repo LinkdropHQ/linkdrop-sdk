@@ -2,8 +2,7 @@ import { defineNetworkName } from './'
 import {
   polygonJSONRPCUrl,
   mumbaiJSONRPCUrl,
-  goerliJSONRPCUrl,
-  mainnetJSONRPCUrl
+  baseJSONRPCUrl
 } from '../configs'
 
 const defineJSONRpcUrl = ({ chainId } : { chainId: number }) => {
@@ -13,10 +12,8 @@ const defineJSONRpcUrl = ({ chainId } : { chainId: number }) => {
     return polygonJSONRPCUrl
   } else if (networkName === 'mumbai') {
     return mumbaiJSONRPCUrl
-  } else if (networkName === 'goerli') {
-    return goerliJSONRPCUrl
-  } else if (networkName === 'mainnet') {
-    return mainnetJSONRPCUrl
+  }  else if (networkName === 'base') {
+    return baseJSONRPCUrl
   }
   
   return alert('Current chain id is not supported')

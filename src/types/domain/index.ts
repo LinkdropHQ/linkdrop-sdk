@@ -1,6 +1,7 @@
 export type TDomain = {
-  name: string,
-  version: string,
-  verifyingContract: string,
-  salt: string
+  name: string
+  version: string
+  verifyingContract: string
+  salt?: string
+  chainId?: number
 }
