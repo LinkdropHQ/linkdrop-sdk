@@ -1,6 +1,8 @@
-import { ethers } from 'ethers'
-import { getNonce } from '..'
+
 import { TDomain, TSignerCustomized } from '../../types'
+import getDepositAuthorizationBase from './get-deposit-authorization-base'
+import getDepositAuthorizationPolygon from './get-deposit-authorization-polygon'
+import getDepositAuthorizationMumbai from './get-deposit-authorization-mumbai'
 
 async function getDepositAuthorization(
     signer: TSignerCustomized,
@@ -10,43 +12,41 @@ async function getDepositAuthorization(
     validBefore: number,
     transferId: string,
     expiration: string,
-    domain: TDomain
+    domain: TDomain,
+    chainId: number
 ) {
-    // The EIP-712 type data
-    const types = {
-      TransferWithAuthorization: [
-        { name: 'from', type: 'address' },
-        { name: 'to', type: 'address' },
-        { name: 'value', type: 'uint256' },
-        { name: 'validAfter', type: 'uint256' },
-        { name: 'validBefore', type: 'uint256' },
-        { name: 'nonce', type: 'bytes32' },
-      ],
-    }
-    const sender = await signer.getAddress()
-    const nonce = getNonce(sender, transferId, amount, expiration)
-    const message = {
-      from: sender,
-      to,
-      value: amount,
-      validAfter,
-      validBefore,
-      nonce
-    }
+  if (chainId === 137) return getDepositAuthorizationPolygon(
+    signer,
+    to,
+    amount,
+    validAfter,
+    validBefore,
+    transferId,
+    expiration,
+    domain
+  )
 
-    if (signer._signTypedData) {
-      const signature = await signer._signTypedData(domain, types, message)
-      const signatureSplit = ethers.utils.splitSignature(signature)
+  if (chainId === 8453) return getDepositAuthorizationBase(
+    signer,
+    to,
+    amount,
+    validAfter,
+    validBefore,
+    transferId,
+    expiration,
+    domain
+  )
 
-      // Encode the authorization
-      const authorization = ethers.utils.defaultAbiCoder.encode(
-        ['address', 'address', 'uint256', 'uint256', 'uint256', 'bytes32', 'uint8', 'bytes32', 'bytes32'],
-        [message.from, message.to, message.value, message.validAfter, message.validBefore, message.nonce, signatureSplit.v, signatureSplit.r, signatureSplit.s]
-      )
-
-      return authorization
-    }
-
+  return getDepositAuthorizationMumbai(
+    signer,
+    to,
+    amount,
+    validAfter,
+    validBefore,
+    transferId,
+    expiration,
+    domain
+  )
 }
 
 export default getDepositAuthorization

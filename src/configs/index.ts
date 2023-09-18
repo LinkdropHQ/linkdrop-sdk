@@ -7,7 +7,7 @@ export const mumbaiJSONRPCUrl = 'https://polygon-mumbai.infura.io/v3/f5f8608d758
 export const baseJSONRPCUrl = 'https://developer-access-mainnet.base.org'
 
 export const mumbaiEscrowAddress = "0x85dF066235BC89D25d78FF5e98cbCc5Fc91e7e05"
-export const polygonEscrowAddress = "0x3013e9c3a86c23f74c9d885f070e28d69b1e09f5"
-export const baseEscrowAddress = "0x3013e9c3a86c23f74c9d885f070e28d69b1e09f5"
+export const polygonEscrowAddress = "0x0522dd6e9f2beca1cd15a5fd275dc279a1a08eac"
+export const baseEscrowAddress = "0x0522dd6e9f2beca1cd15a5fd275dc279a1a08eac"
 
 export const claimHost = 'http://localhost:3000'
