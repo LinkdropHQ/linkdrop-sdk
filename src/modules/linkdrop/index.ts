@@ -1,4 +1,4 @@
-import ILinkdrop, { TInitialize, TGetNextTransferId, TGetDepositAmount, TGenerateLink } from './types'
+import ILinkdrop, { TInitialize, TGetNextTransferId, TGenerateLink } from './types'
 import { getDepositAuthorization, getValidAfterAndValidBefore, generateLinkKeyandSignature } from "../../utils"
 import { ethers } from 'ethers'
 import { TDomain, TEscrowPaymentDomain, TLink } from '../../types'
@@ -25,17 +25,16 @@ class Linkdrop implements ILinkdrop {
       expiration,
       options
     }: {
-        token: string
-        transferId?: string
-        amount?: string,
-        expiration?: string,
-        options: {
-          signer: ethers.Signer,
-          escrow: ethers.Contract,
-          apiHost: string,
-          linkHost?: string
-        }
-      }) {
+      token: string
+      transferId?: string
+      amount?: string,
+      expiration?: string,
+      options: {
+        signer: ethers.Signer,
+        escrow: ethers.Contract,
+        apiHost: string,
+        linkHost?: string
+      }}) {
       this.transferId = transferId
       this.amount = amount
       this.token = token
@@ -51,12 +50,6 @@ class Linkdrop implements ILinkdrop {
         const transferId = await this._getNextTransferId()
         if (transferId) {
             this.transferId = transferId
-        }
-      }
-      if (!this.amount) {
-        const amount = await this.getDepositAmount()
-        if (amount) {
-            this.amount = amount
         }
       }
 
@@ -76,10 +69,6 @@ class Linkdrop implements ILinkdrop {
     }
 
     _getNextTransferId: TGetNextTransferId = async () => {
-      return String(+new Date())
-    }
-
-    getDepositAmount: TGetDepositAmount = async () => {
       return String(+new Date())
     }
 
@@ -131,7 +120,8 @@ class Linkdrop implements ILinkdrop {
         validBefore,
         this.transferId,
         this.expiration,
-        domain
+        domain,
+        this.chainId
       )
       if (auth) {
         const result = await linkApi.deposit(

@@ -1,6 +1,5 @@
 import TGetNextTransferId from './get-next-transfer-id'
 import TInitialize from './initialize'
-import TGetDepositAmount from './get-deposit-amount'
 import TGenerateLink from './generate-link'
 
 interface ILinkdrop {
@@ -10,9 +9,8 @@ interface ILinkdrop {
   amount?: string
 
   _getNextTransferId: TGetNextTransferId
-  getDepositAmount: TGetDepositAmount
   initialize: TInitialize
   generateLink: TGenerateLink
 }
-export { TInitialize, TGetNextTransferId, TGetDepositAmount, TGenerateLink }
+export { TInitialize, TGetNextTransferId, TGenerateLink }
 export default ILinkdrop

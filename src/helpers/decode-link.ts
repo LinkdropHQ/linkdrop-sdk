@@ -6,7 +6,7 @@ const decodeLink: TDecodeLink = (link) => {
   // Use URLSearchParams to get query parameters
   const currentURL = new URL(link);
   const url = currentURL.hash.split("?")[1]
-  const searchParams = new URLSearchParams(url);
+  const searchParams = new URLSearchParams(url)
   const params = {
     linkKey: searchParams.get("k") || "",
     s: searchParams.get("s") || "",

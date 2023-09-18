@@ -1,5 +1,12 @@
 # Linkdrop Payment Link SDK
 
+## 0.0.18
+- removed getDepositAmount method from Linkdrop module
+
+## 0.0.17
+- updates for getDepositAuthorization method
+- new escrow contract addresses
+
 ## 0.0.16
 - updates related to Base network
 
