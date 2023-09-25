@@ -64,7 +64,8 @@ class LinkSDK implements ILinkSDK {
       apiHost: apiHost,
       signer: this.signer,
       escrow: this.escrow,
-      linkHost: this.linkHost
+      linkHost: this.linkHost,
+      apiKey: this.apiKey
     }
     const linkdrop = new Linkdrop({ token, transferId, options })
     await linkdrop.initialize()
@@ -75,6 +76,7 @@ class LinkSDK implements ILinkSDK {
     const apiHost = await this.getApiHost()
     const transferStatus = await linkApi.getTransferStatus(
       apiHost,
+      this.apiKey,
       sender,
       transferId,
       networkName
@@ -89,7 +91,8 @@ class LinkSDK implements ILinkSDK {
       signer: this.signer,
       escrow: this.escrow,
       apiHost: apiHost,
-      linkHost: this.linkHost
+      linkHost: this.linkHost,
+      apiKey: this.apiKey
     }
     const linkdrop = new Linkdrop({ token, amount, expiration, options })
     await linkdrop.initialize()
@@ -114,6 +117,7 @@ class LinkSDK implements ILinkSDK {
     const apiHost = await this.getApiHost()
     const redeem = await linkApi.redeemLink(
       apiHost,
+      this.apiKey,
       to,
       sender,
       this.escrow.address,

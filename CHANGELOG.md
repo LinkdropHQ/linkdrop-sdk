@@ -1,5 +1,8 @@
 # Linkdrop Payment Link SDK
 
+## 0.0.19
+- added apiKey to Zuplo endpoints
+
 ## 0.0.18
 - removed getDepositAmount method from Linkdrop module
 
