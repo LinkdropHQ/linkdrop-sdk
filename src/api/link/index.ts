@@ -4,6 +4,7 @@ import { TRequests } from './types'
 const requests: TRequests = {
   redeemLink: (
     apiHost,
+    apiKey,
     receiver,
     sender,
     escrow,
@@ -18,10 +19,15 @@ const requests: TRequests = {
       transfer_id,
       receiver_sig,
       sender_sig
+    }, {
+      headers: {
+        'authorization': `Bearer ${apiKey}`
+      }
     })
   },
   deposit: (
     apiHost,
+    apiKey,
     sender,
     escrow,
     transfer_id,
@@ -36,14 +42,23 @@ const requests: TRequests = {
       expiration,
       amount,
       authorization
+    }, {
+      headers: {
+        'authorization': `Bearer ${apiKey}`
+      }
     })
   },
   getTransferStatus: (
     apiHost,
+    apiKey,
     sender,
     transfer_id
   ) => {
-    return axios.get(`${apiHost}/get-payment-status/${sender}/${transfer_id}`)
+    return axios.get(`${apiHost}/get-payment-status/${sender}/${transfer_id}`, {
+      headers: {
+        'authorization': `Bearer ${apiKey}`
+      }
+    })
   }
 }
 

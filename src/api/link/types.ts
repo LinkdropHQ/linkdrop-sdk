@@ -8,6 +8,7 @@ type TDepositResponse = {
 
 type TDeposit = (
   apiHost: string,
+  apiKey: string,
   sender: string,
   escrow: string,
   transfer_id: string,
@@ -27,6 +28,7 @@ type TRedeemLinkResponse = {
 
 type TRedeemLink = (
   apiHost: string,
+  apiKey: string,
   receiver: string,
   sender: string,
   escrow: string,
@@ -48,6 +50,7 @@ type TGetTransferDataResponse = {
 
 type TGetTransferData = (
   apiHost: string,
+  apiKey: string,
   sender: string,
   transfer_id: string,
   chain_name: string

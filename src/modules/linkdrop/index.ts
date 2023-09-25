@@ -16,6 +16,7 @@ class Linkdrop implements ILinkdrop {
     escrow?: ethers.Contract
     chainId: number
     apiHost: string
+    apiKey: string
     linkHost: string
 
     constructor({
@@ -33,7 +34,8 @@ class Linkdrop implements ILinkdrop {
         signer: ethers.Signer,
         escrow: ethers.Contract,
         apiHost: string,
-        linkHost?: string
+        linkHost?: string,
+        apiKey: string
       }}) {
       this.transferId = transferId
       this.amount = amount
@@ -42,6 +44,7 @@ class Linkdrop implements ILinkdrop {
       this.signer = options.signer
       this.escrow = options.escrow
       this.apiHost = options.apiHost
+      this.apiKey = options.apiKey
       this.linkHost = options.linkHost || claimHost
     }
 
@@ -126,6 +129,7 @@ class Linkdrop implements ILinkdrop {
       if (auth) {
         const result = await linkApi.deposit(
           this.apiHost,
+          this.apiKey,
           this.sender,
           this.escrow.address,
           this.transferId,
