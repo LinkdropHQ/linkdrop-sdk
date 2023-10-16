@@ -7,6 +7,7 @@ const decodeSenderAddress = (
   senderSig: string,
   domain: TEscrowPaymentDomain
 ): string => {
+
   const types = {
     Transfer: [
       { name: 'linkKeyId', type: 'address' },

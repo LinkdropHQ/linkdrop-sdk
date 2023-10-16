@@ -10,4 +10,4 @@ export const mumbaiEscrowAddress = "0x85dF066235BC89D25d78FF5e98cbCc5Fc91e7e05"
 export const polygonEscrowAddress = "0x0522dd6e9f2beca1cd15a5fd275dc279a1a08eac"
 export const baseEscrowAddress = "0x0522dd6e9f2beca1cd15a5fd275dc279a1a08eac"
 
-export const claimHost = 'http://localhost:3000'
+export const baseUrl = 'http://localhost:3000'

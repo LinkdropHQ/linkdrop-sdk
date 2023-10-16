@@ -1,7 +1,7 @@
-import LinkSDK from './modules/link-sdk'
-import Linkdrop from './modules/linkdrop'
+import PaymentLink from './modules/payment-link'
+import LinkdropPay from './modules/linkdrop-pay-sdk'
 
 export {
-  Linkdrop,
-  LinkSDK
+  LinkdropPay,
+  PaymentLink
 }
