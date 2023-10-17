@@ -1,3 +1,3 @@
-type TGetNextTransferId = () => Promise<string>
+type TGetNextTransferId = () => string
 
 export default TGetNextTransferId

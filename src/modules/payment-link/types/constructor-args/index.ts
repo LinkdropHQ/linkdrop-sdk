@@ -5,7 +5,10 @@ type TConstructorArgs = {
   expiration: string
   chainId: number
   apiHost: string
+  apiKey: string
   baseUrl?: string
+  transferId?: string
+  claimUrl?: string
 }
 
 

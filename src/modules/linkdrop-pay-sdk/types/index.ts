@@ -4,7 +4,6 @@ import TGetPaymentLink from './get-payment-link'
 import TConstructorArgs from './constructor-args'
 
 interface ILinkdrop {
-  apiHost: string
   apiKey: string
   baseUrl: string
 

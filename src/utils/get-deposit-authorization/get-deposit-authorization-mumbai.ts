@@ -1,9 +1,10 @@
 import { ethers } from 'ethers'
 import { getNonce } from '..'
-import { TDomain, TSignerCustomized } from '../../types'
+import { TDomain, TSignTypedData } from '../../types'
 
 async function getDepositAuthorizationMumbai(
-    signer: TSignerCustomized,
+    signTypedData: TSignTypedData,
+    sender: string,
     to: string,
     amount: string,
     validAfter: number,
@@ -23,7 +24,6 @@ async function getDepositAuthorizationMumbai(
         { name: 'nonce', type: 'bytes32' },
       ],
     }
-    const sender = await signer.getAddress()
     const nonce = getNonce(sender, transferId, amount, expiration)
     const message = {
       from: sender,
@@ -34,18 +34,16 @@ async function getDepositAuthorizationMumbai(
       nonce
     }
 
-    if (signer._signTypedData) {
-      const signature = await signer._signTypedData(domain, types, message)
-      const signatureSplit = ethers.utils.splitSignature(signature)
+    const signature = await signTypedData(domain, types, message)
+    const signatureSplit = ethers.utils.splitSignature(signature)
 
-      // Encode the authorization
-      const authorization = ethers.utils.defaultAbiCoder.encode(
-        ['address', 'address', 'uint256', 'uint256', 'uint256', 'bytes32', 'uint8', 'bytes32', 'bytes32'],
-        [message.from, message.to, message.value, message.validAfter, message.validBefore, message.nonce, signatureSplit.v, signatureSplit.r, signatureSplit.s]
-      )
+    // Encode the authorization
+    const authorization = ethers.utils.defaultAbiCoder.encode(
+      ['address', 'address', 'uint256', 'uint256', 'uint256', 'bytes32', 'uint8', 'bytes32', 'bytes32'],
+      [message.from, message.to, message.value, message.validAfter, message.validBefore, message.nonce, signatureSplit.v, signatureSplit.r, signatureSplit.s]
+    )
 
-      return authorization
-    }
+    return authorization
 
 }
 

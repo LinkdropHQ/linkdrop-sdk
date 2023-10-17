@@ -3,8 +3,5 @@ import { TDomain } from "../domain"
 export type TSignTypedData = (
   domain: TDomain,
   types: any,
-  message: {
-    linkKeyId: string,
-    transferId: string
-  }
+  message: Record<string, string | number>
 ) => Promise<any>

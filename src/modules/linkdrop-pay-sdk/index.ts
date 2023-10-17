@@ -9,38 +9,20 @@ import { ethers } from 'ethers'
 import { TDomain, TEscrowPaymentDomain, TLink } from '../../types'
 import { linkApi } from '../../api'
 import { encodeLink, defineApiHost } from '../../helpers'
-import { claimHost } from '../../configs'
 import PaymentLink from '../payment-link'
 import { errors } from '../../texts'
 
 class LinkdropPaySDK implements ILinkdrop {
-  apiHost: string
   apiKey: string
   baseUrl: string
 
   constructor({
     apiKey,
-    baseUrl,
-    apiHost
+    baseUrl
   }: TConstructorArgs) {
-    this.apiHost = apiHost
     this.apiKey = apiKey
     this.baseUrl = baseUrl
   }
-
-  // getApiHost: TGetApiHost = async () => {
-    // if (this.chainId === 80001) {
-    //   return mumbaiApiUrl
-    // } else if (this.chainId === 137) {
-    //   this.escrow = new ethers.Contract(polygonEscrowAddress, escrowABI, this.signer)
-    //   return polygonApiUrl
-    // } else if (this.chainId === 8453) {
-    //   this.escrow = new ethers.Contract(baseEscrowAddress, escrowABI, this.signer)
-    //   return baseApiUrl
-    // }
-    // throw new Error('Api host is not provided or chain_id is not appropriate for SDK. Use Polygon or Mumbai')
-  // }
-
 
   createPaymentLink: TCreatePaymentLink = async ({
     token,
@@ -76,9 +58,9 @@ class LinkdropPaySDK implements ILinkdrop {
       chainId,
       amount,
       sender: from,
-      apiHost
+      apiHost,
+      apiKey: this.apiKey
     })
-    paymentLink.initialize()
     return paymentLink
     
     // const escrowPaymentDomain: TEscrowPaymentDomain = {
@@ -116,10 +98,12 @@ class LinkdropPaySDK implements ILinkdrop {
       chainId: 80001,
       amount: '10000',
       sender: '0x...',
-      apiHost
+      apiHost,
+      apiKey: this.apiKey,
+      transferId: '1111',
+      claimUrl: 'https://google.com'
     }
     const paymentLink = new PaymentLink(paymentLinkData)
-    paymentLink.initialize()
     return paymentLink
   }
 
@@ -132,18 +116,19 @@ class LinkdropPaySDK implements ILinkdrop {
     const apiHost = defineApiHost(chainId)
     if (!apiHost) {
       throw new Error(errors.chain_not_supported())
-      return
     }
     const paymentLinkData = {
       token: '0x...',
       expiration: String(+new Date),
-      chainId: 80001,
+      chainId: chainId,
       amount: '10000',
       sender: '0x...',
-      apiHost
+      apiHost,
+      apiKey: this.apiKey,
+      transferId: '1111',
+      claimUrl: 'https://google.com'
     }
     const paymentLink = new PaymentLink(paymentLinkData)
-    paymentLink.initialize()
     return paymentLink
   }
 }
