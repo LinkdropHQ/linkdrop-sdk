@@ -8,9 +8,12 @@ const generateLinkKeyandSignature = async (
   domain: TEscrowPaymentDomain
 ) => {
 
-  // Generate a new private key
-  const { privateKey } = generateKeyPair()
-  const linkKey = new ethers.Wallet(privateKey)
+//   // Generate a new private key
+//   const getRandomBytes = (length: number) => { 
+//     return new Uint8Array(randomBytes(length))
+//   }
+//   const generatedRandomBytes = getRandomBytes(32)
+  const linkKey = new ethers.Wallet(generatedRandomBytes)
 
   // Create the data to sign
   const types = {

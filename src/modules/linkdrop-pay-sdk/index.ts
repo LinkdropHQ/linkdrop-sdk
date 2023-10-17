@@ -61,30 +61,8 @@ class LinkdropPaySDK implements ILinkdrop {
       apiHost,
       apiKey: this.apiKey
     })
+
     return paymentLink
-    
-    // const escrowPaymentDomain: TEscrowPaymentDomain = {
-    //   name: "LinkdropEscrow",
-    //   version: "1",
-    //   chainId: this.chainId,
-    //   verifyingContract: this.escrow.address,
-    // }
-    // const result = await generateLinkKeyandSignature(this.signer, this.transferId, escrowPaymentDomain)
-    // if (result) {
-    //   const { linkKey, linkKeyId, senderSig } = result
-    //   const linkParams: TLink = {
-    //     linkKey,
-    //     senderSig,
-    //     transferId: this.transferId,
-    //     chainId: this.chainId
-    //   }
-    //   return {
-    //     link: encodeLink(this.linkHost, linkParams),
-    //     transferId: this.transferId
-    //   }
-    // }
-
-
   }
 
   getPaymentLink: TGetPaymentLink = async (claimUrl) => {
