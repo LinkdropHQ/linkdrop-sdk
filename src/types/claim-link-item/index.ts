@@ -21,7 +21,6 @@ export type TClaimLinkItem = {
   sender: string
   // ---- should be added
   expiration: string
-  claimUrl: string
   // ---- should be added
   escrow: string
   version: string
