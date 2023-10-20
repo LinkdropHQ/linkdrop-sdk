@@ -6,6 +6,6 @@ type TUpdateAmountResult = {
 
 type TUpdateAmount = (
   amount: string
-) => TUpdateAmountResult
+) => Promise<TUpdateAmountResult | void>
 
 export default TUpdateAmount

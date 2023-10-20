@@ -1,5 +1,4 @@
 type TConstructorArgs = {
-  apiHost: string
   apiKey: string
   baseUrl: string
 }

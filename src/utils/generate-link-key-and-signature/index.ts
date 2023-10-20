@@ -1,21 +1,14 @@
-import generateKeyPair from '../generate-keypair'
 import { ethers } from 'ethers'
-import { TEscrowPaymentDomain, TSignTypedData } from '../../types'
+import { TEscrowPaymentDomain, TSignTypedData, TGetRandomBytes } from '../../types'
 
 const generateLinkKeyandSignature = async (
   signTypedData: TSignTypedData,
+  getRandomBytes: TGetRandomBytes,
   transferId: string,
   domain: TEscrowPaymentDomain
 ) => {
+  const linkKey = new ethers.Wallet(await getRandomBytes(32))
 
-//   // Generate a new private key
-//   const getRandomBytes = (length: number) => { 
-//     return new Uint8Array(randomBytes(length))
-//   }
-//   const generatedRandomBytes = getRandomBytes(32)
-  const linkKey = new ethers.Wallet(generatedRandomBytes)
-
-  // Create the data to sign
   const types = {
     Transfer: [
       { name: 'linkKeyId', type: 'address' },

@@ -1,5 +1,5 @@
 import { ethers } from 'ethers'
-import { TEscrowPaymentDomain, TSignerCustomized } from '../../types'
+import { TEscrowPaymentDomain } from '../../types'
 
 const decodeSenderAddress = (
   linkKeyId: string,

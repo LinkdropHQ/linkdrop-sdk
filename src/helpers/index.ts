@@ -4,6 +4,8 @@ import defineRequestKeyHeader from './define-request-key-header'
 import encodeLink from './encode-link'
 import decodeLink from './decode-link'
 import defineApiHost from './define-api-host'
+import parseLink from './parse-link'
+import defineEscrowAddress from './define-escrow-address'
 
 export {
   defineJSONRpcUrl,
@@ -11,5 +13,7 @@ export {
   defineApiHost,
   defineRequestKeyHeader,
   encodeLink,
-  decodeLink
+  decodeLink,
+  parseLink,
+  defineEscrowAddress
 }

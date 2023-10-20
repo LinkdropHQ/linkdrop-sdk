@@ -1,20 +1,20 @@
-import TCreatePaymentLink from './create-payment-link'
-import TRetrievePaymentLink from './retrieve-payment-link'
-import TGetPaymentLink from './get-payment-link'
+import TCreateClaimLink from './create-claim-link'
+import TRetrieveClaimLink from './retrieve-claim-link'
+import TGetClaimLink from './get-claim-link'
 import TConstructorArgs from './constructor-args'
 
 interface ILinkdrop {
   apiKey: string
   baseUrl: string
 
-  createPaymentLink: TCreatePaymentLink
-  retrievePaymentLink: TRetrievePaymentLink
-  getPaymentLink: TGetPaymentLink
+  createClaimLink: TCreateClaimLink
+  retrieveClaimLink: TRetrieveClaimLink
+  getClaimLink: TGetClaimLink
 }
 export {
-  TCreatePaymentLink,
+  TCreateClaimLink,
   TConstructorArgs,
-  TGetPaymentLink,
-  TRetrievePaymentLink
+  TGetClaimLink,
+  TRetrieveClaimLink
 }
 export default ILinkdrop

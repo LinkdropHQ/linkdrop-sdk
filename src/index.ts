@@ -1,7 +1,7 @@
-import PaymentLink from './modules/payment-link'
+import ClaimLink from './modules/claim-link'
 import LinkdropPay from './modules/linkdrop-pay-sdk'
 
 export {
   LinkdropPay,
-  PaymentLink
+  ClaimLink
 }

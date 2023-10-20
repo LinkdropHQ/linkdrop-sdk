@@ -1,5 +1,8 @@
 # Linkdrop Payment Link SDK
 
+## 1.0.0-rc.0
+
+
 ## 0.0.19
 - added apiKey to Zuplo endpoints
 

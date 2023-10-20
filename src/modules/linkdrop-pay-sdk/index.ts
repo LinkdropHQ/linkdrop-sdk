@@ -1,15 +1,12 @@
 import ILinkdrop, {
-  TCreatePaymentLink,
+  TCreateClaimLink,
   TConstructorArgs,
-  TGetPaymentLink,
-  TRetrievePaymentLink
+  TGetClaimLink,
+  TRetrieveClaimLink
 } from './types'
-import { generateLinkKeyandSignature } from "../../utils"
-import { ethers } from 'ethers'
-import { TDomain, TEscrowPaymentDomain, TLink } from '../../types'
 import { linkApi } from '../../api'
-import { encodeLink, defineApiHost } from '../../helpers'
-import PaymentLink from '../payment-link'
+import { decodeLink, defineApiHost, parseLink, defineEscrowAddress } from '../../helpers'
+import ClaimLink from '../claim-link'
 import { errors } from '../../texts'
 
 class LinkdropPaySDK implements ILinkdrop {
@@ -24,7 +21,7 @@ class LinkdropPaySDK implements ILinkdrop {
     this.baseUrl = baseUrl
   }
 
-  createPaymentLink: TCreatePaymentLink = async ({
+  createClaimLink: TCreateClaimLink = async ({
     token,
     expiration,
     chainId,
@@ -50,9 +47,8 @@ class LinkdropPaySDK implements ILinkdrop {
     if (!token) {
       throw new Error(errors.argument_not_provided('token'))
     }
-    
 
-    const paymentLink = new PaymentLink({
+    const claimLink = new ClaimLink({
       token,
       expiration,
       chainId,
@@ -62,30 +58,49 @@ class LinkdropPaySDK implements ILinkdrop {
       apiKey: this.apiKey
     })
 
-    return paymentLink
+    return claimLink
   }
 
-  getPaymentLink: TGetPaymentLink = async (claimUrl) => {
-    const apiHost = defineApiHost(80001)
+  getClaimLink: TGetClaimLink = async (claimUrl) => {
+    const {
+      transferId,
+      chainId
+    } = decodeLink(claimUrl)
+    const apiHost = defineApiHost(chainId)
+
     if (!apiHost) {
       throw new Error(errors.chain_not_supported())
     }
-    const paymentLinkData = {
-      token: '0x...',
-      expiration: String(+new Date),
-      chainId: 80001,
-      amount: '10000',
-      sender: '0x...',
+    const escrowAddress = String(defineEscrowAddress(chainId))
+    const {
+      sender
+    } = await parseLink(
+      chainId,
+      escrowAddress,
+      claimUrl
+    )
+    const { data:  { escrow_payment } } = await linkApi.getTransferStatus(
+      apiHost,
+      this.apiKey,
+      sender,
+      transferId
+    )
+    const claimLinkData = {
+      token: escrow_payment.token,
+      expiration: escrow_payment.expiration,
+      chainId,
+      amount: escrow_payment.amount,
+      sender,
       apiHost,
       apiKey: this.apiKey,
-      transferId: '1111',
-      claimUrl: 'https://google.com'
+      transferId: transferId,
+      claimUrl
     }
-    const paymentLink = new PaymentLink(paymentLinkData)
-    return paymentLink
+    const claimLink = new ClaimLink(claimLinkData)
+    return claimLink
   }
 
-  retrievePaymentLink: TRetrievePaymentLink = async ({
+  retrieveClaimLink: TRetrieveClaimLink = async ({
     chainId,
     txHash,
     sender,
@@ -95,19 +110,46 @@ class LinkdropPaySDK implements ILinkdrop {
     if (!apiHost) {
       throw new Error(errors.chain_not_supported())
     }
-    const paymentLinkData = {
-      token: '0x...',
-      expiration: String(+new Date),
-      chainId: chainId,
-      amount: '10000',
-      sender: '0x...',
-      apiHost,
-      apiKey: this.apiKey,
-      transferId: '1111',
-      claimUrl: 'https://google.com'
+    if (sender && transferId) {
+      const { data: { escrow_payment } } = await linkApi.getTransferStatus(
+        apiHost,
+        this.apiKey,
+        sender,
+        transferId
+      )
+      const claimLinkData = {
+        token: escrow_payment.token,
+        expiration: escrow_payment.expiration,
+        chainId,
+        amount: escrow_payment.amount,
+        sender: escrow_payment.sender,
+        apiHost,
+        apiKey: this.apiKey,
+        transferId: transferId,
+        claimUrl: escrow_payment.claimUrl
+      }
+      const claimLink = new ClaimLink(claimLinkData)
+      return claimLink
+    } else {
+      const { data: { escrow_payment } } = await linkApi.getTransferStatusByTxHash(
+        apiHost,
+        this.apiKey,
+        txHash as string
+      )
+      const claimLinkData = {
+        token: escrow_payment.token,
+        expiration: escrow_payment.expiration,
+        chainId,
+        amount: escrow_payment.amount,
+        sender: escrow_payment.sender,
+        apiHost,
+        apiKey: this.apiKey,
+        transferId: transferId,
+        claimUrl: escrow_payment.claimUrl
+      }
+      const claimLink = new ClaimLink(claimLinkData)
+      return claimLink
     }
-    const paymentLink = new PaymentLink(paymentLinkData)
-    return paymentLink
   }
 }
 

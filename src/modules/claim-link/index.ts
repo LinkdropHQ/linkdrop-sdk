@@ -1,34 +1,30 @@
 import { ethers } from 'ethers'
-import IPaymentLinkSDK, {
-  TParseURL,
+import IClaimLinkSDK, {
   TGetCurrentFee,
-  TGetDepositAmount,
   TRedeem,
   TUpdateAmount,
   TConstructorArgs,
   TDepositWithAuthorization,
   TGetNextTransferId,
   TGenerateClaimUrl,
-  TDefineDomain
+  TDefineDomain,
+  TGetStatus
 } from './types'
 import { TEscrowPaymentDomain, TLink } from '../../types'
 import {
   generateReceiverSig,
-  decodeSenderAddress,
   getDepositAuthorization,
   getValidAfterAndValidBefore,
   generateLinkKeyandSignature
 } from "../../utils"
 import { linkApi } from '../../api'
-import { mumbaiApiUrl, polygonApiUrl, baseApiUrl } from '../../configs'
-import { decodeLink, encodeLink } from '../../helpers'
+import { defineEscrowAddress, encodeLink, parseLink } from '../../helpers'
 import { errors } from '../../texts'
 import * as configs from '../../configs'
 
-class PaymentLink implements IPaymentLinkSDK {
+class ClaimLink implements IClaimLinkSDK {
   sender: string
   token: string
-  amount: string
   expiration: string
   chainId: number
   apiKey: string
@@ -37,6 +33,7 @@ class PaymentLink implements IPaymentLinkSDK {
   escrowAddress: string
   transferId: string
   claimUrl: string
+  amount: string
 
   constructor ({
     sender,
@@ -57,36 +54,26 @@ class PaymentLink implements IPaymentLinkSDK {
     this.chainId = chainId
     this.apiHost = apiHost
     this.apiKey = apiKey
-    this.baseUrl = baseUrl || configs.baseUrl
 
     // add error handling
-    if (this.chainId === 80001) {
-      this.escrowAddress = mumbaiApiUrl
-    } else if (this.chainId === 137) {
-      this.escrowAddress = polygonApiUrl
-    } else if (this.chainId === 8453) {
-      this.escrowAddress = baseApiUrl
-    }
+    this.escrowAddress = String(defineEscrowAddress(this.chainId))
 
     if (claimUrl) {
       this.claimUrl = claimUrl
     }
-    this.transferId = transferId || this._getNextTransferId()
-  }
-
-  getCurrentFee: TGetCurrentFee = async (token) => {
-    return '0'
-  }
-
-  getDepositAmount: TGetDepositAmount = async (link) => {
-    const decodedLinkParams = await this._parseUrl(link)
-    // const { transferId, sender } = decodedLinkParams
-    // const { token, amount, expiration } = await this.escrow.getDeposit(sender, transferId)
-    return { token: '', amount: '', expiration: '' }
+    
+    if (transferId) {
+      this.transferId = transferId
+    }
+    this.baseUrl = baseUrl || configs.baseUrl
   }
 
   redeem: TRedeem = async (dest) => {
-    const decodedLinkParams = await this._parseUrl(this.claimUrl)
+    const decodedLinkParams = await parseLink(
+      this.chainId,
+      this.escrowAddress,
+      this.claimUrl
+    )
     const { senderSig, linkKey, transferId, sender } = decodedLinkParams
     const receiverSig = await generateReceiverSig(linkKey, dest)
     const redeem = await linkApi.redeemLink(
@@ -101,6 +88,24 @@ class PaymentLink implements IPaymentLinkSDK {
     )
     const { data } = redeem
     return data.txHash
+  }
+
+  getStatus: TGetStatus = async () => {
+    if (!this.transferId) {
+      throw new Error(errors.property_not_provided('transferId'))
+    }
+
+    const { data: { escrow_payment } } = await linkApi.getTransferStatus(
+      this.apiHost,
+      this.apiKey,
+      this.sender,
+      this.transferId
+    )
+
+    return {
+      status: escrow_payment.status,
+      operations: escrow_payment.operations
+    }
   }
 
   _defineDomain: TDefineDomain = () => {
@@ -145,7 +150,7 @@ class PaymentLink implements IPaymentLinkSDK {
       throw new Error(errors.property_not_provided('escrowAddress'))
     }
     if (!this.transferId) {
-      throw new Error(errors.property_not_provided('transferId'))
+      this.transferId = this._getNextTransferId()
     }
     if (!this.expiration) {
       throw new Error(errors.property_not_provided('expiration'))
@@ -156,11 +161,16 @@ class PaymentLink implements IPaymentLinkSDK {
     if (!signTypedData) {
       throw new Error(errors.argument_not_provided('signTypedData'))
     }
+
+    const {
+      total_amount: totalAmount
+    } = await this._getCurrentFee(this.amount)
+
     const auth = await getDepositAuthorization(
       signTypedData,
       this.sender,
       this.escrowAddress,
-      this.amount,
+      totalAmount,
       validAfter,
       validBefore,
       this.transferId,
@@ -176,7 +186,7 @@ class PaymentLink implements IPaymentLinkSDK {
         this.escrowAddress,
         this.transferId,
         this.expiration,
-        this.amount,
+        totalAmount,
         auth
       )
       const { data } = result
@@ -184,35 +194,51 @@ class PaymentLink implements IPaymentLinkSDK {
     }
   }
 
-  _parseUrl: TParseURL = async (link) => {
-    const decodedLink = decodeLink(link)
-    const linkKeyId = (new ethers.Wallet(decodedLink.linkKey)).address
-    const escrowPaymentDomain: TEscrowPaymentDomain = {
-      name: "LinkdropEscrow",
-      version: "1",
-      chainId: this.chainId,
-      verifyingContract: this.escrowAddress,
-    }
-
-    const sender = decodeSenderAddress(
-      linkKeyId,
-      decodedLink.transferId,
-      decodedLink.senderSig,
-      escrowPaymentDomain
+  _getCurrentFee: TGetCurrentFee = async (newAmount) => {
+    const { data } = await linkApi.getFee(
+      this.apiHost,
+      this.apiKey,
+      newAmount,
+      this.token,
+      this.sender
     )
-    return {
-      senderSig: decodedLink.senderSig,
-      linkKey: decodedLink.linkKey,
-      transferId: decodedLink.transferId,
-      sender
-    }
+
+    return data
   }
 
-  updateAmount: TUpdateAmount = (amount) => {
-    return {
-      amount,
-      fee: '0',
-      totalAmount: '0'
+  updateAmount: TUpdateAmount = async (amount) => {
+    if (!this.transferId) {
+      const {
+        fee,
+        total_amount: totalAmount
+      } = await this._getCurrentFee(amount)
+
+      this.amount = amount
+
+      return {
+        amount,
+        fee,
+        totalAmount
+      }
+    }
+    const statusData = await this.getStatus()
+    if (statusData) {
+      if (statusData.status === 'created') {
+        const {
+          fee,
+          total_amount: totalAmount
+        } = await this._getCurrentFee(amount)
+
+        this.amount = amount
+
+        return {
+          amount,
+          fee,
+          totalAmount
+        }
+      } else {
+        throw new Error(errors.cannot_update_amount())
+      }
     }
   }
 
@@ -231,6 +257,10 @@ class PaymentLink implements IPaymentLinkSDK {
     if (!signTypedData) {
       throw new Error(errors.argument_not_provided('signTypedData'))
     }
+
+    if (!this.transferId) {
+      throw new Error(errors.property_not_provided('transferId'))
+    }
     
     const escrowPaymentDomain: TEscrowPaymentDomain = {
       name: "LinkdropEscrow",
@@ -241,6 +271,7 @@ class PaymentLink implements IPaymentLinkSDK {
 
     const result = await generateLinkKeyandSignature(
       signTypedData,
+      getRandomBytes,
       this.transferId,
       escrowPaymentDomain
     )
@@ -252,12 +283,14 @@ class PaymentLink implements IPaymentLinkSDK {
         transferId: this.transferId,
         chainId: this.chainId
       }
+
       this.claimUrl = encodeLink(this.baseUrl, linkParams)
+      
       return {
-        claimUrl: encodeLink(this.baseUrl, linkParams),
+        claimUrl: this.claimUrl,
         transferId: this.transferId
       }
     }
   }
 }
-export default PaymentLink
+export default ClaimLink

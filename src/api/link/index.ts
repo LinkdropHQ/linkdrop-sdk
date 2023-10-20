@@ -52,9 +52,34 @@ const requests: TRequests = {
     apiHost,
     apiKey,
     sender,
-    transfer_id
+    transferId
   ) => {
-    return axios.get(`${apiHost}/get-payment-status/${sender}/${transfer_id}`, {
+    
+    return axios.get(`${apiHost}/payment-status/sender/${sender}/transfer/${transferId}`, {
+      headers: {
+        'authorization': `Bearer ${apiKey}`
+      }
+    })
+  },
+  getTransferStatusByTxHash: (
+    apiHost,
+    apiKey,
+    txHash
+  ) => {
+    return axios.get(`${apiHost}/payment-status/transaction/${txHash}`, {
+      headers: {
+        'authorization': `Bearer ${apiKey}`
+      }
+    })
+  },
+  getFee: (
+    apiHost,
+    apiKey,
+    amount,
+    tokenAddress,
+    sender
+  ) => {
+    return axios.get(`${apiHost}/fee?amount=${amount}&token_address=${tokenAddress}&sender=${sender}`, {
       headers: {
         'authorization': `Bearer ${apiKey}`
       }
