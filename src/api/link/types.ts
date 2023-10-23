@@ -1,5 +1,4 @@
-import { AxiosResponse } from 'axios'
-import { TTransferStatus, TClaimLinkItem } from '../../types'
+import { TClaimLinkItem } from '../../types'
 
 type TDepositResponse = {
   success: boolean,
@@ -15,11 +14,7 @@ type TDeposit = (
   expiration: string,
   amount: string,
   authorization: string
-) => Promise<
-  AxiosResponse<
-    TDepositResponse
-  >
->
+) => Promise<TDepositResponse>
 
 type TRedeemLinkResponse = {
   success: boolean,
@@ -35,11 +30,7 @@ type TRedeemLink = (
   transfer_id: string,
   receiver_sig: string,
   sender_sig: string
-) => Promise<
-  AxiosResponse<
-    TRedeemLinkResponse
-  >
->
+) => Promise<TRedeemLinkResponse>
 
 type TGetTransferDataResponse = {
   escrow_payment: TClaimLinkItem,
@@ -51,7 +42,7 @@ type TGetTransferData = (
   apiKey: string,
   sender: string,
   transfer_id: string,
-) => Promise<AxiosResponse<TGetTransferDataResponse>>
+) => Promise<TGetTransferDataResponse>
 
 type TGetTransferDataByTxHashResponse = {
   escrow_payment: TClaimLinkItem,
@@ -62,7 +53,7 @@ type TGetTransferDataByTxHash = (
   apiHost: string,
   apiKey: string,
   tx_hash: string,
-) => Promise<AxiosResponse<TGetTransferDataByTxHashResponse>>
+) => Promise<TGetTransferDataByTxHashResponse>
 
 type TGetFeeResponse = {
   fee: string
@@ -77,8 +68,7 @@ type TGetFee = (
   amount: string,
   tokenAddress: string,
   sender: string
-) => Promise<AxiosResponse<TGetFeeResponse>>
-
+) => Promise<TGetFeeResponse>
 
 export type TRequests = {
   redeemLink: TRedeemLink

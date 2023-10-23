@@ -85,8 +85,8 @@ class ClaimLink implements IClaimLinkSDK {
       receiverSig,
       senderSig
     )
-    const { data } = redeem
-    return data.txHash
+    const { txHash } = redeem
+    return txHash
   }
 
   getStatus: TGetStatus = async () => {
@@ -94,7 +94,7 @@ class ClaimLink implements IClaimLinkSDK {
       throw new Error(errors.property_not_provided('transferId'))
     }
 
-    const { data: { escrow_payment } } = await linkApi.getTransferStatus(
+    const { escrow_payment } = await linkApi.getTransferStatus(
       this.apiHost,
       this.apiKey,
       this.sender,
@@ -177,6 +177,7 @@ class ClaimLink implements IClaimLinkSDK {
       domain,
       this.chainId
     )
+
     if (auth) {
       const result = await linkApi.deposit(
         this.apiHost,
@@ -188,13 +189,13 @@ class ClaimLink implements IClaimLinkSDK {
         totalAmount,
         auth
       )
-      const { data } = result
-      return data.txHash
+      const { txHash } = result
+      return txHash
     }
   }
 
   _getCurrentFee: TGetCurrentFee = async (newAmount) => {
-    const { data } = await linkApi.getFee(
+    const result = await linkApi.getFee(
       this.apiHost,
       this.apiKey,
       newAmount,
@@ -202,7 +203,7 @@ class ClaimLink implements IClaimLinkSDK {
       this.sender
     )
 
-    return data
+    return result
   }
 
   updateAmount: TUpdateAmount = async (amount) => {

@@ -79,7 +79,7 @@ class LinkdropPaySDK implements ILinkdrop {
       escrowAddress,
       claimUrl
     )
-    const { data:  { escrow_payment } } = await linkApi.getTransferStatus(
+    const { escrow_payment } = await linkApi.getTransferStatus(
       apiHost,
       this.apiKey,
       sender,
@@ -111,7 +111,7 @@ class LinkdropPaySDK implements ILinkdrop {
       throw new Error(errors.chain_not_supported())
     }
     if (sender && transferId) {
-      const { data: { escrow_payment } } = await linkApi.getTransferStatus(
+      const { escrow_payment } = await linkApi.getTransferStatus(
         apiHost,
         this.apiKey,
         sender,
@@ -130,7 +130,7 @@ class LinkdropPaySDK implements ILinkdrop {
       const claimLink = new ClaimLink(claimLinkData)
       return claimLink
     } else {
-      const { data: { escrow_payment } } = await linkApi.getTransferStatusByTxHash(
+      const { escrow_payment } = await linkApi.getTransferStatusByTxHash(
         apiHost,
         this.apiKey,
         txHash as string
