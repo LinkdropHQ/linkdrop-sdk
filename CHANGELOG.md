@@ -2,9 +2,9 @@
 
 ## 1.0.0-rc.0
 - signer removed
-- new methods
+- new methods for modules (ClaimLink, LinkdropPaySDK)
 - major updates
-- fetch removed
+- axios removed
 - added getRandomBytes
 - added signTypedData
 
