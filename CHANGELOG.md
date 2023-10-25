@@ -1,6 +1,12 @@
 # Linkdrop Payment Link SDK
 
 ## 1.0.0-rc.0
+- signer removed
+- new methods
+- major updates
+- fetch removed
+- added getRandomBytes
+- added signTypedData
 
 
 ## 0.0.19

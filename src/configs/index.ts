@@ -1,7 +1,6 @@
-export const polygonApiUrl = 'https://escrow-api.linkdrop.io/polygon'
-export const mumbaiApiUrl = 'https://escrow-api.linkdrop.io/mumbai'
-export const baseApiUrl = 'https://escrow-api.linkdrop.io/base'
-export const devApiUrl = 'https://escrow-api.linkdrop.io/dev'
+export const polygonApiUrl = 'https://escrow-api.linkdrop.io/v1/polygon'
+export const mumbaiApiUrl = 'https://escrow-api.linkdrop.io/v1/mumbai'
+export const baseApiUrl = 'https://escrow-api.linkdrop.io/v1/base'
 
 export const polygonJSONRPCUrl = 'https://polygon-mainnet.infura.io/v3/f5f8608d75874e5fbcdd4ee9657b8ab5'
 export const mumbaiJSONRPCUrl = 'https://polygon-mumbai.infura.io/v3/f5f8608d75874e5fbcdd4ee9657b8ab5'
