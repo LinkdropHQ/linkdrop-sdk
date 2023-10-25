@@ -1,6 +1,24 @@
-import { TClaimLinkItem } from '../../types'
+import { TClaimLinkItem, TTokenType } from '../../types'
 
-type TDepositResponse = {
+type TDepositWithAuthResponse = {
+  success: boolean,
+  txHash: string
+}
+
+type TDepositWithAuth = (
+  apiHost: string,
+  apiKey: string,
+  token: string,
+  token_type: TTokenType,
+  sender: string,
+  escrow: string,
+  transfer_id: string,
+  expiration: string,
+  amount: string,
+  authorization: string
+) => Promise<TDepositWithAuthResponse>
+
+type TDepositWithResponse = {
   success: boolean,
   txHash: string
 }
@@ -8,13 +26,15 @@ type TDepositResponse = {
 type TDeposit = (
   apiHost: string,
   apiKey: string,
+  token: string,
+  token_type: TTokenType,
   sender: string,
   escrow: string,
   transfer_id: string,
   expiration: string,
   amount: string,
-  authorization: string
-) => Promise<TDepositResponse>
+  tx_hash: string
+) => Promise<TDepositWithResponse>
 
 type TRedeemLinkResponse = {
   success: boolean,
@@ -72,8 +92,9 @@ type TGetFee = (
 
 export type TRequests = {
   redeemLink: TRedeemLink
-  deposit: TDeposit
+  depositWithAuthorization: TDepositWithAuth
   getTransferStatus: TGetTransferData
   getTransferStatusByTxHash: TGetTransferDataByTxHash
-  getFee: TGetFee
+  getFee: TGetFee,
+  deposit: TDeposit
 }

@@ -5,7 +5,12 @@ import ILinkdrop, {
   TRetrieveClaimLink
 } from './types'
 import { linkApi } from '../../api'
-import { decodeLink, defineApiHost, parseLink, defineEscrowAddress } from '../../helpers'
+import {
+  decodeLink,
+  defineApiHost,
+  parseLink,
+  defineEscrowAddress
+} from '../../helpers'
 import ClaimLink from '../claim-link'
 import { errors } from '../../texts'
 
@@ -26,7 +31,8 @@ class LinkdropPaySDK implements ILinkdrop {
     expiration,
     chainId,
     amount,
-    from
+    from,
+    tokenType
   }) => {
     if (!chainId) {
       throw new Error(errors.argument_not_provided('chainId'))
@@ -55,7 +61,8 @@ class LinkdropPaySDK implements ILinkdrop {
       amount,
       sender: from,
       apiHost,
-      apiKey: this.apiKey
+      apiKey: this.apiKey,
+      tokenType
     })
 
     return claimLink
@@ -64,40 +71,75 @@ class LinkdropPaySDK implements ILinkdrop {
   getClaimLink: TGetClaimLink = async (claimUrl) => {
     const {
       transferId,
-      chainId
+      chainId,
+      tokenType,
+      sender
     } = decodeLink(claimUrl)
     const apiHost = defineApiHost(chainId)
 
     if (!apiHost) {
       throw new Error(errors.chain_not_supported())
     }
-    const escrowAddress = String(defineEscrowAddress(chainId))
-    const {
-      sender
-    } = await parseLink(
-      chainId,
-      escrowAddress,
-      claimUrl
-    )
-    const { escrow_payment } = await linkApi.getTransferStatus(
-      apiHost,
-      this.apiKey,
-      sender,
-      transferId
-    )
-    const claimLinkData = {
-      token: escrow_payment.token,
-      expiration: escrow_payment.expiration,
-      chainId,
-      amount: escrow_payment.amount,
-      sender,
-      apiHost,
-      apiKey: this.apiKey,
-      transferId: transferId,
-      claimUrl
+
+    if (!tokenType) {
+      throw new Error(errors.token_type_cannot_be_defined())
     }
-    const claimLink = new ClaimLink(claimLinkData)
-    return claimLink
+    const escrowAddress = String(defineEscrowAddress(chainId, tokenType))
+
+    if (!sender) {
+      const linkParsed = await parseLink(
+        chainId,
+        escrowAddress,
+        claimUrl
+      )
+      if (linkParsed) {
+        const { escrow_payment } = await linkApi.getTransferStatus(
+          apiHost,
+          this.apiKey,
+          linkParsed.sender,
+          transferId
+        )
+        const claimLinkData = {
+          token: escrow_payment.token,
+          expiration: escrow_payment.expiration,
+          chainId,
+          amount: escrow_payment.amount,
+          sender: linkParsed.sender,
+          apiHost,
+          apiKey: this.apiKey,
+          transferId: transferId,
+          claimUrl,
+          tokenType: escrow_payment.tokenType
+        }
+        const claimLink = new ClaimLink(claimLinkData)
+        return claimLink
+      } else {
+        throw new Error(errors.link_parse_failed())
+      }
+      
+    } else {
+      const { escrow_payment } = await linkApi.getTransferStatus(
+        apiHost,
+        this.apiKey,
+        sender,
+        transferId
+      )
+      const claimLinkData = {
+        token: escrow_payment.token,
+        expiration: escrow_payment.expiration,
+        chainId,
+        amount: escrow_payment.amount,
+        sender,
+        apiHost,
+        apiKey: this.apiKey,
+        transferId: transferId,
+        claimUrl,
+        tokenType: escrow_payment.tokenType
+      }
+      const claimLink = new ClaimLink(claimLinkData)
+      return claimLink
+    }
+    
   }
 
   retrieveClaimLink: TRetrieveClaimLink = async ({
@@ -125,6 +167,7 @@ class LinkdropPaySDK implements ILinkdrop {
         sender: escrow_payment.sender,
         apiHost,
         apiKey: this.apiKey,
+        tokenType: escrow_payment.tokenType,
         transferId: transferId
       }
       const claimLink = new ClaimLink(claimLinkData)
@@ -143,7 +186,8 @@ class LinkdropPaySDK implements ILinkdrop {
         sender: escrow_payment.sender,
         apiHost,
         apiKey: this.apiKey,
-        transferId: transferId
+        transferId: transferId,
+        tokenType: escrow_payment.tokenType
       }
       const claimLink = new ClaimLink(claimLinkData)
       return claimLink

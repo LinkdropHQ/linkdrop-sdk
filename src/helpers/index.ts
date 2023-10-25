@@ -6,12 +6,14 @@ import decodeLink from './decode-link'
 import defineApiHost from './define-api-host'
 import parseLink from './parse-link'
 import defineEscrowAddress from './define-escrow-address'
+import defineTokenType from './define-token-type'
 
 export {
   defineJSONRpcUrl,
   defineNetworkName,
   defineApiHost,
   defineRequestKeyHeader,
+  defineTokenType,
   encodeLink,
   decodeLink,
   parseLink,

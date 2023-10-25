@@ -1,3 +1,5 @@
+import { TTokenType } from "../token-type"
+
 export type TClaimLinkItemStatus = 'created' | 'depositing' | 'deposited' | 'redeemed'| 'redeeming' | 'error' | 'refunded' | 'refunding' | 'cancelled'
 
 export type TClaimLinkItemOperationStatus = 'pending' | 'completed' | 'error'
@@ -21,6 +23,7 @@ export type TClaimLinkItem = {
   sender: string
   // ---- should be added
   expiration: string
+  tokenType: TTokenType
   // ---- should be added
   escrow: string
   version: string

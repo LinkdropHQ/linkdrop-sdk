@@ -1,6 +1,10 @@
+import { TTokenType } from "../token-type"
+
 export type TLink = {
-    senderSig: string,
-    linkKey: string,
-    transferId: string,
+    senderSig?: string
+    sender?: string
+    linkKey: string
+    transferId: string
+    tokenType: TTokenType | null
     chainId: number
 }

@@ -1,11 +1,13 @@
-import { TSignTypedData } from "../../../../types"
+import { TSignTypedData, TGetRandomBytes, TDepositResult } from "../../../../types"
 
 type TDepositWithAuthorizationArgs = {
   signTypedData: TSignTypedData
+  getRandomBytes: TGetRandomBytes
 }
 
 type TDepositWithAuthorization = ({
-  signTypedData
-}: TDepositWithAuthorizationArgs) => Promise<string | void> // txhash
+  signTypedData,
+  getRandomBytes
+}: TDepositWithAuthorizationArgs) => Promise<TDepositResult | void> // txhash
 
 export default TDepositWithAuthorization

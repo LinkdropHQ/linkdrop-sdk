@@ -7,6 +7,7 @@ const generateLinkKeyandSignature = async (
   transferId: string,
   domain: TEscrowPaymentDomain
 ) => {
+
   const linkKey = new ethers.Wallet(await getRandomBytes(32))
 
   const types = {
@@ -15,15 +16,20 @@ const generateLinkKeyandSignature = async (
       { name: 'transferId', type: 'uint256' }
     ]
   }
+
   const message = {
     linkKeyId: linkKey.address,
     transferId: transferId
   }
+
   if (signTypedData) {
     const senderSig = await signTypedData(domain, types, message)
-    return { linkKey: linkKey.privateKey, linkKeyId: linkKey.address, senderSig }
+    return {
+      linkKey: linkKey.privateKey,
+      linkKeyId: linkKey.address,
+      senderSig
+    }
   }
-
 }
 
 export default generateLinkKeyandSignature

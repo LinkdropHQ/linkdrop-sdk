@@ -1,5 +1,5 @@
-import escrowABI from "./escrow"
+import Escrow from "./escrow.json"
 
 export {
-  escrowABI
+  Escrow
 }

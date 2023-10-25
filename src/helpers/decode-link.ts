@@ -1,21 +1,26 @@
-import { TLink } from "../types"
+import { ETokenSymbol, TLink } from '../types'
+import { defineTokenType } from './'
 import { BigNumber, utils } from 'ethers'
 type TDecodeLink = (link: string) => TLink
 
 const decodeLink: TDecodeLink = (link) => {
   // Use URLSearchParams to get query parameters
   const currentURL = new URL(link);
-  const url = currentURL.hash.split("?")[1]
-  const searchParams = new URLSearchParams(url)
+  const urlSplit = currentURL.hash.split("?")
+  const searchParams = new URLSearchParams(urlSplit[1])
+  const tokenSymbol = (urlSplit[0].split('#/')[1]).replaceAll('/', '') as ETokenSymbol
+  const tokenType = defineTokenType(tokenSymbol)
   const params = {
     linkKey: searchParams.get("k") || "",
-    s: searchParams.get("s") || "",
+    signature: searchParams.get("sg") || "",
     transferId: searchParams.get("i") || "",
     chainId: searchParams.get("c"),
-  };
+    version: searchParams.get("v") || "1",
+    sender: searchParams.get("s") || ''
+  }
 
   const linkKey = utils.hexlify(utils.base58.decode(params.linkKey))
-  const senderSig = utils.hexlify(utils.base58.decode(params.s))
+  const senderSig = utils.hexlify(utils.base58.decode(params.signature))
   const transferId = BigNumber.from(utils.base58.decode(params.transferId)).toString()
   const chainId = Number(params.chainId)
 
@@ -23,7 +28,10 @@ const decodeLink: TDecodeLink = (link) => {
     senderSig,
     linkKey,
     transferId,
-    chainId
+    chainId,
+    sender: params.sender,
+    version: params.version,
+    tokenType
   }
 }
 

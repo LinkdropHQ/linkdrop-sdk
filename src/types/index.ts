@@ -5,7 +5,10 @@ import type { TLink } from './link'
 import type { TTransferStatus } from './transfer-status'
 import type { TSignTypedData } from './sign-typed-data'
 import type { TGetRandomBytes } from './get-random-bytes'
+import type { TSendTransaction } from './send-transaction'
+import type { TDepositResult } from './deposit-result'
 import { EChains } from './chains'
+import { ETokenSymbol } from './token-symbol'
 import type {
   TClaimLinkItem,
   TClaimLinkItemOperation,
@@ -15,11 +18,14 @@ import type {
 
 export {
   TTokenType,
+  TDepositResult,
   EChains,
   TClaimLinkItem,
+  ETokenSymbol,
   TClaimLinkItemOperation,
   TClaimLinkItemOperationStatus,
   TClaimLinkItemStatus,
+  TSendTransaction,
   TDomain,
   TEscrowPaymentDomain,
   TLink,

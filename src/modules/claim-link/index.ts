@@ -7,19 +7,23 @@ import IClaimLinkSDK, {
   TGetNextTransferId,
   TGenerateClaimUrl,
   TDefineDomain,
-  TGetStatus
+  TGetStatus,
+  TDeposit
 } from './types'
-import { TEscrowPaymentDomain, TLink } from '../../types'
+import { TEscrowPaymentDomain, TLink, TTokenType } from '../../types'
+import { Escrow } from '../../abi'
 import {
   generateReceiverSig,
   getDepositAuthorization,
   getValidAfterAndValidBefore,
-  generateLinkKeyandSignature
+  generateLinkKeyandSignature,
+  generateKeypair
 } from "../../utils"
 import { linkApi } from '../../api'
 import { defineEscrowAddress, encodeLink, parseLink } from '../../helpers'
 import { errors } from '../../texts'
 import * as configs from '../../configs'
+import { utils } from 'ethers'
 
 class ClaimLink implements IClaimLinkSDK {
   sender: string
@@ -33,6 +37,7 @@ class ClaimLink implements IClaimLinkSDK {
   transferId: string
   claimUrl: string
   amount: string
+  tokenType: TTokenType
 
   constructor ({
     sender,
@@ -44,7 +49,8 @@ class ClaimLink implements IClaimLinkSDK {
     baseUrl,
     apiKey,
     transferId,
-    claimUrl
+    claimUrl,
+    tokenType
   }: TConstructorArgs) {
     this.sender = sender
     this.token = token
@@ -53,9 +59,10 @@ class ClaimLink implements IClaimLinkSDK {
     this.chainId = chainId
     this.apiHost = apiHost
     this.apiKey = apiKey
+    this.tokenType = tokenType
 
     // add error handling
-    this.escrowAddress = String(defineEscrowAddress(this.chainId))
+    this.escrowAddress = String(defineEscrowAddress(this.chainId, tokenType))
 
     if (claimUrl) {
       this.claimUrl = claimUrl
@@ -73,6 +80,9 @@ class ClaimLink implements IClaimLinkSDK {
       this.escrowAddress,
       this.claimUrl
     )
+    if (!decodedLinkParams) {
+      throw new Error(errors.link_decode_failed())
+    }
     const { senderSig, linkKey, transferId, sender } = decodedLinkParams
     const receiverSig = await generateReceiverSig(linkKey, dest)
     const redeem = await linkApi.redeemLink(
@@ -136,9 +146,96 @@ class ClaimLink implements IClaimLinkSDK {
     return null
   }
 
-  depositWithAuthorization: TDepositWithAuthorization = async ({
-    signTypedData
+  deposit: TDeposit = async ({
+    sendTransaction,
+    getRandomBytes
   }) => {
+
+    const domain = this._defineDomain()
+    if (!domain) {
+      throw new Error(errors.chain_not_supported())
+    }
+
+    const [validAfter, validBefore] = getValidAfterAndValidBefore()
+
+    if (!this.escrowAddress) {
+      throw new Error(errors.property_not_provided('escrowAddress'))
+    }
+
+    if (!this.expiration) {
+      throw new Error(errors.property_not_provided('expiration'))
+    }
+    if (!this.amount) {
+      throw new Error(errors.property_not_provided('amount'))
+    }
+    if (!sendTransaction) {
+      throw new Error(errors.argument_not_provided('sendTransaction'))
+    }
+
+    const {
+      total_amount: totalAmount
+    } = await this._getCurrentFee(this.amount)
+
+    const keypair = await generateKeypair(getRandomBytes)
+    this.transferId = keypair.address
+
+    const iface = new utils.Interface(Escrow.abi)
+
+    const data = iface.encodeFunctionData("deposit", [this.transferId, this.expiration])
+
+    const { hash: txHash } = await sendTransaction({
+      to: this.escrowAddress,
+      value: totalAmount,
+      // needs update
+      gasLimit: 1000000, // Ensure you have enough gas
+      // needs update
+      data
+    })
+
+    const result = await linkApi.deposit(
+      this.apiHost,
+      this.apiKey,
+      this.token,
+      this.tokenType,
+      this.sender,
+      this.escrowAddress,
+      this.transferId,
+      this.expiration,
+      totalAmount,
+      txHash
+    )
+    if (result) {
+      const linkParams: TLink = {
+        linkKey: keypair.privateKey,
+        transferId: this.transferId,
+        chainId: this.chainId
+      }
+
+      const claimUrl = encodeLink(this.baseUrl, linkParams)
+
+      if (!claimUrl) {
+        throw new Error(errors.not_possible_create_claim_url())
+      }
+
+      this.claimUrl = claimUrl
+  
+      return {
+        txHash,
+        transferId: this.transferId,
+        claimUrl
+      }
+    }
+  }
+
+  depositWithAuthorization: TDepositWithAuthorization = async ({
+    signTypedData,
+    getRandomBytes
+  }) => {
+
+    if (this.tokenType === 'NATIVE') {
+      throw new Error(errors.deploy_with_auth_wrong_type())
+    }
+
     const domain = this._defineDomain()
     if (!domain) {
       throw new Error(errors.chain_not_supported())
@@ -148,9 +245,7 @@ class ClaimLink implements IClaimLinkSDK {
     if (!this.escrowAddress) {
       throw new Error(errors.property_not_provided('escrowAddress'))
     }
-    if (!this.transferId) {
-      this.transferId = this._getNextTransferId()
-    }
+
     if (!this.expiration) {
       throw new Error(errors.property_not_provided('expiration'))
     }
@@ -165,6 +260,9 @@ class ClaimLink implements IClaimLinkSDK {
       total_amount: totalAmount
     } = await this._getCurrentFee(this.amount)
 
+    const keypair = await generateKeypair(getRandomBytes)
+    this.transferId = keypair.address
+  
     const auth = await getDepositAuthorization(
       signTypedData,
       this.sender,
@@ -179,9 +277,11 @@ class ClaimLink implements IClaimLinkSDK {
     )
 
     if (auth) {
-      const result = await linkApi.deposit(
+      const result = await linkApi.depositWithAuthorization(
         this.apiHost,
         this.apiKey,
+        this.token,
+        this.tokenType,
         this.sender,
         this.escrowAddress,
         this.transferId,
@@ -190,7 +290,27 @@ class ClaimLink implements IClaimLinkSDK {
         auth
       )
       const { txHash } = result
-      return txHash
+
+      const linkParams: TLink = {
+        linkKey: keypair.privateKey,
+        transferId: this.transferId,
+        chainId: this.chainId,
+        tokenType: 'ERC20'
+      }
+
+      const claimUrl = encodeLink(this.baseUrl, linkParams)
+
+      if (!claimUrl) {
+        throw new Error(errors.not_possible_create_claim_url())
+      }
+
+      this.claimUrl = claimUrl
+
+      return {
+        txHash,
+        claimUrl: this.claimUrl,
+        transferId: this.transferId
+      }
     }
   }
 
@@ -246,6 +366,17 @@ class ClaimLink implements IClaimLinkSDK {
     return String(+new Date())
   }
 
+  _getEscrowPaymentDomain = () => {
+    const escrowPaymentDomain: TEscrowPaymentDomain = {
+      name: "LinkdropEscrow",
+      version: "2",
+      chainId: this.chainId,
+      verifyingContract: this.escrowAddress,
+    }
+
+    return escrowPaymentDomain
+  }
+
   generateClaimUrl: TGenerateClaimUrl = async ({
     getRandomBytes,
     signTypedData
@@ -262,12 +393,7 @@ class ClaimLink implements IClaimLinkSDK {
       throw new Error(errors.property_not_provided('transferId'))
     }
     
-    const escrowPaymentDomain: TEscrowPaymentDomain = {
-      name: "LinkdropEscrow",
-      version: "1",
-      chainId: this.chainId,
-      verifyingContract: this.escrowAddress,
-    }
+    const escrowPaymentDomain = this._getEscrowPaymentDomain()
 
     const result = await generateLinkKeyandSignature(
       signTypedData,
@@ -275,8 +401,10 @@ class ClaimLink implements IClaimLinkSDK {
       this.transferId,
       escrowPaymentDomain
     )
+
     if (result) {
       const { linkKey, linkKeyId, senderSig } = result
+
       const linkParams: TLink = {
         linkKey,
         senderSig,
@@ -284,7 +412,13 @@ class ClaimLink implements IClaimLinkSDK {
         chainId: this.chainId
       }
 
-      this.claimUrl = encodeLink(this.baseUrl, linkParams)
+      const claimUrl = encodeLink(this.baseUrl, linkParams)
+
+      if (!claimUrl) {
+        throw new Error(errors.not_possible_create_claim_url())
+      }
+
+      this.claimUrl = claimUrl
       
       return {
         claimUrl: this.claimUrl,

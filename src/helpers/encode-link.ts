@@ -1,13 +1,21 @@
 import { ethers } from 'ethers'
 import { TLink } from "../types"
 
-type TEncodeLink = (claimHost: string, link: TLink) => string
+type TEncodeLink = (
+  claimHost: string,
+  link: TLink
+) => string | void
 const encodeLink: TEncodeLink = (claimHost, link) => {
   const linkKey = ethers.utils.base58.encode(link.linkKey)
-  const sig = ethers.utils.base58.encode(link.senderSig)
   const transferId = ethers.utils.base58.encode(ethers.BigNumber.from(link.transferId).toHexString()) // string -> hex -> base58 for shorter string
+  // version definition should be clarified 
+  if (link.senderSig) {
+    const sig = ethers.utils.base58.encode(link.senderSig)
+    return `${claimHost}/#/usdc?k=${linkKey}&sg=${sig}&i=${transferId}&c=${link.chainId}&v=2`
+  } else if (link.sender) {
+    return `${claimHost}/#/usdc?k=${linkKey}&s=${link.sender}&i=${transferId}&c=${link.chainId}&v=2`
+  }
 
-  return `${claimHost}/#/usdc?k=${linkKey}&s=${sig}&i=${transferId}&c=${link.chainId}&v=1`
 }
 
 export default encodeLink

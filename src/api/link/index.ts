@@ -41,7 +41,7 @@ const requests: TRequests = {
       })
     })
   },
-  deposit: (
+  depositWithAuthorization: (
     apiHost,
     apiKey,
     sender,
@@ -50,6 +50,32 @@ const requests: TRequests = {
     expiration,
     amount,
     authorization
+  ) => {
+    return request(`${apiHost}/deposit-with-authorization`, {
+      headers: {
+        'authorization': `Bearer ${apiKey}`,
+        'content-type': 'application/json'
+      },
+      method: 'POST',
+      body: JSON.stringify({
+        sender,
+        escrow,
+        transfer_id,
+        expiration,
+        amount,
+        authorization
+      })
+    })
+  },
+  deposit: (
+    apiHost,
+    apiKey,
+    sender,
+    escrow,
+    transfer_id,
+    expiration,
+    amount,
+    tx_hash
   ) => {
     return request(`${apiHost}/deposit`, {
       headers: {
@@ -63,7 +89,7 @@ const requests: TRequests = {
         transfer_id,
         expiration,
         amount,
-        authorization
+        tx_hash
       })
     })
   },

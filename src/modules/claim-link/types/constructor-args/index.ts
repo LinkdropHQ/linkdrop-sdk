@@ -1,3 +1,5 @@
+import { TTokenType } from "../../../../types"
+
 type TConstructorArgs = {
   sender: string
   token: string
@@ -9,6 +11,7 @@ type TConstructorArgs = {
   baseUrl?: string
   transferId?: string
   claimUrl?: string
+  tokenType: TTokenType
 }
 
 
