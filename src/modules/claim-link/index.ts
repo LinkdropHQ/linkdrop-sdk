@@ -71,6 +71,7 @@ class ClaimLink implements IClaimLinkSDK {
     if (transferId) {
       this.transferId = transferId
     }
+
     this.baseUrl = baseUrl || configs.baseUrl
   }
 
@@ -85,18 +86,33 @@ class ClaimLink implements IClaimLinkSDK {
     }
     const { senderSig, linkKey, transferId, sender } = decodedLinkParams
     const receiverSig = await generateReceiverSig(linkKey, dest)
-    const redeem = await linkApi.redeemLink(
-      this.apiHost,
-      this.apiKey,
-      dest,
-      sender,
-      this.escrowAddress,
-      transferId,
-      receiverSig,
-      senderSig
-    )
-    const { txHash } = redeem
-    return txHash
+    if (senderSig) {
+      const redeem = await linkApi.redeemRecoveredLink(
+        this.apiHost,
+        this.apiKey,
+        dest,
+        sender,
+        this.escrowAddress,
+        transferId,
+        receiverSig,
+        senderSig
+      )
+      const { txHash } = redeem
+      return txHash
+    } else {
+      const redeem = await linkApi.redeemLink(
+        this.apiHost,
+        this.apiKey,
+        dest,
+        sender,
+        this.escrowAddress,
+        transferId,
+        receiverSig
+      )
+      const { txHash } = redeem
+      return txHash
+    }
+    
   }
 
   getStatus: TGetStatus = async () => {
@@ -173,7 +189,8 @@ class ClaimLink implements IClaimLinkSDK {
     }
 
     const {
-      total_amount: totalAmount
+      total_amount: totalAmount,
+      fee
     } = await this._getCurrentFee(this.amount)
 
     const keypair = await generateKeypair(getRandomBytes)
@@ -187,7 +204,7 @@ class ClaimLink implements IClaimLinkSDK {
       to: this.escrowAddress,
       value: totalAmount,
       // needs update
-      gasLimit: 1000000, // Ensure you have enough gas
+      gasLimit: 150000, // Ensure you have enough gas
       // needs update
       data
     })
@@ -208,7 +225,8 @@ class ClaimLink implements IClaimLinkSDK {
       const linkParams: TLink = {
         linkKey: keypair.privateKey,
         transferId: this.transferId,
-        chainId: this.chainId
+        chainId: this.chainId,
+        tokenType: this.tokenType
       }
 
       const claimUrl = encodeLink(this.baseUrl, linkParams)
@@ -295,7 +313,7 @@ class ClaimLink implements IClaimLinkSDK {
         linkKey: keypair.privateKey,
         transferId: this.transferId,
         chainId: this.chainId,
-        tokenType: 'ERC20'
+        tokenType: this.tokenType
       }
 
       const claimUrl = encodeLink(this.baseUrl, linkParams)
@@ -409,7 +427,8 @@ class ClaimLink implements IClaimLinkSDK {
         linkKey,
         senderSig,
         transferId: this.transferId,
-        chainId: this.chainId
+        chainId: this.chainId,
+        tokenType: this.tokenType
       }
 
       const claimUrl = encodeLink(this.baseUrl, linkParams)

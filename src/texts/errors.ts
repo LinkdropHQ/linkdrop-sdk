@@ -9,5 +9,5 @@ export default {
   'not_possible_create_claim_url': () => `Link should have senderSig or sender to be created`,
   'link_decode_failed': () => `Link should have 'sg' (signature) or 's' (sender) param to be decoded`,
   'link_parse_failed': () => `Link should have 'sg' (signature) or 's' (sender) param to be parsed`,
-  'token_type_cannot_be_defined': () => `Token type cannot be defined`,
+  'variable_cannot_be_defined': (variable: string) => `${variable} cannot be defined`
 }

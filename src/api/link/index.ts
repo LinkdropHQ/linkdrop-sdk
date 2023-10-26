@@ -15,7 +15,7 @@ function request<TResponse>(
 }
 
 const requests: TRequests = {
-  redeemLink: (
+  redeemRecoveredLink: (
     apiHost,
     apiKey,
     receiver,
@@ -38,6 +38,30 @@ const requests: TRequests = {
         transfer_id,
         receiver_sig,
         sender_sig
+      })
+    })
+  },
+  redeemLink: (
+    apiHost,
+    apiKey,
+    receiver,
+    sender,
+    escrow,
+    transfer_id,
+    receiver_sig
+  ) => {
+    return request(`${apiHost}/redeem`, {
+      headers: {
+        'authorization': `Bearer ${apiKey}`,
+        'content-type': 'application/json'
+      },
+      method: 'POST',
+      body: JSON.stringify({
+        receiver,
+        sender,
+        escrow,
+        transfer_id,
+        receiver_sig
       })
     })
   },

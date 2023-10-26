@@ -2,6 +2,7 @@ import TCreateClaimLink from './create-claim-link'
 import TRetrieveClaimLink from './retrieve-claim-link'
 import TGetClaimLink from './get-claim-link'
 import TConstructorArgs from './constructor-args'
+import TInitializeClaimLink from './initialize-claim-link'
 
 interface ILinkdrop {
   apiKey: string
@@ -10,11 +11,13 @@ interface ILinkdrop {
   createClaimLink: TCreateClaimLink
   retrieveClaimLink: TRetrieveClaimLink
   getClaimLink: TGetClaimLink
+  _initializeClaimLink: TInitializeClaimLink
 }
 export {
   TCreateClaimLink,
   TConstructorArgs,
   TGetClaimLink,
-  TRetrieveClaimLink
+  TRetrieveClaimLink,
+  TInitializeClaimLink
 }
 export default ILinkdrop

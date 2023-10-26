@@ -49,8 +49,23 @@ type TRedeemLink = (
   escrow: string,
   transfer_id: string,
   receiver_sig: string,
-  sender_sig: string
 ) => Promise<TRedeemLinkResponse>
+
+type TRedeemRecoveredLinkResponse = {
+  success: boolean,
+  txHash: string
+}
+
+type TRedeemRecoveredLink = (
+  apiHost: string,
+  apiKey: string,
+  receiver: string,
+  sender: string,
+  escrow: string,
+  transfer_id: string,
+  receiver_sig: string,
+  sender_sig: string
+) => Promise<TRedeemRecoveredLinkResponse>
 
 type TGetTransferDataResponse = {
   escrow_payment: TClaimLinkItem,
@@ -92,6 +107,7 @@ type TGetFee = (
 
 export type TRequests = {
   redeemLink: TRedeemLink
+  redeemRecoveredLink: TRedeemRecoveredLink
   depositWithAuthorization: TDepositWithAuth
   getTransferStatus: TGetTransferData
   getTransferStatusByTxHash: TGetTransferDataByTxHash
