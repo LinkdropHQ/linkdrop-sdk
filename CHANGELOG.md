@@ -1,4 +1,7 @@
-# Linkdrop Payment Link SDK
+# Linkdrop P2P SDK
+
+## 1.0.0-rc.1
+- updates for repository name and npm package name
 
 ## 1.0.0-rc.0
 - signer removed

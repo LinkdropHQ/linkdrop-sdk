@@ -1,2 +1,1 @@
-# Linkdrop Payment Link SDK
-
+# Linkdrop P2P SDK
