@@ -1,5 +1,8 @@
 # Linkdrop P2P SDK
 
+## 1.0.2
+- minor fix with data format
+
 ## 1.0.1
 - signer removed
 - new methods for modules (ClaimLink, LinkdropPaySDK)

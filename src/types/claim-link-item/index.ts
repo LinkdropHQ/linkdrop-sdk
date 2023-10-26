@@ -6,18 +6,17 @@ export type TClaimLinkItemOperationStatus = 'pending' | 'completed' | 'error'
 export type TClaimLinkItemOperation = {
   type: string
   timestamp: string
-  txHash: string
+  tx_hash: string
   status: TClaimLinkItemOperationStatus
   receiver: string
 }
 
 export type TClaimLinkItem = {
-  transferId: string
+  transfer_id: string
   amount: string
   fee: string
-  totalAmount: string
   token: string
-  chainId: number
+  chain_id: number
   sender: string
   // ---- should be added
   expiration: string

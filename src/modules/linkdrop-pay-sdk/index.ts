@@ -125,7 +125,7 @@ class LinkdropPaySDK implements ILinkdrop {
         sender: escrow_payment.sender,
         apiHost,
         apiKey: this.apiKey,
-        transferId: transferId
+        transferId: escrow_payment.transfer_id
       }
       const claimLink = new ClaimLink(claimLinkData)
       return claimLink
@@ -143,7 +143,7 @@ class LinkdropPaySDK implements ILinkdrop {
         sender: escrow_payment.sender,
         apiHost,
         apiKey: this.apiKey,
-        transferId: transferId
+        transferId: escrow_payment.transfer_id
       }
       const claimLink = new ClaimLink(claimLinkData)
       return claimLink
