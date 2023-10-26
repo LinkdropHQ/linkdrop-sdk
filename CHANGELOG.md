@@ -1,5 +1,8 @@
 # Linkdrop P2P SDK
 
+## 1.0.3
+- fix for baseUrl (should be passed to ClaimLink)
+
 ## 1.0.2
 - minor fix with data format
 
