@@ -1,16 +1,13 @@
 # Linkdrop P2P SDK
 
-## 1.0.0-rc.1
-- updates for repository name and npm package name
-
-## 1.0.0-rc.0
+## 1.0.1
 - signer removed
 - new methods for modules (ClaimLink, LinkdropPaySDK)
 - major updates
 - axios removed
 - added getRandomBytes
 - added signTypedData
-
+- updates for repository name and npm package name
 
 ## 0.0.19
 - added apiKey to Zuplo endpoints
