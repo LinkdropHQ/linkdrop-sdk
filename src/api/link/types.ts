@@ -38,7 +38,7 @@ type TDeposit = (
 
 type TRedeemLinkResponse = {
   success: boolean,
-  txHash: string
+  tx_hash: string
 }
 
 type TRedeemLink = (
@@ -53,7 +53,7 @@ type TRedeemLink = (
 
 type TRedeemRecoveredLinkResponse = {
   success: boolean,
-  txHash: string
+  tx_hash: string
 }
 
 type TRedeemRecoveredLink = (

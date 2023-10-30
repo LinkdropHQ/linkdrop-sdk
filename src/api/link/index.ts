@@ -25,7 +25,7 @@ const requests: TRequests = {
     receiver_sig,
     sender_sig
   ) => {
-    return request(`${apiHost}/redeem`, {
+    return request(`${apiHost}/redeem-recovered`, {
       headers: {
         'authorization': `Bearer ${apiKey}`,
         'content-type': 'application/json'
@@ -68,6 +68,8 @@ const requests: TRequests = {
   depositWithAuthorization: (
     apiHost,
     apiKey,
+    token,
+    token_type,
     sender,
     escrow,
     transfer_id,
@@ -83,6 +85,8 @@ const requests: TRequests = {
       method: 'POST',
       body: JSON.stringify({
         sender,
+        token,
+        token_type,
         escrow,
         transfer_id,
         expiration,
@@ -94,6 +98,8 @@ const requests: TRequests = {
   deposit: (
     apiHost,
     apiKey,
+    token,
+    token_type,
     sender,
     escrow,
     transfer_id,
@@ -111,6 +117,8 @@ const requests: TRequests = {
         sender,
         escrow,
         transfer_id,
+        token,
+        token_type,
         expiration,
         amount,
         tx_hash
