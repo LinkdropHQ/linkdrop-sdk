@@ -6,8 +6,10 @@ type TEncodeLink = (
   link: TLink
 ) => string | void
 const encodeLink: TEncodeLink = (claimHost, link) => {
+
   const linkKey = ethers.utils.base58.encode(link.linkKey)
-  const transferId = ethers.utils.base58.encode(ethers.BigNumber.from(link.transferId).toHexString()) // string -> hex -> base58 for shorter string
+  const transferId = ethers.utils.base58.encode(link.transferId) // string -> hex -> base58 for shorter string
+
   // version definition should be clarified 
   if (link.senderSig) {
     const sig = ethers.utils.base58.encode(link.senderSig)

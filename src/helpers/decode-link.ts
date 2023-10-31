@@ -10,9 +10,10 @@ const decodeLink: TDecodeLink = (link) => {
   const searchParams = new URLSearchParams(urlSplit[1])
   const tokenSymbol = (urlSplit[0].split('#/')[1]).replaceAll('/', '') as ETokenSymbol
   const tokenType = defineTokenType(tokenSymbol)
+  
   const params = {
     linkKey: searchParams.get("k") || "",
-    signature: searchParams.get("sg") || "",
+    signature: searchParams.get("sg"),
     transferId: searchParams.get("i") || "",
     chainId: searchParams.get("c"),
     version: searchParams.get("v") || "1",
@@ -20,8 +21,9 @@ const decodeLink: TDecodeLink = (link) => {
   }
 
   const linkKey = utils.hexlify(utils.base58.decode(params.linkKey))
-  const senderSig = utils.hexlify(utils.base58.decode(params.signature))
-  const transferId = BigNumber.from(utils.base58.decode(params.transferId)).toString()
+  const senderSig = params.signature ? utils.hexlify(utils.base58.decode(params.signature)) : undefined
+  const transferId = utils.hexlify(utils.base58.decode(params.transferId))
+
   const chainId = Number(params.chainId)
 
   return {

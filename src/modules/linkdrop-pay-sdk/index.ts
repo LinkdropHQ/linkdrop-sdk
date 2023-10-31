@@ -119,9 +119,9 @@ class LinkdropPaySDK implements ILinkdrop {
           sender: linkParsed.sender,
           apiHost,
           apiKey: this.apiKey,
-          transferId: transferId,
+          transferId: transferId.toLowerCase(),
           claimUrl,
-          tokenType: escrow_payment.tokenType,
+          tokenType: escrow_payment.token_type,
           baseUrl: this.baseUrl
         }
         return this._initializeClaimLink(claimLinkData)
@@ -144,9 +144,9 @@ class LinkdropPaySDK implements ILinkdrop {
         sender,
         apiHost,
         apiKey: this.apiKey,
-        transferId: transferId,
+        transferId: transferId.toLowerCase(),
         claimUrl,
-        tokenType: escrow_payment.tokenType,
+        tokenType: escrow_payment.token_type,
         baseUrl: this.baseUrl
       }
       return this._initializeClaimLink(claimLinkData)
@@ -178,8 +178,8 @@ class LinkdropPaySDK implements ILinkdrop {
         sender: escrow_payment.sender,
         apiHost,
         apiKey: this.apiKey,
-        tokenType: escrow_payment.tokenType,
-        transferId: transferId,
+        tokenType: escrow_payment.token_type,
+        transferId: transferId.toLowerCase(),
         baseUrl: this.baseUrl
       }
       return this._initializeClaimLink(claimLinkData)
@@ -197,8 +197,8 @@ class LinkdropPaySDK implements ILinkdrop {
         sender: escrow_payment.sender,
         apiHost,
         apiKey: this.apiKey,
-        transferId: transferId,
-        tokenType: escrow_payment.tokenType,
+        transferId: escrow_payment.transfer_id.toLowerCase(),
+        tokenType: escrow_payment.token_type,
         baseUrl: this.baseUrl
       }
       return this._initializeClaimLink(claimLinkData)

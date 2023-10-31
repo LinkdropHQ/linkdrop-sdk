@@ -1,6 +1,6 @@
 {
-  "name": "linkdrop-payment-link-sdk",
-  "version": "1.0.0-rc.0",
+  "name": "linkdrop-p2p-sdk",
+  "version": "2.0.0-rc.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -12,18 +12,18 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/LinkdropHQ/linkdrop-payment-link-sdk.git"
+    "url": "git+https://github.com/LinkdropHQ/linkdrop-p2p-sdk.git"
   },
   "author": "spacehaz <spacehaz@gmail.com>",
   "license": "MIT",
   "description": "",
   "bugs": {
-    "url": "https://github.com/LinkdropHQ/linkdrop-payment-link-sdk/issues"
+    "url": "https://github.com/LinkdropHQ/linkdrop-p2p-sdk/issues"
   },
   "engines": {
     "node": ">=16.x"
   },
-  "homepage": "https://github.com/LinkdropHQ/linkdrop-payment-link-sdk#readme",
+  "homepage": "https://github.com/LinkdropHQ/linkdrop-p2p-sdk#readme",
   "keywords": [],
   "dependencies": {
     "babel-loader": "8.1.0",

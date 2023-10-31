@@ -69,7 +69,7 @@ class ClaimLink implements IClaimLinkSDK {
     }
     
     if (transferId) {
-      this.transferId = transferId
+      this.transferId = transferId.toLowerCase()
     }
 
     this.baseUrl = baseUrl || configs.baseUrl
@@ -97,7 +97,7 @@ class ClaimLink implements IClaimLinkSDK {
         receiverSig,
         senderSig
       )
-      const { txHash } = redeem
+      const { tx_hash: txHash } = redeem
       return txHash
     } else {
       const redeem = await linkApi.redeemLink(
@@ -109,7 +109,7 @@ class ClaimLink implements IClaimLinkSDK {
         transferId,
         receiverSig
       )
-      const { txHash } = redeem
+      const { tx_hash: txHash } = redeem
       return txHash
     }
     
@@ -194,7 +194,7 @@ class ClaimLink implements IClaimLinkSDK {
     } = await this._getCurrentFee(this.amount)
 
     const keypair = await generateKeypair(getRandomBytes)
-    this.transferId = keypair.address
+    this.transferId = keypair.address.toLowerCase()
 
     const iface = new utils.Interface(Escrow.abi)
 
@@ -279,7 +279,7 @@ class ClaimLink implements IClaimLinkSDK {
     } = await this._getCurrentFee(this.amount)
 
     const keypair = await generateKeypair(getRandomBytes)
-    this.transferId = keypair.address
+    this.transferId = keypair.address.toLowerCase()
   
     const auth = await getDepositAuthorization(
       signTypedData,
@@ -307,13 +307,15 @@ class ClaimLink implements IClaimLinkSDK {
         totalAmount,
         auth
       )
-      const { txHash } = result
+  
+      const { tx_hash } = result
 
       const linkParams: TLink = {
         linkKey: keypair.privateKey,
         transferId: this.transferId,
         chainId: this.chainId,
-        tokenType: this.tokenType
+        tokenType: this.tokenType,
+        sender: this.sender
       }
 
       const claimUrl = encodeLink(this.baseUrl, linkParams)
@@ -325,7 +327,7 @@ class ClaimLink implements IClaimLinkSDK {
       this.claimUrl = claimUrl
 
       return {
-        txHash,
+        txHash: tx_hash,
         claimUrl: this.claimUrl,
         transferId: this.transferId
       }

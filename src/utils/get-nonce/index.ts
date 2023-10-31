@@ -7,7 +7,7 @@ const getNonce = (
   expiration: string
 ) => {
   return ethers.utils.solidityKeccak256(
-    ['address', 'uint256', 'uint256', 'uint128'],
+    ['address', 'address', 'uint256', 'uint128'],
     [from, transferId, amount, expiration]
   )
 }

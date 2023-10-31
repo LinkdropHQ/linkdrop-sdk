@@ -15,9 +15,9 @@ async function getDepositAuthorizationMumbai(
 ) {
     // The EIP-712 type data
     const types = {
-      TransferWithAuthorization: [
-        { name: 'from', type: 'address' },
-        { name: 'to', type: 'address' },
+      ApproveWithAuthorization: [
+        { name: 'owner', type: 'address' },
+        { name: 'spender', type: 'address' },
         { name: 'value', type: 'uint256' },
         { name: 'validAfter', type: 'uint256' },
         { name: 'validBefore', type: 'uint256' },
@@ -26,21 +26,21 @@ async function getDepositAuthorizationMumbai(
     }
     const nonce = getNonce(sender, transferId, amount, expiration)
     const message = {
-      from: sender,
-      to,
+      owner: sender,
+      spender: to,
       value: amount,
       validAfter,
       validBefore,
       nonce
     }
-
+    
     const signature = await signTypedData(domain, types, message)
     const signatureSplit = ethers.utils.splitSignature(signature)
 
     // Encode the authorization
     const authorization = ethers.utils.defaultAbiCoder.encode(
       ['address', 'address', 'uint256', 'uint256', 'uint256', 'bytes32', 'uint8', 'bytes32', 'bytes32'],
-      [message.from, message.to, message.value, message.validAfter, message.validBefore, message.nonce, signatureSplit.v, signatureSplit.r, signatureSplit.s]
+      [message.owner, message.spender, message.value, message.validAfter, message.validBefore, message.nonce, signatureSplit.v, signatureSplit.r, signatureSplit.s]
     )
 
     return authorization

@@ -13,7 +13,7 @@ const generateLinkKeyandSignature = async (
   const types = {
     Transfer: [
       { name: 'linkKeyId', type: 'address' },
-      { name: 'transferId', type: 'uint256' }
+      { name: 'transferId', type: 'address' }
     ]
   }
 

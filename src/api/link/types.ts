@@ -2,7 +2,7 @@ import { TClaimLinkItem, TTokenType } from '../../types'
 
 type TDepositWithAuthResponse = {
   success: boolean,
-  txHash: string
+  tx_hash: string
 }
 
 type TDepositWithAuth = (
@@ -20,7 +20,7 @@ type TDepositWithAuth = (
 
 type TDepositWithResponse = {
   success: boolean,
-  txHash: string
+  tx_hash: string
 }
 
 type TDeposit = (
