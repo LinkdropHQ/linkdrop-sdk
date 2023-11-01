@@ -51,20 +51,25 @@ const requests: TRequests = {
     amount,
     authorization
   ) => {
-    return request(`${apiHost}/deposit`, {
-      headers: {
-        'authorization': `Bearer ${apiKey}`,
-        'content-type': 'application/json'
-      },
+    console.log("making deposit request")
+    const body = JSON.stringify({
+      sender,
+      escrow,
+      transfer_id,
+      expiration,
+      amount,
+      authorization
+    })
+    const url = `${apiHost}/deposit`
+    const headers = {
+      'authorization': `Bearer ${apiKey}`,
+      'content-type': 'application/json'
+    }
+    console.log({ apiHost, headers, body, url })
+    return request(url, {
+      headers,
       method: 'POST',
-      body: JSON.stringify({
-        sender,
-        escrow,
-        transfer_id,
-        expiration,
-        amount,
-        authorization
-      })
+      body
     })
   },
   getTransferStatus: (

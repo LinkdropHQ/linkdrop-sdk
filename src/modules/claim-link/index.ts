@@ -34,7 +34,7 @@ class ClaimLink implements IClaimLinkSDK {
   claimUrl: string
   amount: string
 
-  constructor ({
+  constructor({
     sender,
     token,
     amount,
@@ -60,7 +60,7 @@ class ClaimLink implements IClaimLinkSDK {
     if (claimUrl) {
       this.claimUrl = claimUrl
     }
-    
+
     if (transferId) {
       this.transferId = transferId
     }
@@ -109,7 +109,7 @@ class ClaimLink implements IClaimLinkSDK {
 
   _defineDomain: TDefineDomain = () => {
     if (this.chainId === 137) {
-      return { 
+      return {
         name: 'USD Coin (PoS)',  // Polygon Mainnet
         version: '1',
         verifyingContract: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
@@ -129,7 +129,7 @@ class ClaimLink implements IClaimLinkSDK {
         name: 'USD Coin',
         version: '2',
         chainId: 8453,
-        verifyingContract: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913'          
+        verifyingContract: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913'
       }
     }
 
@@ -195,15 +195,15 @@ class ClaimLink implements IClaimLinkSDK {
   }
 
   _getCurrentFee: TGetCurrentFee = async (newAmount) => {
-    const result = await linkApi.getFee(
-      this.apiHost,
-      this.apiKey,
-      newAmount,
-      this.token,
-      this.sender
-    )
-
-    return result
+    // const result = await linkApi.getFee(
+    //   this.apiHost,
+    //   this.apiKey,
+    //   newAmount,
+    //   this.token,
+    //   this.sender
+    // )
+    const result = { fee: "0", total_amount: newAmount, amount: newAmount }
+    return Promise.resolve(result)
   }
 
   updateAmount: TUpdateAmount = async (amount) => {
@@ -261,7 +261,7 @@ class ClaimLink implements IClaimLinkSDK {
     if (!this.transferId) {
       throw new Error(errors.property_not_provided('transferId'))
     }
-    
+
     const escrowPaymentDomain: TEscrowPaymentDomain = {
       name: "LinkdropEscrow",
       version: "1",
@@ -285,7 +285,7 @@ class ClaimLink implements IClaimLinkSDK {
       }
 
       this.claimUrl = encodeLink(this.baseUrl, linkParams)
-      
+
       return {
         claimUrl: this.claimUrl,
         transferId: this.transferId

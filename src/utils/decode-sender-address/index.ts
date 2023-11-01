@@ -18,7 +18,7 @@ const decodeSenderAddress = (
     linkKeyId: linkKeyId,
     transferId: transferId
   };
-  const recoveredAddress = ethers.utils.verifyTypedData(domain, types, message, senderSig)
+  const recoveredAddress = ethers.verifyTypedData(domain, types, message, senderSig)
   return recoveredAddress
 };
 
