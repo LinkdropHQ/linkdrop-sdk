@@ -7,7 +7,8 @@ import IClaimLinkSDK, {
   TGetNextTransferId,
   TGenerateClaimUrl,
   TDefineDomain,
-  TGetStatus
+  TGetStatus,
+  TInitialize
 } from './types'
 import { TEscrowPaymentDomain, TLink } from '../../types'
 import {
@@ -33,8 +34,10 @@ class ClaimLink implements IClaimLinkSDK {
   transferId: string
   claimUrl: string
   amount: string
+  totalAmount: string
+  fee: string
 
-  constructor ({
+  constructor({
     sender,
     token,
     amount,
@@ -60,7 +63,7 @@ class ClaimLink implements IClaimLinkSDK {
     if (claimUrl) {
       this.claimUrl = claimUrl
     }
-    
+
     if (transferId) {
       this.transferId = transferId
     }
@@ -107,9 +110,18 @@ class ClaimLink implements IClaimLinkSDK {
     }
   }
 
+  initialize: TInitialize = async () => {
+    const {
+      total_amount: totalAmount,
+      fee
+    } = await this._getCurrentFee(this.amount)
+    this.totalAmount = totalAmount
+    this.fee = fee
+  }
+
   _defineDomain: TDefineDomain = () => {
     if (this.chainId === 137) {
-      return { 
+      return {
         name: 'USD Coin (PoS)',  // Polygon Mainnet
         version: '1',
         verifyingContract: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
@@ -129,7 +141,7 @@ class ClaimLink implements IClaimLinkSDK {
         name: 'USD Coin',
         version: '2',
         chainId: 8453,
-        verifyingContract: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913'          
+        verifyingContract: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913'
       }
     }
 
@@ -161,15 +173,11 @@ class ClaimLink implements IClaimLinkSDK {
       throw new Error(errors.argument_not_provided('signTypedData'))
     }
 
-    const {
-      total_amount: totalAmount
-    } = await this._getCurrentFee(this.amount)
-
     const auth = await getDepositAuthorization(
       signTypedData,
       this.sender,
       this.escrowAddress,
-      totalAmount,
+      this.totalAmount,
       validAfter,
       validBefore,
       this.transferId,
@@ -186,7 +194,7 @@ class ClaimLink implements IClaimLinkSDK {
         this.escrowAddress,
         this.transferId,
         this.expiration,
-        totalAmount,
+        this.totalAmount,
         auth
       )
       const { txHash } = result
@@ -202,7 +210,6 @@ class ClaimLink implements IClaimLinkSDK {
       this.token,
       this.sender
     )
-
     return result
   }
 
@@ -212,8 +219,10 @@ class ClaimLink implements IClaimLinkSDK {
         fee,
         total_amount: totalAmount
       } = await this._getCurrentFee(amount)
-
+      
       this.amount = amount
+      this.totalAmount = totalAmount
+      this.fee = fee
 
       return {
         amount,
@@ -228,8 +237,10 @@ class ClaimLink implements IClaimLinkSDK {
           fee,
           total_amount: totalAmount
         } = await this._getCurrentFee(amount)
-
+        
         this.amount = amount
+        this.totalAmount = totalAmount
+        this.fee = fee
 
         return {
           amount,
@@ -261,7 +272,7 @@ class ClaimLink implements IClaimLinkSDK {
     if (!this.transferId) {
       throw new Error(errors.property_not_provided('transferId'))
     }
-    
+
     const escrowPaymentDomain: TEscrowPaymentDomain = {
       name: "LinkdropEscrow",
       version: "1",
@@ -285,7 +296,7 @@ class ClaimLink implements IClaimLinkSDK {
       }
 
       this.claimUrl = encodeLink(this.baseUrl, linkParams)
-      
+
       return {
         claimUrl: this.claimUrl,
         transferId: this.transferId
