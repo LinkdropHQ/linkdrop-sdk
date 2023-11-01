@@ -1,5 +1,6 @@
 import { ethers } from 'ethers'
-import { TLink } from "../types"
+import { TLink, TTokenType } from "../types"
+import { defineTokenSymbol } from '../helpers'
 
 type TEncodeLink = (
   claimHost: string,
@@ -9,15 +10,17 @@ const encodeLink: TEncodeLink = (claimHost, link) => {
 
   const linkKey = ethers.utils.base58.encode(link.linkKey)
   const transferId = ethers.utils.base58.encode(link.transferId) // string -> hex -> base58 for shorter string
+  const symbol = defineTokenSymbol(
+    link.tokenType as TTokenType,
+    link.chainId
+  )
 
-  // version definition should be clarified 
   if (link.senderSig) {
     const sig = ethers.utils.base58.encode(link.senderSig)
-    return `${claimHost}/#/usdc?k=${linkKey}&sg=${sig}&i=${transferId}&c=${link.chainId}&v=2`
+    return `${claimHost}/#/${symbol}?k=${linkKey}&sg=${sig}&i=${transferId}&c=${link.chainId}&v=2`
   } else if (link.sender) {
-    return `${claimHost}/#/usdc?k=${linkKey}&s=${link.sender}&i=${transferId}&c=${link.chainId}&v=2`
+    return `${claimHost}/#/${symbol}?k=${linkKey}&s=${link.sender}&i=${transferId}&c=${link.chainId}&v=2`
   }
-
 }
 
 export default encodeLink

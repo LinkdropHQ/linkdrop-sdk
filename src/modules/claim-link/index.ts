@@ -11,7 +11,7 @@ import IClaimLinkSDK, {
   TDeposit
 } from './types'
 import { TEscrowPaymentDomain, TLink, TTokenType } from '../../types'
-import { Escrow } from '../../abi'
+import { LinkdropEscrowStablecoin, LinkdropEscrowNetworkToken } from '../../abi'
 import {
   generateReceiverSig,
   getDepositAuthorization,
@@ -167,11 +167,6 @@ class ClaimLink implements IClaimLinkSDK {
     getRandomBytes
   }) => {
 
-    const domain = this._defineDomain()
-    if (!domain) {
-      throw new Error(errors.chain_not_supported())
-    }
-
     const [validAfter, validBefore] = getValidAfterAndValidBefore()
 
     if (!this.escrowAddress) {
@@ -196,9 +191,12 @@ class ClaimLink implements IClaimLinkSDK {
     const keypair = await generateKeypair(getRandomBytes)
     this.transferId = keypair.address.toLowerCase()
 
-    const iface = new utils.Interface(Escrow.abi)
+    const iface = new utils.Interface(LinkdropEscrowNetworkToken.abi)
 
-    const data = iface.encodeFunctionData("deposit", [this.transferId, this.expiration])
+    const data = iface.encodeFunctionData("deposit", [
+      this.transferId,
+      this.expiration
+    ])
 
     const { hash: txHash } = await sendTransaction({
       to: this.escrowAddress,
@@ -226,7 +224,8 @@ class ClaimLink implements IClaimLinkSDK {
         linkKey: keypair.privateKey,
         transferId: this.transferId,
         chainId: this.chainId,
-        tokenType: this.tokenType
+        tokenType: this.tokenType,
+        sender: this.sender
       }
 
       const claimUrl = encodeLink(this.baseUrl, linkParams)

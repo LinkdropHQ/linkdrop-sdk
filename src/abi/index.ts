@@ -1,5 +1,7 @@
-import Escrow from "./escrow.json"
+import LinkdropEscrowNetworkToken from "./LinkdropEscrowNetworkToken.json"
+import LinkdropEscrowStablecoin from "./LinkdropEscrowStablecoin.json"
 
 export {
-  Escrow
+  LinkdropEscrowNetworkToken,
+  LinkdropEscrowStablecoin
 }
