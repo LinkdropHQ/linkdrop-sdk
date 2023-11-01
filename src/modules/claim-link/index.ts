@@ -170,6 +170,7 @@ class ClaimLink implements IClaimLinkSDK {
       total_amount: totalAmount,
       fee
     } = await this._getCurrentFee(this.amount)
+    console.log('HERE')
     this.totalAmount = totalAmount
     this.fee = fee
   }

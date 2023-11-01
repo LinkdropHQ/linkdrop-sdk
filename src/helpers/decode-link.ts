@@ -20,7 +20,7 @@ const decodeLink: TDecodeLink = (link) => {
   const paramsString = link.substring(hashIndex + 1).split('?')[1]
   const parsedParams = parseQuery(paramsString)
 
-  const tokenSymbol = (link.split('#/')[1]).replaceAll('/', '') as ETokenSymbol
+  const tokenSymbol = (link.split('#/')[1]).split('?')[0] as ETokenSymbol
   const tokenType = defineTokenType(tokenSymbol)
   
   const params = {

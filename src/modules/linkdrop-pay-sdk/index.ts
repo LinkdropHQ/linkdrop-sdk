@@ -55,7 +55,7 @@ class LinkdropPaySDK implements ILinkdrop {
       throw new Error(errors.argument_not_provided('token'))
     }
 
-    const claimLink = new ClaimLink({
+    return this._initializeClaimLink({
       token,
       expiration,
       chainId,
@@ -66,8 +66,6 @@ class LinkdropPaySDK implements ILinkdrop {
       tokenType,
       baseUrl: this.baseUrl
     })
-
-    return claimLink
   }
 
   _initializeClaimLink: TInitializeClaimLink = async (claimLinkData) => {
