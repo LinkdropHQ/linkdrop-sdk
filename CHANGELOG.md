@@ -2,6 +2,7 @@
 
 ## 1.0.4
 - ethers v6 added
+- added initialize method to ClaimLink
 
 ## 1.0.3
 - fix for baseUrl (should be passed to ClaimLink)

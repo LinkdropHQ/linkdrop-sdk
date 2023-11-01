@@ -7,7 +7,8 @@ import IClaimLinkSDK, {
   TGetNextTransferId,
   TGenerateClaimUrl,
   TDefineDomain,
-  TGetStatus
+  TGetStatus,
+  TInitialize
 } from './types'
 import { TEscrowPaymentDomain, TLink } from '../../types'
 import {
@@ -33,6 +34,8 @@ class ClaimLink implements IClaimLinkSDK {
   transferId: string
   claimUrl: string
   amount: string
+  totalAmount: string
+  fee: string
 
   constructor({
     sender,
@@ -107,6 +110,15 @@ class ClaimLink implements IClaimLinkSDK {
     }
   }
 
+  initialize: TInitialize = async () => {
+    const {
+      total_amount: totalAmount,
+      fee
+    } = await this._getCurrentFee(this.amount)
+    this.totalAmount = totalAmount
+    this.fee = fee
+  }
+
   _defineDomain: TDefineDomain = () => {
     if (this.chainId === 137) {
       return {
@@ -161,15 +173,11 @@ class ClaimLink implements IClaimLinkSDK {
       throw new Error(errors.argument_not_provided('signTypedData'))
     }
 
-    const {
-      total_amount: totalAmount
-    } = await this._getCurrentFee(this.amount)
-
     const auth = await getDepositAuthorization(
       signTypedData,
       this.sender,
       this.escrowAddress,
-      totalAmount,
+      this.totalAmount,
       validAfter,
       validBefore,
       this.transferId,
@@ -186,7 +194,7 @@ class ClaimLink implements IClaimLinkSDK {
         this.escrowAddress,
         this.transferId,
         this.expiration,
-        totalAmount,
+        this.totalAmount,
         auth
       )
       const { txHash } = result
@@ -211,8 +219,10 @@ class ClaimLink implements IClaimLinkSDK {
         fee,
         total_amount: totalAmount
       } = await this._getCurrentFee(amount)
-
+      
       this.amount = amount
+      this.totalAmount = totalAmount
+      this.fee = fee
 
       return {
         amount,
@@ -227,8 +237,10 @@ class ClaimLink implements IClaimLinkSDK {
           fee,
           total_amount: totalAmount
         } = await this._getCurrentFee(amount)
-
+        
         this.amount = amount
+        this.totalAmount = totalAmount
+        this.fee = fee
 
         return {
           amount,

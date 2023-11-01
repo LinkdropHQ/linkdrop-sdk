@@ -58,7 +58,7 @@ class LinkdropPaySDK implements ILinkdrop {
       apiKey: this.apiKey,
       baseUrl: this.baseUrl
     })
-
+    await claimLink.initialize()
     return claimLink
   }
 
@@ -99,6 +99,7 @@ class LinkdropPaySDK implements ILinkdrop {
       baseUrl: this.baseUrl
     }
     const claimLink = new ClaimLink(claimLinkData)
+    await claimLink.initialize()
     return claimLink
   }
 
@@ -131,6 +132,7 @@ class LinkdropPaySDK implements ILinkdrop {
         baseUrl: this.baseUrl
       }
       const claimLink = new ClaimLink(claimLinkData)
+      await claimLink.initialize()
       return claimLink
     } else {
       const { escrow_payment } = await linkApi.getTransferStatusByTxHash(
@@ -150,6 +152,7 @@ class LinkdropPaySDK implements ILinkdrop {
         baseUrl: this.baseUrl
       }
       const claimLink = new ClaimLink(claimLinkData)
+      await claimLink.initialize()
       return claimLink
     }
   }
