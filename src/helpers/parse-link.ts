@@ -21,9 +21,10 @@ const parseLink: TParseLink = async (
   link
 ) => {
   const decodedLink = decodeLink(link)
-  console.log({ decodedLink })
+  console.log('HERE1', decodedLink.linkKey)
+  console.log({ ethers })
   const linkKeyId = (new ethers.Wallet(decodedLink.linkKey)).address
-  console.log({ linkKeyId })
+  console.log('HERE2', decodedLink.linkKey)
 
   const escrowPaymentDomain: TEscrowPaymentDomain = {
     name: "LinkdropEscrow",
