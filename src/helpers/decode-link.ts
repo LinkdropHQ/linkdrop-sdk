@@ -22,7 +22,7 @@ const decodeLink: TDecodeLink = (link) => {
 
   const tokenSymbol = (link.split('#/')[1]).split('?')[0] as ETokenSymbol
   const tokenType = defineTokenType(tokenSymbol)
-  
+
   const params = {
     linkKey: parsedParams["k"] || "",
     signature: parsedParams["sg"],
@@ -34,7 +34,8 @@ const decodeLink: TDecodeLink = (link) => {
 
   const linkKey = ethers.toQuantity(decodeBase58(params.linkKey))
   const senderSig = params.signature ? ethers.toQuantity(decodeBase58(params.signature)) : undefined
-  const transferId = ethers.toQuantity(decodeBase58(params.transferId))
+  const sender = params.sender ? ethers.toQuantity(decodeBase58(params.sender)) : undefined
+  const transferId = params.transferId ? ethers.toQuantity(decodeBase58(params.transferId)) : (new ethers.Wallet(linkKey)).address.toLowerCase()
 
   const chainId = Number(params.chainId)
 
@@ -43,7 +44,7 @@ const decodeLink: TDecodeLink = (link) => {
     linkKey,
     transferId,
     chainId,
-    sender: params.sender,
+    sender,
     version: params.version,
     tokenType
   }
