@@ -51,7 +51,6 @@ const requests: TRequests = {
     amount,
     authorization
   ) => {
-    console.log("making deposit request")
     const body = JSON.stringify({
       sender,
       escrow,
@@ -65,7 +64,6 @@ const requests: TRequests = {
       'authorization': `Bearer ${apiKey}`,
       'content-type': 'application/json'
     }
-    console.log({ apiHost, headers, body, url })
     return request(url, {
       headers,
       method: 'POST',

@@ -1,5 +1,8 @@
 # Linkdrop P2P SDK
 
+## 1.0.4
+- ethers v6 added
+
 ## 1.0.3
 - fix for baseUrl (should be passed to ClaimLink)
 

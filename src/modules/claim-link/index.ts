@@ -195,15 +195,14 @@ class ClaimLink implements IClaimLinkSDK {
   }
 
   _getCurrentFee: TGetCurrentFee = async (newAmount) => {
-    // const result = await linkApi.getFee(
-    //   this.apiHost,
-    //   this.apiKey,
-    //   newAmount,
-    //   this.token,
-    //   this.sender
-    // )
-    const result = { fee: "0", total_amount: newAmount, amount: newAmount }
-    return Promise.resolve(result)
+    const result = await linkApi.getFee(
+      this.apiHost,
+      this.apiKey,
+      newAmount,
+      this.token,
+      this.sender
+    )
+    return result
   }
 
   updateAmount: TUpdateAmount = async (amount) => {
