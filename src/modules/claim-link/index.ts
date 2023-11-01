@@ -8,7 +8,8 @@ import IClaimLinkSDK, {
   TGenerateClaimUrl,
   TDefineDomain,
   TGetStatus,
-  TDeposit
+  TDeposit,
+  TInitialize
 } from './types'
 import { TEscrowPaymentDomain, TLink, TTokenType } from '../../types'
 import { LinkdropEscrowStablecoin, LinkdropEscrowNetworkToken } from '../../abi'
@@ -23,7 +24,7 @@ import { linkApi } from '../../api'
 import { defineEscrowAddress, encodeLink, parseLink } from '../../helpers'
 import { errors } from '../../texts'
 import * as configs from '../../configs'
-import { utils } from 'ethers'
+import { ethers } from 'ethers'
 
 class ClaimLink implements IClaimLinkSDK {
   sender: string
@@ -37,6 +38,8 @@ class ClaimLink implements IClaimLinkSDK {
   transferId: string
   claimUrl: string
   amount: string
+  totalAmount: string
+  fee: string
   tokenType: TTokenType
 
   constructor ({
@@ -162,6 +165,15 @@ class ClaimLink implements IClaimLinkSDK {
     return null
   }
 
+  initialize: TInitialize = async () => {
+    const {
+      total_amount: totalAmount,
+      fee
+    } = await this._getCurrentFee(this.amount)
+    this.totalAmount = totalAmount
+    this.fee = fee
+  }
+
   deposit: TDeposit = async ({
     sendTransaction,
     getRandomBytes
@@ -183,15 +195,10 @@ class ClaimLink implements IClaimLinkSDK {
       throw new Error(errors.argument_not_provided('sendTransaction'))
     }
 
-    const {
-      total_amount: totalAmount,
-      fee
-    } = await this._getCurrentFee(this.amount)
-
     const keypair = await generateKeypair(getRandomBytes)
     this.transferId = keypair.address.toLowerCase()
 
-    const iface = new utils.Interface(LinkdropEscrowNetworkToken.abi)
+    const iface = new ethers.Interface(LinkdropEscrowNetworkToken.abi)
 
     const data = iface.encodeFunctionData("deposit", [
       this.transferId,
@@ -200,7 +207,7 @@ class ClaimLink implements IClaimLinkSDK {
 
     const { hash: txHash } = await sendTransaction({
       to: this.escrowAddress,
-      value: totalAmount,
+      value: this.totalAmount,
       // needs update
       gasLimit: 150000, // Ensure you have enough gas
       // needs update
@@ -216,7 +223,7 @@ class ClaimLink implements IClaimLinkSDK {
       this.escrowAddress,
       this.transferId,
       this.expiration,
-      totalAmount,
+      this.totalAmount,
       txHash
     )
     if (result) {
@@ -273,10 +280,6 @@ class ClaimLink implements IClaimLinkSDK {
       throw new Error(errors.argument_not_provided('signTypedData'))
     }
 
-    const {
-      total_amount: totalAmount
-    } = await this._getCurrentFee(this.amount)
-
     const keypair = await generateKeypair(getRandomBytes)
     this.transferId = keypair.address.toLowerCase()
   
@@ -284,7 +287,7 @@ class ClaimLink implements IClaimLinkSDK {
       signTypedData,
       this.sender,
       this.escrowAddress,
-      totalAmount,
+      this.totalAmount,
       validAfter,
       validBefore,
       this.transferId,
@@ -303,7 +306,7 @@ class ClaimLink implements IClaimLinkSDK {
         this.escrowAddress,
         this.transferId,
         this.expiration,
-        totalAmount,
+        this.totalAmount,
         auth
       )
   
@@ -353,6 +356,8 @@ class ClaimLink implements IClaimLinkSDK {
       } = await this._getCurrentFee(amount)
 
       this.amount = amount
+      this.fee = fee
+      this.totalAmount = totalAmount
 
       return {
         amount,
@@ -369,6 +374,8 @@ class ClaimLink implements IClaimLinkSDK {
         } = await this._getCurrentFee(amount)
 
         this.amount = amount
+        this.fee = fee
+        this.totalAmount = totalAmount
 
         return {
           amount,

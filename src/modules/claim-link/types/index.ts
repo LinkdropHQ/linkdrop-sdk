@@ -8,6 +8,7 @@ import TGenerateClaimUrl from './generate-claim-url'
 import TDefineDomain from './define-domain'
 import TGetStatus from './get-status'
 import TDeposit from './deposit'
+import TInitialize from './initialize'
 
 interface IClaimLink {
   _getCurrentFee: TGetCurrentFee
@@ -19,11 +20,13 @@ interface IClaimLink {
   generateClaimUrl: TGenerateClaimUrl
   getStatus: TGetStatus
   deposit: TDeposit
+  initialize: TInitialize
 }
 
 export {
   TGetCurrentFee,
   TRedeem,
+  TInitialize,
   TDepositWithAuthorization,
   TConstructorArgs,
   TUpdateAmount,

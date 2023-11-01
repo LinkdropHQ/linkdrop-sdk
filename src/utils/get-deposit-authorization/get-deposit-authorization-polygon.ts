@@ -35,10 +35,12 @@ async function getDepositAuthorizationPolygon(
     }
 
     const signature = await signTypedData(domain, types, message)
-    const signatureSplit = ethers.utils.splitSignature(signature)
-
+    const signatureSplit = ethers.Signature.from(signature)
+    
     // Encode the authorization
-    const authorization = ethers.utils.defaultAbiCoder.encode(
+    const coder = ethers.AbiCoder.defaultAbiCoder()
+
+    const authorization = coder.encode(
       ['address', 'address', 'uint256', 'uint256', 'uint256', 'bytes32', 'uint8', 'bytes32', 'bytes32'],
       [message.owner, message.spender, message.value, message.validAfter, message.validBefore, message.nonce, signatureSplit.v, signatureSplit.r, signatureSplit.s]
     )

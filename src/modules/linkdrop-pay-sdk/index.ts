@@ -70,8 +70,9 @@ class LinkdropPaySDK implements ILinkdrop {
     return claimLink
   }
 
-  _initializeClaimLink: TInitializeClaimLink = (claimLinkData) => {
+  _initializeClaimLink: TInitializeClaimLink = async (claimLinkData) => {
     const claimLink = new ClaimLink(claimLinkData)
+    await claimLink.initialize()
     return claimLink
   } 
 

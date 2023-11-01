@@ -1,28 +1,40 @@
 import { ETokenSymbol, TLink } from '../types'
 import { defineTokenType } from './'
-import { BigNumber, utils } from 'ethers'
+import { ethers, decodeBase58 } from 'ethers'
 type TDecodeLink = (link: string) => TLink
+
+function parseQuery(queryString) {
+  const pairs = queryString.split('&');
+  const result = {};
+  pairs.forEach(pair => {
+    const [key, value] = pair.split('=');
+    result[key] = decodeURIComponent(value || '');
+  });
+  return result;
+}
 
 const decodeLink: TDecodeLink = (link) => {
   // Use URLSearchParams to get query parameters
-  const currentURL = new URL(link);
-  const urlSplit = currentURL.hash.split("?")
-  const searchParams = new URLSearchParams(urlSplit[1])
-  const tokenSymbol = (urlSplit[0].split('#/')[1]).replaceAll('/', '') as ETokenSymbol
+  const hashIndex = link.indexOf('#');
+  //if (hashIndex === -1) return null;
+  const paramsString = link.substring(hashIndex + 1).split('?')[1]
+  const parsedParams = parseQuery(paramsString)
+
+  const tokenSymbol = (link.split('#/')[1]).replaceAll('/', '') as ETokenSymbol
   const tokenType = defineTokenType(tokenSymbol)
   
   const params = {
-    linkKey: searchParams.get("k") || "",
-    signature: searchParams.get("sg"),
-    transferId: searchParams.get("i") || "",
-    chainId: searchParams.get("c"),
-    version: searchParams.get("v") || "1",
-    sender: searchParams.get("s") || ''
+    linkKey: parsedParams["k"] || "",
+    signature: parsedParams["sg"],
+    transferId: parsedParams["i"] || "",
+    chainId: parsedParams["c"],
+    version: parsedParams["v"] || "1",
+    sender: parsedParams["s"] || ''
   }
 
-  const linkKey = utils.hexlify(utils.base58.decode(params.linkKey))
-  const senderSig = params.signature ? utils.hexlify(utils.base58.decode(params.signature)) : undefined
-  const transferId = utils.hexlify(utils.base58.decode(params.transferId))
+  const linkKey = ethers.toQuantity(decodeBase58(params.linkKey))
+  const senderSig = params.signature ? ethers.toQuantity(decodeBase58(params.signature)) : undefined
+  const transferId = ethers.toQuantity(decodeBase58(params.transferId))
 
   const chainId = Number(params.chainId)
 

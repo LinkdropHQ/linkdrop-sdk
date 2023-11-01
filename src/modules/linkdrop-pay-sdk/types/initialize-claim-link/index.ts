@@ -27,6 +27,6 @@ type TInitializeClaimLink = ({
   transferId,
   claimUrl,
   tokenType
-}: TInitializeClaimLinkArgs) => (ClaimLink | void)
+}: TInitializeClaimLinkArgs) => Promise<(ClaimLink | void)>
 
 export default TInitializeClaimLink
