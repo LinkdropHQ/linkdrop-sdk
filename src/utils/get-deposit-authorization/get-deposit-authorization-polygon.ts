@@ -1,9 +1,10 @@
 import { ethers } from 'ethers'
 import { getNonce } from '..'
-import { TDomain, TSignerCustomized } from '../../types'
+import { TDomain, TSignTypedData } from '../../types'
 
 async function getDepositAuthorizationPolygon(
-    signer: TSignerCustomized,
+    signTypedData: TSignTypedData,
+    sender: string,
     to: string,
     amount: string,
     validAfter: number,
@@ -23,7 +24,6 @@ async function getDepositAuthorizationPolygon(
         { name: 'nonce', type: 'bytes32' },
       ],
     }
-    const sender = await signer.getAddress()
     const nonce = getNonce(sender, transferId, amount, expiration)
     const message = {
       owner: sender,
@@ -34,19 +34,18 @@ async function getDepositAuthorizationPolygon(
       nonce
     }
 
-    if (signer._signTypedData) {
-      const signature = await signer._signTypedData(domain, types, message)
-      const signatureSplit = ethers.utils.splitSignature(signature)
+    const signature = await signTypedData(domain, types, message)
+    const signatureSplit = ethers.Signature.from(signature)
+    
+    // Encode the authorization
+    const coder = ethers.AbiCoder.defaultAbiCoder()
 
-      // Encode the authorization
-      const authorization = ethers.utils.defaultAbiCoder.encode(
-        ['address', 'address', 'uint256', 'uint256', 'uint256', 'bytes32', 'uint8', 'bytes32', 'bytes32'],
-        [message.owner, message.spender, message.value, message.validAfter, message.validBefore, message.nonce, signatureSplit.v, signatureSplit.r, signatureSplit.s]
-      )
+    const authorization = coder.encode(
+      ['address', 'address', 'uint256', 'uint256', 'uint256', 'bytes32', 'uint8', 'bytes32', 'bytes32'],
+      [message.owner, message.spender, message.value, message.validAfter, message.validBefore, message.nonce, signatureSplit.v, signatureSplit.r, signatureSplit.s]
+    )
 
-      return authorization
-    }
-
+    return authorization
 }
 
 export default getDepositAuthorizationPolygon
