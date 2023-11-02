@@ -10,6 +10,8 @@ const convert0xToValid: TConvert0xyToValid = (value, validLength) => {
     return value
   }
 
-  return value.replace('0x', '0x0')
+  const missedZeros = validLength - value.length
+  const stringToUseAsPrefix = new Array(missedZeros).fill(undefined).map(_ => 0).join('')
+  return value.replace('0x', `0x${stringToUseAsPrefix}`)
 }
 export default convert0xToValid
