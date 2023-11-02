@@ -92,6 +92,7 @@ Claim Link object contains methods and properties to facilitate both creation an
 In order to get the latest status of the claim link, use the following method: 
 ```js
 const { status, operations } = await claimLink.getStatus()
+```
 
 - _status_ (string, claim link status, one of `'created' | 'depositing' | 'deposited' | 'redeemed'| 'redeeming' | 'error' | 'refunded' | 'refunding' | 'cancelled'`)
 - _operations_ (array of operations related to the claim link)
@@ -102,4 +103,3 @@ _operation_:
  - _tx_hash_: (string, ethereum transaction hash corresponding to the operation)
  - _status_: (string, operation status, one of `'pending' | 'completed' | 'error'`)
  - _receiver_: (string, Receiver's Ethereum address, present only for redeem operations, e.g. "0x2331bca1f2de4661ed88a30c99a7a9449aa84195")
-```
