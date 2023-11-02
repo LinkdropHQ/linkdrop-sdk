@@ -1,5 +1,8 @@
 # Linkdrop P2P SDK
 
+## 2.0.0-alpha.2
+- removed async function for TSignTypedData type
+
 ## 2.0.0-alpha.1
 - removed console logs
 
