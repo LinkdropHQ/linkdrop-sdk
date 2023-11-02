@@ -4,4 +4,4 @@
 
 export type TGetRandomBytes = (
   length: number
-) => Promise<Uint8Array>
+) => Uint8Array
