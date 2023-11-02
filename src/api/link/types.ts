@@ -1,29 +1,44 @@
-import { AxiosResponse } from 'axios'
-import { TTransferStatus } from '../../types'
+import { TClaimLinkItem, TTokenType } from '../../types'
 
-type TDepositResponse = {
+type TDepositWithAuthResponse = {
   success: boolean,
-  txHash: string
+  tx_hash: string
 }
 
-type TDeposit = (
+type TDepositWithAuth = (
   apiHost: string,
   apiKey: string,
+  token: string,
+  token_type: TTokenType,
   sender: string,
   escrow: string,
   transfer_id: string,
   expiration: string,
   amount: string,
   authorization: string
-) => Promise<
-  AxiosResponse<
-    TDepositResponse
-  >
->
+) => Promise<TDepositWithAuthResponse>
+
+type TDepositWithResponse = {
+  success: boolean,
+  tx_hash: string
+}
+
+type TDeposit = (
+  apiHost: string,
+  apiKey: string,
+  token: string,
+  token_type: TTokenType,
+  sender: string,
+  escrow: string,
+  transfer_id: string,
+  expiration: string,
+  amount: string,
+  tx_hash: string
+) => Promise<TDepositWithResponse>
 
 type TRedeemLinkResponse = {
   success: boolean,
-  txHash: string
+  tx_hash: string
 }
 
 type TRedeemLink = (
@@ -34,17 +49,26 @@ type TRedeemLink = (
   escrow: string,
   transfer_id: string,
   receiver_sig: string,
+) => Promise<TRedeemLinkResponse>
+
+type TRedeemRecoveredLinkResponse = {
+  success: boolean,
+  tx_hash: string
+}
+
+type TRedeemRecoveredLink = (
+  apiHost: string,
+  apiKey: string,
+  receiver: string,
+  sender: string,
+  escrow: string,
+  transfer_id: string,
+  receiver_sig: string,
   sender_sig: string
-) => Promise<
-  AxiosResponse<
-    TRedeemLinkResponse
-  >
->
+) => Promise<TRedeemRecoveredLinkResponse>
 
 type TGetTransferDataResponse = {
-  status: TTransferStatus,
-  amount: string
-  expiration: string
+  claim_link: TClaimLinkItem,
   success: boolean
 }
 
@@ -53,12 +77,40 @@ type TGetTransferData = (
   apiKey: string,
   sender: string,
   transfer_id: string,
-  chain_name: string
-) => Promise<AxiosResponse<TGetTransferDataResponse>>
+) => Promise<TGetTransferDataResponse>
 
+type TGetTransferDataByTxHashResponse = {
+  claim_link: TClaimLinkItem,
+  success: boolean
+}
+
+type TGetTransferDataByTxHash = (
+  apiHost: string,
+  apiKey: string,
+  tx_hash: string,
+) => Promise<TGetTransferDataByTxHashResponse>
+
+type TGetFeeResponse = {
+  fee: string
+  amount: string
+  total_amount: string
+  success: boolean
+}
+
+type TGetFee = (
+  apiHost: string,
+  apiKey: string,
+  amount: string,
+  tokenAddress: string,
+  sender: string
+) => Promise<TGetFeeResponse>
 
 export type TRequests = {
   redeemLink: TRedeemLink
-  deposit: TDeposit
+  redeemRecoveredLink: TRedeemRecoveredLink
+  depositWithAuthorization: TDepositWithAuth
   getTransferStatus: TGetTransferData
+  getTransferStatusByTxHash: TGetTransferDataByTxHash
+  getFee: TGetFee,
+  deposit: TDeposit
 }

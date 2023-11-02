@@ -1,5 +1,5 @@
-import escrowABI from "./escrow"
+import LinkdropEscrowNetworkToken from "./LinkdropEscrowNetworkToken.json"
 
 export {
-  escrowABI
+  LinkdropEscrowNetworkToken
 }

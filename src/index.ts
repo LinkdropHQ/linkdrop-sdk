@@ -1,7 +1,7 @@
-import LinkSDK from './modules/link-sdk'
-import Linkdrop from './modules/linkdrop'
+import ClaimLink from './modules/claim-link'
+import LinkdropP2P from './modules/linkdrop-p2p'
 
 export {
-  Linkdrop,
-  LinkSDK
+  LinkdropP2P,
+  ClaimLink
 }

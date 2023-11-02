@@ -1,9 +1,10 @@
 import { ethers } from 'ethers'
 import { getNonce } from '..'
-import { TDomain, TSignerCustomized } from '../../types'
+import { TDomain, TSignTypedData } from '../../types'
 
 async function getDepositAuthorizationMumbai(
-    signer: TSignerCustomized,
+    signTypedData: TSignTypedData,
+    sender: string,
     to: string,
     amount: string,
     validAfter: number,
@@ -14,38 +15,37 @@ async function getDepositAuthorizationMumbai(
 ) {
     // The EIP-712 type data
     const types = {
-      TransferWithAuthorization: [
-        { name: 'from', type: 'address' },
-        { name: 'to', type: 'address' },
+      ApproveWithAuthorization: [
+        { name: 'owner', type: 'address' },
+        { name: 'spender', type: 'address' },
         { name: 'value', type: 'uint256' },
         { name: 'validAfter', type: 'uint256' },
         { name: 'validBefore', type: 'uint256' },
         { name: 'nonce', type: 'bytes32' },
       ],
     }
-    const sender = await signer.getAddress()
     const nonce = getNonce(sender, transferId, amount, expiration)
     const message = {
-      from: sender,
-      to,
+      owner: sender,
+      spender: to,
       value: amount,
       validAfter,
       validBefore,
       nonce
     }
+    
+    const signature = await signTypedData(domain, types, message)
+    const signatureSplit = ethers.Signature.from(signature)
 
-    if (signer._signTypedData) {
-      const signature = await signer._signTypedData(domain, types, message)
-      const signatureSplit = ethers.utils.splitSignature(signature)
+    // Encode the authorization
+    const coder = ethers.AbiCoder.defaultAbiCoder()
 
-      // Encode the authorization
-      const authorization = ethers.utils.defaultAbiCoder.encode(
-        ['address', 'address', 'uint256', 'uint256', 'uint256', 'bytes32', 'uint8', 'bytes32', 'bytes32'],
-        [message.from, message.to, message.value, message.validAfter, message.validBefore, message.nonce, signatureSplit.v, signatureSplit.r, signatureSplit.s]
-      )
+    const authorization = coder.encode(
+      ['address', 'address', 'uint256', 'uint256', 'uint256', 'bytes32', 'uint8', 'bytes32', 'bytes32'],
+      [message.owner, message.spender, message.value, message.validAfter, message.validBefore, message.nonce, signatureSplit.v, signatureSplit.r, signatureSplit.s]
+    )
 
-      return authorization
-    }
+    return authorization
 
 }
 

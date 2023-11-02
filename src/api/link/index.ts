@@ -1,8 +1,21 @@
-import axios from 'axios'
 import { TRequests } from './types'
 
+function request<TResponse>(
+  url: string,
+  config: RequestInit = {}
+): Promise<TResponse> {
+  return fetch(url, config)
+    .then((res) => {
+      if (res.ok) {
+        return res.json()
+      }
+      throw new Error(String(res.status))
+    })
+    .then((data) => data as TResponse)
+}
+
 const requests: TRequests = {
-  redeemLink: (
+  redeemRecoveredLink: (
     apiHost,
     apiKey,
     receiver,
@@ -12,22 +25,51 @@ const requests: TRequests = {
     receiver_sig,
     sender_sig
   ) => {
-    return axios.post(`${apiHost}/redeem`, {
-      receiver,
-      sender,
-      escrow,
-      transfer_id,
-      receiver_sig,
-      sender_sig
-    }, {
+    return request(`${apiHost}/redeem-recovered`, {
       headers: {
-        'authorization': `Bearer ${apiKey}`
-      }
+        'authorization': `Bearer ${apiKey}`,
+        'content-type': 'application/json'
+      },
+      method: 'POST',
+      body: JSON.stringify({
+        receiver,
+        sender,
+        escrow,
+        transfer_id,
+        receiver_sig,
+        sender_sig
+      })
     })
   },
-  deposit: (
+  redeemLink: (
     apiHost,
     apiKey,
+    receiver,
+    sender,
+    escrow,
+    transfer_id,
+    receiver_sig
+  ) => {
+    return request(`${apiHost}/redeem`, {
+      headers: {
+        'authorization': `Bearer ${apiKey}`,
+        'content-type': 'application/json'
+      },
+      method: 'POST',
+      body: JSON.stringify({
+        receiver,
+        sender,
+        escrow,
+        transfer_id,
+        receiver_sig
+      })
+    })
+  },
+  depositWithAuthorization: (
+    apiHost,
+    apiKey,
+    token,
+    token_type,
     sender,
     escrow,
     transfer_id,
@@ -35,28 +77,90 @@ const requests: TRequests = {
     amount,
     authorization
   ) => {
-    return axios.post(`${apiHost}/deposit`, {
-      sender,
-      escrow,
-      transfer_id,
-      expiration,
-      amount,
-      authorization
-    }, {
+    return request(`${apiHost}/deposit-with-authorization`, {
       headers: {
-        'authorization': `Bearer ${apiKey}`
-      }
+        'authorization': `Bearer ${apiKey}`,
+        'content-type': 'application/json'
+      },
+      method: 'POST',
+      body: JSON.stringify({
+        sender,
+        token,
+        token_type,
+        escrow,
+        transfer_id,
+        expiration,
+        amount,
+        authorization
+      })
+    })
+  },
+  deposit: (
+    apiHost,
+    apiKey,
+    token,
+    token_type,
+    sender,
+    escrow,
+    transfer_id,
+    expiration,
+    amount,
+    tx_hash
+  ) => {
+    return request(`${apiHost}/deposit`, {
+      headers: {
+        'authorization': `Bearer ${apiKey}`,
+        'content-type': 'application/json'
+      },
+      method: 'POST',
+      body: JSON.stringify({
+        sender,
+        escrow,
+        transfer_id,
+        token,
+        token_type,
+        expiration,
+        amount,
+        tx_hash
+      })
     })
   },
   getTransferStatus: (
     apiHost,
     apiKey,
     sender,
-    transfer_id
+    transferId
   ) => {
-    return axios.get(`${apiHost}/get-payment-status/${sender}/${transfer_id}`, {
+    return request(`${apiHost}/payment-status/sender/${sender}/transfer/${transferId}`, {
       headers: {
-        'authorization': `Bearer ${apiKey}`
+        'authorization': `Bearer ${apiKey}`,
+        'content-type': 'application/json'
+      }
+    })
+  },
+  getTransferStatusByTxHash: (
+    apiHost,
+    apiKey,
+    txHash
+  ) => {
+    return request(`${apiHost}/payment-status/transaction/${txHash}`, {
+      headers: {
+        'authorization': `Bearer ${apiKey}`,
+        'content-type': 'application/json'
+      }
+    })
+  },
+  getFee: (
+    apiHost,
+    apiKey,
+    amount,
+    tokenAddress,
+    sender
+  ) => {
+    return request(`${apiHost}/fee?amount=${amount}&token_address=${tokenAddress}&sender=${sender}`, {
+      headers: {
+        'authorization': `Bearer ${apiKey}`,
+        'content-type': 'application/json'
       }
     })
   }

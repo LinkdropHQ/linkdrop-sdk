@@ -1,15 +1,12 @@
-import * as x25519 from '@stablelib/x25519'
-import { toString } from 'uint8arrays'
-import TGenerateKeyPair from './types'
+import { ethers } from "ethers"
+import { TGetRandomBytes } from "../../types"
 
-export const BASE16 = 'base16'
-
-const generateKeyPair: TGenerateKeyPair = () => {
-  const keyPair = x25519.generateKeyPair()
-  return {
-    privateKey: keyPair.secretKey,
-    publicKey: toString(keyPair.publicKey, BASE16)
-  }
+const generateKeypair = async (
+  getRandomBytes: TGetRandomBytes
+) => {
+  ethers.randomBytes.register(getRandomBytes)
+  const linkKey = ethers.Wallet.createRandom()
+  return linkKey
 }
 
-export default generateKeyPair
+export default generateKeypair

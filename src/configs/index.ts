@@ -1,13 +1,19 @@
-export const polygonApiUrl = 'https://escrow-api.linkdrop.io/polygon'
-export const mumbaiApiUrl = 'https://escrow-api.linkdrop.io/mumbai'
-export const baseApiUrl = 'https://escrow-api.linkdrop.io/base'
+export const polygonApiUrl = 'https://escrow-api.linkdrop.io/v2/polygon'
+export const mumbaiApiUrl = 'https://escrow-api.linkdrop.io/v2/mumbai'
+export const baseApiUrl = 'https://escrow-api.linkdrop.io/v2/base'
+export const devApiUrl = 'https://escrow-api.linkdrop.io/dev'
 
 export const polygonJSONRPCUrl = 'https://polygon-mainnet.infura.io/v3/f5f8608d75874e5fbcdd4ee9657b8ab5'
 export const mumbaiJSONRPCUrl = 'https://polygon-mumbai.infura.io/v3/f5f8608d75874e5fbcdd4ee9657b8ab5'
 export const baseJSONRPCUrl = 'https://developer-access-mainnet.base.org'
 
-export const mumbaiEscrowAddress = "0x85dF066235BC89D25d78FF5e98cbCc5Fc91e7e05"
-export const polygonEscrowAddress = "0x0522dd6e9f2beca1cd15a5fd275dc279a1a08eac"
-export const baseEscrowAddress = "0x0522dd6e9f2beca1cd15a5fd275dc279a1a08eac"
+export const mumbaiEscrowAddress = "0xc384727F3f5e1c70CB8715a2Abc4aAf818B23a7B"
+export const mumbaiNativeEscrowAddress = "0x93Ce7F900007A82dE8cfF8C4fb2FBD33551528fc"
 
-export const claimHost = 'http://localhost:3000'
+export const polygonEscrowAddress = "0xc384727F3f5e1c70CB8715a2Abc4aAf818B23a7B"
+export const polygonNativeEscrowAddress = "0x93Ce7F900007A82dE8cfF8C4fb2FBD33551528fc"
+
+export const baseEscrowAddress = "0xc384727F3f5e1c70CB8715a2Abc4aAf818B23a7B"
+export const baseNativeEscrowAddress = "0x93Ce7F900007A82dE8cfF8C4fb2FBD33551528fc"
+
+export const baseUrl = 'http://localhost:3000'

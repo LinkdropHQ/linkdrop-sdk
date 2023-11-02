@@ -1,11 +1,12 @@
 
-import { TDomain, TSignerCustomized } from '../../types'
+import { TDomain, TSignTypedData } from '../../types'
 import getDepositAuthorizationBase from './get-deposit-authorization-base'
 import getDepositAuthorizationPolygon from './get-deposit-authorization-polygon'
 import getDepositAuthorizationMumbai from './get-deposit-authorization-mumbai'
 
 async function getDepositAuthorization(
-    signer: TSignerCustomized,
+    signTypedData: TSignTypedData,
+    sender: string,
     to: string,
     amount: string,
     validAfter: number,
@@ -16,7 +17,8 @@ async function getDepositAuthorization(
     chainId: number
 ) {
   if (chainId === 137) return getDepositAuthorizationPolygon(
-    signer,
+    signTypedData,
+    sender,
     to,
     amount,
     validAfter,
@@ -27,7 +29,8 @@ async function getDepositAuthorization(
   )
 
   if (chainId === 8453) return getDepositAuthorizationBase(
-    signer,
+    signTypedData,
+    sender,
     to,
     amount,
     validAfter,
@@ -38,7 +41,8 @@ async function getDepositAuthorization(
   )
 
   return getDepositAuthorizationMumbai(
-    signer,
+    signTypedData,
+    sender,
     to,
     amount,
     validAfter,

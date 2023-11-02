@@ -1,4 +1,30 @@
-# Linkdrop Payment Link SDK
+# Linkdrop P2P SDK
+
+## 2.0.0-alpha.0
+- network tokens support
+- link recovery added
+- short links available
+- new api
+- new escrow contracts
+
+## 1.0.4
+- ethers v6 added
+- added initialize method to ClaimLink
+
+## 1.0.3
+- fix for baseUrl (should be passed to ClaimLink)
+
+## 1.0.2
+- minor fix with data format
+
+## 1.0.1
+- signer removed
+- new methods for modules (ClaimLink, LinkdropPaySDK)
+- major updates
+- axios removed
+- added getRandomBytes
+- added signTypedData
+- updates for repository name and npm package name
 
 ## 0.0.19
 - added apiKey to Zuplo endpoints
