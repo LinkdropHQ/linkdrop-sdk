@@ -7,17 +7,16 @@ const decodeSenderAddress = (
   senderSig: string,
   domain: TEscrowPaymentDomain
 ): string => {
-
   const types = {
     Transfer: [
       { name: 'linkKeyId', type: 'address' },
       { name: 'transferId', type: 'address' }
     ]
-  };
+  }
   const message = {
     linkKeyId: linkKeyId,
     transferId: transferId
-  };
+  }
   const recoveredAddress = ethers.verifyTypedData(domain, types, message, senderSig)
   return recoveredAddress.toLowerCase()
 };

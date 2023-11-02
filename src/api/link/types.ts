@@ -68,7 +68,7 @@ type TRedeemRecoveredLink = (
 ) => Promise<TRedeemRecoveredLinkResponse>
 
 type TGetTransferDataResponse = {
-  escrow_payment: TClaimLinkItem,
+  claim_link: TClaimLinkItem,
   success: boolean
 }
 
@@ -80,7 +80,7 @@ type TGetTransferData = (
 ) => Promise<TGetTransferDataResponse>
 
 type TGetTransferDataByTxHashResponse = {
-  escrow_payment: TClaimLinkItem,
+  claim_link: TClaimLinkItem,
   success: boolean
 }
 

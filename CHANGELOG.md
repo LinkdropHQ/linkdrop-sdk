@@ -1,5 +1,15 @@
 # Linkdrop P2P SDK
 
+## 2.0.0-alpha.0
+- network tokens support
+- link recovery added
+- short links available
+- new api
+- new escrow contracts
+
+## 1.0.4
+- ethers v6 added
+- added initialize method to ClaimLink
 
 ## 1.0.3
 - fix for baseUrl (should be passed to ClaimLink)

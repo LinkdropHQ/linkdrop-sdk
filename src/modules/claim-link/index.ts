@@ -12,7 +12,7 @@ import IClaimLinkSDK, {
   TInitialize
 } from './types'
 import { TEscrowPaymentDomain, TLink, TTokenType } from '../../types'
-import { LinkdropEscrowStablecoin, LinkdropEscrowNetworkToken } from '../../abi'
+import { LinkdropEscrowNetworkToken } from '../../abi'
 import {
   generateReceiverSig,
   getDepositAuthorization,
@@ -55,7 +55,7 @@ class ClaimLink implements IClaimLinkSDK {
     claimUrl,
     tokenType
   }: TConstructorArgs) {
-    this.sender = sender
+    this.sender = sender.toLowerCase()
     this.token = token
     this.amount = amount
     this.expiration = expiration
@@ -94,7 +94,7 @@ class ClaimLink implements IClaimLinkSDK {
         this.apiHost,
         this.apiKey,
         dest,
-        sender,
+        sender.toLowerCase(),
         this.escrowAddress,
         transferId,
         receiverSig,
@@ -107,7 +107,7 @@ class ClaimLink implements IClaimLinkSDK {
         this.apiHost,
         this.apiKey,
         dest,
-        sender,
+        sender.toLowerCase(),
         this.escrowAddress,
         transferId,
         receiverSig
@@ -115,7 +115,6 @@ class ClaimLink implements IClaimLinkSDK {
       const { tx_hash: txHash } = redeem
       return txHash
     }
-
   }
 
   getStatus: TGetStatus = async () => {
@@ -123,16 +122,16 @@ class ClaimLink implements IClaimLinkSDK {
       throw new Error(errors.property_not_provided('transferId'))
     }
 
-    const { escrow_payment } = await linkApi.getTransferStatus(
+    const { claim_link } = await linkApi.getTransferStatus(
       this.apiHost,
       this.apiKey,
-      this.sender,
+      this.sender.toLowerCase(),
       this.transferId
     )
 
     return {
-      status: escrow_payment.status,
-      operations: escrow_payment.operations
+      status: claim_link.status,
+      operations: claim_link.operations
     }
   }
 
@@ -198,6 +197,8 @@ class ClaimLink implements IClaimLinkSDK {
     const keypair = await generateKeypair(getRandomBytes)
     this.transferId = keypair.address.toLowerCase()
 
+    console.log({ keypair })
+
     const iface = new ethers.Interface(LinkdropEscrowNetworkToken.abi)
 
     const data = iface.encodeFunctionData("deposit", [
@@ -219,7 +220,7 @@ class ClaimLink implements IClaimLinkSDK {
       this.apiKey,
       this.token,
       this.tokenType,
-      this.sender,
+      this.sender.toLowerCase(),
       this.escrowAddress,
       this.transferId,
       this.expiration,
@@ -232,7 +233,7 @@ class ClaimLink implements IClaimLinkSDK {
         transferId: this.transferId,
         chainId: this.chainId,
         tokenType: this.tokenType,
-        sender: this.sender
+        sender: this.sender.toLowerCase()
       }
 
       const claimUrl = encodeLink(this.baseUrl, linkParams)
@@ -285,7 +286,7 @@ class ClaimLink implements IClaimLinkSDK {
 
     const auth = await getDepositAuthorization(
       signTypedData,
-      this.sender,
+      this.sender.toLowerCase(),
       this.escrowAddress,
       this.totalAmount,
       validAfter,
@@ -302,7 +303,7 @@ class ClaimLink implements IClaimLinkSDK {
         this.apiKey,
         this.token,
         this.tokenType,
-        this.sender,
+        this.sender.toLowerCase(),
         this.escrowAddress,
         this.transferId,
         this.expiration,
@@ -317,7 +318,7 @@ class ClaimLink implements IClaimLinkSDK {
         transferId: this.transferId,
         chainId: this.chainId,
         tokenType: this.tokenType,
-        sender: this.sender
+        sender: this.sender.toLowerCase()
       }
 
       const claimUrl = encodeLink(this.baseUrl, linkParams)
@@ -342,7 +343,7 @@ class ClaimLink implements IClaimLinkSDK {
       this.apiKey,
       newAmount,
       this.token,
-      this.sender
+      this.sender.toLowerCase()
     )
 
     return result
@@ -429,7 +430,7 @@ class ClaimLink implements IClaimLinkSDK {
     )
 
     if (result) {
-      const { linkKey, linkKeyId, senderSig } = result
+      const { linkKey, senderSig } = result
 
       const linkParams: TLink = {
         linkKey,

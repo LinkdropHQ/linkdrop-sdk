@@ -1,7 +1,7 @@
 import ClaimLink from './modules/claim-link'
-import LinkdropPay from './modules/linkdrop-pay-sdk'
+import LinkdropP2P from './modules/linkdrop-p2p'
 
 export {
-  LinkdropPay,
+  LinkdropP2P,
   ClaimLink
 }
