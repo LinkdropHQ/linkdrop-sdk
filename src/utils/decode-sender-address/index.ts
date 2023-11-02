@@ -19,7 +19,7 @@ const decodeSenderAddress = (
     transferId: transferId
   };
   const recoveredAddress = ethers.verifyTypedData(domain, types, message, senderSig)
-  return recoveredAddress
+  return recoveredAddress.toLowerCase()
 };
 
 export default decodeSenderAddress
