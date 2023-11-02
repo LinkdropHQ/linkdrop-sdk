@@ -197,8 +197,6 @@ class ClaimLink implements IClaimLinkSDK {
     const keypair = await generateKeypair(getRandomBytes)
     this.transferId = keypair.address.toLowerCase()
 
-    console.log({ keypair })
-
     const iface = new ethers.Interface(LinkdropEscrowNetworkToken.abi)
 
     const data = iface.encodeFunctionData("deposit", [

@@ -1,5 +1,8 @@
 # Linkdrop P2P SDK
 
+## 2.0.0-alpha.1
+- removed console logs
+
 ## 2.0.0-alpha.0
 - network tokens support
 - link recovery added
