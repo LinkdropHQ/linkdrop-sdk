@@ -1,5 +1,8 @@
 # Linkdrop P2P SDK
 
+## 2.0.0-alpha.3
+- updated helper to prevent 0x cut in private/public key or signature
+
 ## 2.0.0-alpha.2
 - removed async function for TSignTypedData type
 
