@@ -4,7 +4,7 @@ import TGetClaimLink from './get-claim-link'
 import TConstructorArgs from './constructor-args'
 import TInitializeClaimLink from './initialize-claim-link'
 
-interface ILinkdrop {
+interface ILinkdropP2P {
   apiKey: string
   baseUrl: string
 
@@ -20,4 +20,4 @@ export {
   TRetrieveClaimLink,
   TInitializeClaimLink
 }
-export default ILinkdrop
+export default ILinkdropP2P

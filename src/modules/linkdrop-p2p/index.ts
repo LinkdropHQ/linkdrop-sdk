@@ -1,4 +1,4 @@
-import ILinkdrop, {
+import ILinkdropP2P, {
   TCreateClaimLink,
   TConstructorArgs,
   TGetClaimLink,
@@ -15,7 +15,7 @@ import {
 import ClaimLink from '../claim-link'
 import { errors } from '../../texts'
 
-class LinkdropPaySDK implements ILinkdrop {
+class LinkdropP2P implements ILinkdropP2P {
   apiKey: string
   baseUrl: string
 
@@ -60,7 +60,7 @@ class LinkdropPaySDK implements ILinkdrop {
       expiration,
       chainId,
       amount,
-      sender: from,
+      sender: from.toLowerCase(),
       apiHost,
       apiKey: this.apiKey,
       tokenType,
@@ -104,23 +104,29 @@ class LinkdropPaySDK implements ILinkdrop {
         claimUrl
       )
       if (linkParsed) {
-        const { escrow_payment } = await linkApi.getTransferStatus(
+        const { claim_link } = await linkApi.getTransferStatus(
           apiHost,
           this.apiKey,
-          linkParsed.sender,
+          linkParsed.sender.toLowerCase(),
           transferId
         )
+        const {
+          token,
+          expiration,
+          amount,
+          token_type
+        } = claim_link
         const claimLinkData = {
-          token: escrow_payment.token,
-          expiration: escrow_payment.expiration,
+          token,
+          expiration,
           chainId,
-          amount: escrow_payment.amount,
-          sender: linkParsed.sender,
+          amount,
+          sender: linkParsed.sender.toLowerCase(),
           apiHost,
           apiKey: this.apiKey,
           transferId: transferId.toLowerCase(),
           claimUrl,
-          tokenType: escrow_payment.token_type,
+          tokenType: token_type,
           baseUrl: this.baseUrl
         }
         return this._initializeClaimLink(claimLinkData)
@@ -129,23 +135,29 @@ class LinkdropPaySDK implements ILinkdrop {
       }
       
     } else {
-      const { escrow_payment } = await linkApi.getTransferStatus(
+      const { claim_link } = await linkApi.getTransferStatus(
         apiHost,
         this.apiKey,
-        sender,
+        sender.toLowerCase(),
         transferId
       )
+      const {
+        token,
+        expiration,
+        amount,
+        token_type
+      } = claim_link
       const claimLinkData = {
-        token: escrow_payment.token,
-        expiration: escrow_payment.expiration,
+        token,
+        expiration,
         chainId,
-        amount: escrow_payment.amount,
-        sender,
+        amount,
+        sender: sender.toLowerCase(),
         apiHost,
         apiKey: this.apiKey,
         transferId: transferId.toLowerCase(),
         claimUrl,
-        tokenType: escrow_payment.token_type,
+        tokenType: token_type,
         baseUrl: this.baseUrl
       }
       return this._initializeClaimLink(claimLinkData)
@@ -163,41 +175,55 @@ class LinkdropPaySDK implements ILinkdrop {
       throw new Error(errors.chain_not_supported())
     }
     if (sender && transferId) {
-      const { escrow_payment } = await linkApi.getTransferStatus(
+      const { claim_link } = await linkApi.getTransferStatus(
         apiHost,
         this.apiKey,
-        sender,
+        sender.toLowerCase(),
         transferId
       )
+      const {
+        token,
+        expiration,
+        amount,
+        token_type
+      } = claim_link
       const claimLinkData = {
-        token: escrow_payment.token,
-        expiration: escrow_payment.expiration,
+        token,
+        expiration,
         chainId,
-        amount: escrow_payment.amount,
-        sender: escrow_payment.sender,
+        amount,
+        sender: sender.toLowerCase(),
         apiHost,
         apiKey: this.apiKey,
-        tokenType: escrow_payment.token_type,
+        tokenType: token_type,
         transferId: transferId.toLowerCase(),
         baseUrl: this.baseUrl
       }
       return this._initializeClaimLink(claimLinkData)
     } else {
-      const { escrow_payment } = await linkApi.getTransferStatusByTxHash(
+      const { claim_link } = await linkApi.getTransferStatusByTxHash(
         apiHost,
         this.apiKey,
         txHash as string
       )
+      const {
+        token,
+        expiration,
+        amount,
+        sender,
+        transfer_id,
+        token_type
+      } = claim_link
       const claimLinkData = {
-        token: escrow_payment.token,
-        expiration: escrow_payment.expiration,
+        token,
+        expiration,
         chainId,
-        amount: escrow_payment.amount,
-        sender: escrow_payment.sender,
+        amount,
+        sender: sender.toLowerCase(),
         apiHost,
         apiKey: this.apiKey,
-        transferId: escrow_payment.transfer_id.toLowerCase(),
-        tokenType: escrow_payment.token_type,
+        transferId: transfer_id.toLowerCase(),
+        tokenType: token_type,
         baseUrl: this.baseUrl
       }
       return this._initializeClaimLink(claimLinkData)
@@ -205,4 +231,4 @@ class LinkdropPaySDK implements ILinkdrop {
   }
 }
 
-export default LinkdropPaySDK
+export default LinkdropP2P
