@@ -1,5 +1,5 @@
 import { ETokenSymbol, TLink } from '../types'
-import { defineTokenType } from './'
+import { defineTokenType, convert0xValid } from './'
 import { ethers, decodeBase58 } from 'ethers'
 type TDecodeLink = (link: string) => TLink
 
@@ -32,10 +32,10 @@ const decodeLink: TDecodeLink = (link) => {
     sender: parsedParams["s"] || ''
   }
 
-  const linkKey = ethers.toQuantity(decodeBase58(params.linkKey))
-  const senderSig = params.signature ? ethers.toQuantity(decodeBase58(params.signature)) : undefined
-  const sender = params.sender ? ethers.toQuantity(decodeBase58(params.sender)) : undefined
-  const transferId = params.transferId ? ethers.toQuantity(decodeBase58(params.transferId)) : (new ethers.Wallet(linkKey)).address.toLowerCase()
+  const linkKey = convert0xValid(ethers.toQuantity(decodeBase58(params.linkKey)), 66)
+  const senderSig = params.signature ? convert0xValid(ethers.toQuantity(decodeBase58(params.signature)), 132) : undefined
+  const sender = params.sender ? convert0xValid(ethers.toQuantity(decodeBase58(params.sender)), 42) : undefined
+  const transferId = params.transferId ? convert0xValid(ethers.toQuantity(decodeBase58(params.transferId)), 42) : (new ethers.Wallet(linkKey)).address.toLowerCase()
 
   const chainId = Number(params.chainId)
 

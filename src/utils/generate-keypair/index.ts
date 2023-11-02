@@ -4,8 +4,8 @@ import { TGetRandomBytes } from "../../types"
 const generateKeypair = async (
   getRandomBytes: TGetRandomBytes
 ) => {
-  const mnemonic = ethers.Mnemonic.fromEntropy(await getRandomBytes(32))
-  const linkKey = ethers.Wallet.fromPhrase(mnemonic.phrase)
+  ethers.randomBytes.register(getRandomBytes)
+  const linkKey = ethers.Wallet.createRandom()
   return linkKey
 }
 

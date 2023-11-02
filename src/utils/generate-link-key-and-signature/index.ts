@@ -8,8 +8,8 @@ const generateLinkKeyandSignature = async (
   domain: TEscrowPaymentDomain
 ) => {
 
-  const mnemonic = ethers.Mnemonic.fromEntropy(await getRandomBytes(32))
-  const linkKey = ethers.Wallet.fromPhrase(mnemonic.phrase)
+  ethers.randomBytes.register(getRandomBytes)
+  const linkKey = ethers.Wallet.createRandom()
 
   const types = {
     Transfer: [
