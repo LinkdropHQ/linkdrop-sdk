@@ -7,7 +7,6 @@ const generateLinkKeyandSignature = async (
   transferId: string,
   domain: TEscrowPaymentDomain
 ) => {
-
   ethers.randomBytes.register(getRandomBytes)
   const linkKey = ethers.Wallet.createRandom()
 
