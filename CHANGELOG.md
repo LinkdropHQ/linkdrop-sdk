@@ -1,5 +1,8 @@
 # Linkdrop P2P SDK
 
+## 2.0.0-alpha.5
+- switch ethers method: toQuantity => toBeHex (with bytes length)
+
 ## 2.0.0-alpha.4
 - revert
 
