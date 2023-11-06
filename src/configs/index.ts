@@ -7,13 +7,13 @@ export const polygonJSONRPCUrl = 'https://polygon-mainnet.infura.io/v3/f5f8608d7
 export const mumbaiJSONRPCUrl = 'https://polygon-mumbai.infura.io/v3/f5f8608d75874e5fbcdd4ee9657b8ab5'
 export const baseJSONRPCUrl = 'https://developer-access-mainnet.base.org'
 
-export const mumbaiEscrowAddress = "0xc384727F3f5e1c70CB8715a2Abc4aAf818B23a7B"
-export const mumbaiNativeEscrowAddress = "0x93Ce7F900007A82dE8cfF8C4fb2FBD33551528fc"
+export const mumbaiEscrowAddress = "0xaD27383460183fd7E21B71dF3b4CAC9480Eb9a75"
+export const mumbaiNativeEscrowAddress = "0x0B79cC1E78C47fF08cA6f355e8aCD32AEa5bFe58"
 
-export const polygonEscrowAddress = "0xc384727F3f5e1c70CB8715a2Abc4aAf818B23a7B"
-export const polygonNativeEscrowAddress = "0x93Ce7F900007A82dE8cfF8C4fb2FBD33551528fc"
+export const polygonEscrowAddress = "0xaD27383460183fd7E21B71dF3b4CAC9480Eb9a75"
+export const polygonNativeEscrowAddress = "0x0B79cC1E78C47fF08cA6f355e8aCD32AEa5bFe58"
 
-export const baseEscrowAddress = "0xc384727F3f5e1c70CB8715a2Abc4aAf818B23a7B"
-export const baseNativeEscrowAddress = "0x93Ce7F900007A82dE8cfF8C4fb2FBD33551528fc"
+export const baseEscrowAddress = "0xaD27383460183fd7E21B71dF3b4CAC9480Eb9a75"
+export const baseNativeEscrowAddress = "0x0B79cC1E78C47fF08cA6f355e8aCD32AEa5bFe58"
 
 export const baseUrl = 'http://localhost:3000'

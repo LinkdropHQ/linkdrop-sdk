@@ -45,19 +45,18 @@ class LinkdropP2P implements ILinkdropP2P {
     if (!from) {
       throw new Error(errors.argument_not_provided('from'))
     }
-    if (!expiration) {
-      throw new Error(errors.argument_not_provided('expiration'))
-    }
+
     if (!amount) {
       throw new Error(errors.argument_not_provided('amount'))
     }
+
     if (!token) {
       throw new Error(errors.argument_not_provided('token'))
     }
 
     return this._initializeClaimLink({
       token,
-      expiration,
+      expiration: expiration || String(Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 30),
       chainId,
       amount,
       sender: from.toLowerCase(),
