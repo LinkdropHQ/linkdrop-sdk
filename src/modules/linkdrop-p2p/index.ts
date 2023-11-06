@@ -56,7 +56,7 @@ class LinkdropP2P implements ILinkdropP2P {
 
     return this._initializeClaimLink({
       token,
-      expiration: expiration || String(Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 30),
+      expiration,
       chainId,
       amount,
       sender: from.toLowerCase(),

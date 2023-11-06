@@ -4,7 +4,7 @@ type TConstructorArgs = {
   sender: string
   token: string
   amount: string
-  expiration: string
+  expiration?: string
   chainId: number
   apiHost: string
   apiKey: string
