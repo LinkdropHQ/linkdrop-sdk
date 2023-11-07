@@ -1,5 +1,13 @@
 # Linkdrop P2P SDK
 
+## 2.0.0-alpha.7
+- updated babel configuration file
+
+## 2.0.0-alpha.6
+- expiration is now optional for initialization of ClaimLink (default: 30 days)
+- added babel loader plugins
+- new escrow contract addresses for base, polygon and mumbai networks
+
 ## 2.0.0-alpha.5
 - switch ethers method: toQuantity => toBeHex (with bytes length)
 

@@ -23,9 +23,8 @@ module.exports = {
   },
   module: {
     rules: [
-      // all files with a `.ts`, `.cts`, `.mts` or `.tsx` extension will be handled by `ts-loader`
       {
-        test: /\.([cm]?ts|tsx)$/,
+        test: /\.([cm]?ts|tsx|js)$/,
         use: "babel-loader"
       }
     ]
