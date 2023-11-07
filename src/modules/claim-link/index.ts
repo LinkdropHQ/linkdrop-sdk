@@ -58,7 +58,7 @@ class ClaimLink implements IClaimLinkSDK {
     this.sender = sender.toLowerCase()
     this.token = token
     this.amount = amount
-    this.expiration = expiration
+    this.expiration = expiration || String(Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 30)
     this.chainId = chainId
     this.apiHost = apiHost
     this.apiKey = apiKey

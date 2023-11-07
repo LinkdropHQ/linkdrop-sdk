@@ -45,12 +45,11 @@ class LinkdropP2P implements ILinkdropP2P {
     if (!from) {
       throw new Error(errors.argument_not_provided('from'))
     }
-    if (!expiration) {
-      throw new Error(errors.argument_not_provided('expiration'))
-    }
+
     if (!amount) {
       throw new Error(errors.argument_not_provided('amount'))
     }
+
     if (!token) {
       throw new Error(errors.argument_not_provided('token'))
     }
