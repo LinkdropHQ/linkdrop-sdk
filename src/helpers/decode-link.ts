@@ -25,8 +25,8 @@ const decodeLink: TDecodeLink = (link) => {
     chainId: parsedParams["c"],
   };
 
-  const linkKey = ethers.toQuantity(decodeBase58(params.linkKey))
-  const senderSig = ethers.toQuantity(decodeBase58(params.s))
+  const linkKey = ethers.toBeHex(decodeBase58(params.linkKey), 32)
+  const senderSig = ethers.toBeHex(decodeBase58(params.s), 65)
   const transferId = BigInt(decodeBase58(params.transferId)).toString()
   const chainId = Number(params.chainId)
 
