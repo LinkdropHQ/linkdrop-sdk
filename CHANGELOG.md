@@ -1,5 +1,8 @@
 # Linkdrop P2P SDK
 
+## 1.0.5
+- added toBeHex method to decode links
+
 ## 1.0.4
 - ethers v6 added
 - added initialize method to ClaimLink
