@@ -8,6 +8,7 @@ import type { TGetRandomBytes } from './get-random-bytes'
 import type { TSendTransaction } from './send-transaction'
 import type { TDepositResult } from './deposit-result'
 import { EChains } from './chains'
+import { ETokenAddress } from './token-address'
 import { ETokenSymbol } from './token-symbol'
 import type {
   TClaimLinkItem,
@@ -19,6 +20,7 @@ import type {
 export {
   TTokenType,
   TDepositResult,
+  ETokenAddress,
   EChains,
   TClaimLinkItem,
   ETokenSymbol,

@@ -8,7 +8,9 @@ const defineTokenType: TDefineTokenType = (tokenSymbol) => {
   switch (tokenSymbol) {
     case ETokenSymbol.eth:
     case ETokenSymbol.matic: return 'NATIVE'
-    case ETokenSymbol.usdc: return 'ERC20'
+    case ETokenSymbol.usdc:
+    case ETokenSymbol.usdce:
+      return 'ERC20'
     default: return null
   }
 }

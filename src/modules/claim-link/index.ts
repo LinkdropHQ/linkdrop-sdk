@@ -11,7 +11,8 @@ import IClaimLinkSDK, {
   TDeposit,
   TInitialize
 } from './types'
-import { TEscrowPaymentDomain, TLink, TTokenType } from '../../types'
+import { toBigInt } from 'ethers'
+import { TEscrowPaymentDomain, TLink, TTokenType, ETokenAddress } from '../../types'
 import { LinkdropEscrowNetworkToken } from '../../abi'
 import {
   generateReceiverSig,
@@ -56,7 +57,7 @@ class ClaimLink implements IClaimLinkSDK {
     tokenType
   }: TConstructorArgs) {
     this.sender = sender.toLowerCase()
-    this.token = token
+    this.token = token.toLowerCase()
     this.amount = amount
     this.expiration = expiration || String(Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 30)
     this.chainId = chainId
@@ -137,11 +138,30 @@ class ClaimLink implements IClaimLinkSDK {
 
   _defineDomain: TDefineDomain = () => {
     if (this.chainId === 137) {
+      if (this.token === ETokenAddress.usdcBridgedPolygon) {
+        return {
+          name: 'USD Coin (PoS)',  // Polygon Mainnet
+          version: '1',
+          verifyingContract: ETokenAddress.usdcBridgedPolygon,
+          salt: '0x0000000000000000000000000000000000000000000000000000000000000089'
+        }
+      }
+
       return {
-        name: 'USD Coin (PoS)',  // Polygon Mainnet
-        version: '1',
-        verifyingContract: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
-        salt: '0x0000000000000000000000000000000000000000000000000000000000000089'
+        "name": "USD Coin",
+        "version": "2",
+        "chainId": 137,
+        "verifyingContract": ETokenAddress.usdcBridgedPolygon
+      }
+      
+    }
+
+    if (this.chainId === 84531) {// Base Goerli
+      return {
+        name: 'USD Coin',  
+        version: '2',
+        chainId: 84531,
+        verifyingContract: ETokenAddress.usdcBaseGoerli
       }
     }
 
@@ -149,15 +169,17 @@ class ClaimLink implements IClaimLinkSDK {
       return {
         name: 'USD Coin (PoS)',
         version: '1',
-        verifyingContract: '0x0FA8781a83E46826621b3BC094Ea2A0212e71B23',
+        verifyingContract: ETokenAddress.usdcMumbai,
         salt: '0x0000000000000000000000000000000000000000000000000000000000013881'
       }
-    } else if (this.chainId === 8453) { // Base
+    } 
+
+    if (this.chainId === 8453) { // Base
       return {
         name: 'USD Coin',
         version: '2',
         chainId: 8453,
-        verifyingContract: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913'
+        verifyingContract: ETokenAddress.usdcBase
       }
     }
 
@@ -167,8 +189,11 @@ class ClaimLink implements IClaimLinkSDK {
   initialize: TInitialize = async () => {
     const {
       total_amount: totalAmount,
-      fee
+      fee,
+      min_transfer_amount: minTransferAmount,
+      max_transfer_amount: maxTransferAmount
     } = await this._getCurrentFee(this.amount)
+
     this.totalAmount = totalAmount
     this.fee = fee
   }
@@ -235,7 +260,11 @@ class ClaimLink implements IClaimLinkSDK {
         sender: this.sender.toLowerCase()
       }
 
-      const claimUrl = encodeLink(this.baseUrl, linkParams)
+      const claimUrl = encodeLink(
+        this.baseUrl,
+        linkParams,
+        this.token
+      )
 
       if (!claimUrl) {
         throw new Error(errors.not_possible_create_claim_url())
@@ -321,7 +350,11 @@ class ClaimLink implements IClaimLinkSDK {
         sender: this.sender.toLowerCase()
       }
 
-      const claimUrl = encodeLink(this.baseUrl, linkParams)
+      const claimUrl = encodeLink(
+        this.baseUrl,
+        linkParams,
+        this.token
+      )
 
       if (!claimUrl) {
         throw new Error(errors.not_possible_create_claim_url())
@@ -343,7 +376,8 @@ class ClaimLink implements IClaimLinkSDK {
       this.apiKey,
       newAmount,
       this.token,
-      this.sender.toLowerCase()
+      this.sender.toLowerCase(),
+      this.tokenType
     )
 
     return result
@@ -353,8 +387,18 @@ class ClaimLink implements IClaimLinkSDK {
     if (!this.transferId) {
       const {
         fee,
-        total_amount: totalAmount
+        total_amount: totalAmount,
+        min_transfer_amount: minTransferAmount,
+        max_transfer_amount: maxTransferAmount
       } = await this._getCurrentFee(amount)
+
+      if (toBigInt(amount) < toBigInt(minTransferAmount)) {
+        throw new Error(errors.amount_should_be_more_than_minlimit(minTransferAmount.toString()))
+      }
+  
+      if (toBigInt(amount) > toBigInt(maxTransferAmount)) {
+        throw new Error(errors.amount_should_be_less_than_maxlimit(maxTransferAmount.toString()))
+      }
 
       this.amount = amount
       this.fee = fee
@@ -440,7 +484,11 @@ class ClaimLink implements IClaimLinkSDK {
         tokenType: this.tokenType
       }
 
-      const claimUrl = encodeLink(this.baseUrl, linkParams)
+      const claimUrl = encodeLink(
+        this.baseUrl,
+        linkParams,
+        this.token
+      )
 
       if (!claimUrl) {
         throw new Error(errors.not_possible_create_claim_url())

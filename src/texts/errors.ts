@@ -9,5 +9,8 @@ export default {
   'not_possible_create_claim_url': () => `Link should have senderSig or sender to be created`,
   'link_decode_failed': () => `Link should have 'sg' (signature) or 's' (sender) param to be decoded`,
   'link_parse_failed': () => `Link should have 'sg' (signature) or 's' (sender) param to be parsed`,
-  'variable_cannot_be_defined': (variable: string) => `${variable} cannot be defined`
+  'variable_cannot_be_defined': (variable: string) => `${variable} cannot be defined`,
+  'limits_not_defined': () => `Limits were not defined. Cannot create link`,
+  'amount_should_be_more_than_minlimit': (minLimit: string) => `Amount should be more than ${minLimit}`,
+  'amount_should_be_less_than_maxlimit': (maxLimit: string) => `Max amount ${maxLimit}`
 }

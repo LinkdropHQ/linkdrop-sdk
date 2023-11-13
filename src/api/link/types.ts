@@ -94,6 +94,8 @@ type TGetFeeResponse = {
   fee: string
   amount: string
   total_amount: string
+  max_transfer_amount: string
+  min_transfer_amount: string
   success: boolean
 }
 
@@ -102,8 +104,22 @@ type TGetFee = (
   apiKey: string,
   amount: string,
   tokenAddress: string,
-  sender: string
+  sender: string,
+  tokenType: TTokenType
 ) => Promise<TGetFeeResponse>
+
+type TGetLimitsResponse = {
+  success: boolean
+  max_transfer_amount: string
+  min_transfer_amount: string
+}
+
+type TGetLimits = (
+  apiHost: string,
+  apiKey: string,
+  tokenAddress: string,
+  tokenType: TTokenType
+) => Promise<TGetLimitsResponse>
 
 export type TRequests = {
   redeemLink: TRedeemLink
@@ -112,5 +128,6 @@ export type TRequests = {
   getTransferStatus: TGetTransferData
   getTransferStatusByTxHash: TGetTransferDataByTxHash
   getFee: TGetFee,
-  deposit: TDeposit
+  deposit: TDeposit,
+  getLimits: TGetLimits
 }

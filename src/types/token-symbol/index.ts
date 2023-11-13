@@ -1,5 +1,6 @@
 export enum ETokenSymbol {
   usdc = 'usdc',
   matic = 'matic',
-  eth = 'eth'
+  eth = 'eth',
+  usdce = 'usdce'
 }

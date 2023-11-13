@@ -155,9 +155,23 @@ const requests: TRequests = {
     apiKey,
     amount,
     tokenAddress,
-    sender
+    sender,
+    tokenType
   ) => {
-    return request(`${apiHost}/fee?amount=${amount}&token_address=${tokenAddress}&sender=${sender}`, {
+    return request(`${apiHost}/fee?amount=${amount}&token_address=${tokenAddress}&sender=${sender}&token_type=${tokenType}`, {
+      headers: {
+        'authorization': `Bearer ${apiKey}`,
+        'content-type': 'application/json'
+      }
+    })
+  },
+  getLimits: (
+    apiHost,
+    apiKey,
+    tokenAddress,
+    tokenType
+  ) => {
+    return request(`${apiHost}/limits?token_address=${tokenAddress}&token_type=${tokenType}`, {
       headers: {
         'authorization': `Bearer ${apiKey}`,
         'content-type': 'application/json'
