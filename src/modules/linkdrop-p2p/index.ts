@@ -72,11 +72,11 @@ class LinkdropP2P implements ILinkdropP2P {
       maxTransferAmount
     } = limitsResult
 
-    if (toBigInt(amount) < minTransferAmount) {
+    if (toBigInt(amount) < toBigInt(minTransferAmount)) {
       throw new Error(errors.amount_should_be_more_than_minlimit(minTransferAmount.toString()))
     }
 
-    if (toBigInt(amount) > maxTransferAmount) {
+    if (toBigInt(amount) > toBigInt(maxTransferAmount)) {
       throw new Error(errors.amount_should_be_less_than_maxlimit(maxTransferAmount.toString()))
     }
 
@@ -108,8 +108,8 @@ class LinkdropP2P implements ILinkdropP2P {
     )
 
     return {
-      minTransferAmount: toBigInt(limits.min_transfer_amount),
-      maxTransferAmount: toBigInt(limits.max_transfer_amount)
+      minTransferAmount: limits.min_transfer_amount,
+      maxTransferAmount: limits.max_transfer_amount
     }
   }
 
