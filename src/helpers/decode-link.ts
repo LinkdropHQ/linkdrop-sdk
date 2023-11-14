@@ -46,7 +46,8 @@ const decodeLink: TDecodeLink = (link) => {
     chainId,
     sender,
     version: params.version,
-    tokenType
+    tokenType,
+    tokenSymbol
   }
 }
 

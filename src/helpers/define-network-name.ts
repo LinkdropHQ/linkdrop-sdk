@@ -6,9 +6,11 @@ type TDefineNetworkName = (
 
 const defineNetworkName: TDefineNetworkName = (chainId) => {
   switch (Number(chainId)) {
-    case EChains.polygon: return 'matic'
+    case EChains.polygon: return 'polygon'
     case EChains.base: return 'base'
     case EChains.mumbai: return 'mumbai'
+    case EChains.baseGoerli: return 'goerli'
+
     default:
       return null
   }

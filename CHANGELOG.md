@@ -1,5 +1,12 @@
 # Linkdrop P2P SDK
 
+## 2.0.0-alpha.8
+- updated escrow contract definition
+- no native token address is needed to create NATIVE link
+- added limits (min and max amount that can be used to create link)
+- support for native usdc for polygon network
+- updated getDepositAuthorization method
+
 ## 2.0.0-alpha.7
 - updated babel configuration file
 

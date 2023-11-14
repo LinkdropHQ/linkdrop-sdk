@@ -3,6 +3,7 @@ import TRetrieveClaimLink from './retrieve-claim-link'
 import TGetClaimLink from './get-claim-link'
 import TConstructorArgs from './constructor-args'
 import TInitializeClaimLink from './initialize-claim-link'
+import TGetLimits from './get-limits'
 
 interface ILinkdropP2P {
   apiKey: string
@@ -11,13 +12,16 @@ interface ILinkdropP2P {
   createClaimLink: TCreateClaimLink
   retrieveClaimLink: TRetrieveClaimLink
   getClaimLink: TGetClaimLink
-  _initializeClaimLink: TInitializeClaimLink
+  _initializeClaimLink: TInitializeClaimLink,
+  getLimits: TGetLimits
 }
+
 export {
   TCreateClaimLink,
   TConstructorArgs,
   TGetClaimLink,
   TRetrieveClaimLink,
-  TInitializeClaimLink
+  TInitializeClaimLink,
+  TGetLimits
 }
 export default ILinkdropP2P

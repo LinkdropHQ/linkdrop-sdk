@@ -1,42 +1,22 @@
-import { EChains, TTokenType } from '../types'
-import {
-  mumbaiEscrowAddress,
-  polygonEscrowAddress,
-  baseEscrowAddress,
-  mumbaiNativeEscrowAddress,
-  baseNativeEscrowAddress,
-  polygonNativeEscrowAddress
-} from '../configs'
+import * as configs from '../configs'
 
 type TDefineEscrowAddress = (
   chainId: number | null,
-  tokenType: TTokenType
+  token: string
 ) => string | null
 
 const defineEscrowAddress: TDefineEscrowAddress = (
   chainId,
-  tokenType
+  token
 ) => {
-  if (!chainId || !tokenType) {
+  if (!chainId || !token) {
     return null
   }
-  if (tokenType === 'NATIVE') {
-    switch (Number(chainId)) {
-      case EChains.polygon: return polygonNativeEscrowAddress
-      case EChains.base: return baseNativeEscrowAddress
-      case EChains.mumbai: return mumbaiNativeEscrowAddress
-      default:
-        return null
-    }
+  const escrow = configs.escrowContracts[`${chainId}_${token}`]
+  if (!escrow) {
+    return null
   }
-  switch (Number(chainId)) {
-    case EChains.polygon: return polygonEscrowAddress
-    case EChains.base: return baseEscrowAddress
-    case EChains.mumbai: return mumbaiEscrowAddress
-    default:
-      return null
-  }
-  
+  return escrow
 }
 
 export default defineEscrowAddress

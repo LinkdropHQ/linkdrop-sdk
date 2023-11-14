@@ -1,13 +1,15 @@
-import { ETokenSymbol, TTokenType } from '../types'
+import { ETokenSymbol, TTokenType, ETokenAddress } from '../types'
 
 type TDefineTokenSymbol = (
   tokenType: TTokenType,
-  chainId: number
+  chainId: number,
+  tokenAddress: string
 ) => ETokenSymbol | null
 
 const defineTokenSymbol: TDefineTokenSymbol = (
   tokenSymbol,
-  chainId
+  chainId,
+  tokenAddress
 ) => {
   switch (tokenSymbol) {
     case 'NATIVE':
@@ -15,7 +17,14 @@ const defineTokenSymbol: TDefineTokenSymbol = (
         return ETokenSymbol.matic
       }
       return ETokenSymbol.eth
-    case 'ERC20': return ETokenSymbol.usdc
+    case 'ERC20': {
+      if (
+        chainId == 137 && tokenAddress.toLowerCase() === ETokenAddress.usdcBridgedPolygon
+      ) {
+        return ETokenSymbol.usdce
+      }
+      return ETokenSymbol.usdc
+    }
     default: return null
   }
 }
