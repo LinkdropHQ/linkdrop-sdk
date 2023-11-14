@@ -425,22 +425,22 @@ class ClaimLink implements IClaimLinkSDK {
   }
 
   updateAmount: TUpdateAmount = async (amount) => {
+    const {
+      fee,
+      total_amount: totalAmount,
+      min_transfer_amount: minTransferAmount,
+      max_transfer_amount: maxTransferAmount
+    } = await this._getCurrentFee(amount)
+
+    if (toBigInt(amount) < toBigInt(minTransferAmount)) {
+      throw new Error(errors.amount_should_be_more_than_minlimit(minTransferAmount.toString()))
+    }
+
+    if (toBigInt(amount) > toBigInt(maxTransferAmount)) {
+      throw new Error(errors.amount_should_be_less_than_maxlimit(maxTransferAmount.toString()))
+    }
+
     if (!this.transferId) {
-      const {
-        fee,
-        total_amount: totalAmount,
-        min_transfer_amount: minTransferAmount,
-        max_transfer_amount: maxTransferAmount
-      } = await this._getCurrentFee(amount)
-
-      if (toBigInt(amount) < toBigInt(minTransferAmount)) {
-        throw new Error(errors.amount_should_be_more_than_minlimit(minTransferAmount.toString()))
-      }
-  
-      if (toBigInt(amount) > toBigInt(maxTransferAmount)) {
-        throw new Error(errors.amount_should_be_less_than_maxlimit(maxTransferAmount.toString()))
-      }
-
       this.amount = amount
       this.fee = fee
       this.totalAmount = totalAmount

@@ -10,8 +10,8 @@ type TGetLimits = ({
   token,
   tokenType
 }: TGetLimitsArgs) => Promise<({
-  minTransferAmount: bigint,
-  maxTransferAmount: bigint
+  minTransferAmount: string,
+  maxTransferAmount: string
 } | void)>
 
 export default TGetLimits
