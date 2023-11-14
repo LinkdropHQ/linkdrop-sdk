@@ -11,11 +11,12 @@ import {
   decodeLink,
   defineApiHost,
   parseLink,
-  defineEscrowAddress
+  defineEscrowAddressByTokenSymbol
 } from '../../helpers'
 import { toBigInt } from 'ethers'
 import ClaimLink from '../claim-link'
 import { errors } from '../../texts'
+import { ETokenAddress } from '../../types'
 
 class LinkdropP2P implements ILinkdropP2P {
   apiKey: string
@@ -52,12 +53,12 @@ class LinkdropP2P implements ILinkdropP2P {
       throw new Error(errors.argument_not_provided('amount'))
     }
 
-    if (!token) {
+    if (!token && tokenType !== 'NATIVE') {
       throw new Error(errors.argument_not_provided('token'))
     }
 
     const limitsResult = await this.getLimits({
-      token,
+      token: token || '0x0000000000000000000000000000000000000000',
       chainId,
       tokenType
     })
@@ -80,7 +81,7 @@ class LinkdropP2P implements ILinkdropP2P {
     }
 
     return this._initializeClaimLink({
-      token,
+      token: token as ETokenAddress,
       expiration,
       chainId,
       amount,
@@ -123,8 +124,10 @@ class LinkdropP2P implements ILinkdropP2P {
       transferId,
       chainId,
       tokenType,
-      sender
+      sender,
+      tokenSymbol
     } = decodeLink(claimUrl)
+
     const apiHost = defineApiHost(chainId)
 
     if (!apiHost) {
@@ -135,7 +138,7 @@ class LinkdropP2P implements ILinkdropP2P {
       throw new Error(errors.variable_cannot_be_defined('Token Type'))
     }
 
-    const escrowAddress = defineEscrowAddress(chainId, tokenType)
+    const escrowAddress = defineEscrowAddressByTokenSymbol(chainId, tokenSymbol)
 
     if (!escrowAddress) {
       throw new Error(errors.variable_cannot_be_defined('Escrow address'))
@@ -154,14 +157,16 @@ class LinkdropP2P implements ILinkdropP2P {
           linkParsed.sender.toLowerCase(),
           transferId
         )
+
         const {
           token,
           expiration,
           amount,
           token_type
         } = claim_link
+
         const claimLinkData = {
-          token,
+          token: token as ETokenAddress,
           expiration,
           chainId,
           amount,
@@ -192,7 +197,7 @@ class LinkdropP2P implements ILinkdropP2P {
         token_type
       } = claim_link
       const claimLinkData = {
-        token,
+        token: token as ETokenAddress,
         expiration,
         chainId,
         amount,
@@ -225,14 +230,16 @@ class LinkdropP2P implements ILinkdropP2P {
         sender.toLowerCase(),
         transferId
       )
+
       const {
         token,
         expiration,
         amount,
         token_type
       } = claim_link
+
       const claimLinkData = {
-        token,
+        token: token as ETokenAddress,
         expiration,
         chainId,
         amount,
@@ -259,7 +266,7 @@ class LinkdropP2P implements ILinkdropP2P {
         token_type
       } = claim_link
       const claimLinkData = {
-        token,
+        token: token as ETokenAddress,
         expiration,
         chainId,
         amount,
