@@ -30,7 +30,7 @@ const token = "0x0fa8781a83e46826621b3bc094ea2a0212e71b23" // token contract add
 const tokenType = "ERC20" // one of "NATIVE" | "ERC20" 
 const chainId = 80001 // network chain ID
 
-const { maxTransferAmount, minTransferAmount } = await sdk.getLimits({
+const { minTransferAmount, maxTransferAmount } = await sdk.getLimits({
   token,
   tokenType,
   chainId
