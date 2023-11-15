@@ -1,9 +1,9 @@
-import { EChains, TTokenType } from "../../../../types"
+import { EChains, TTokenType, ETokenAddress } from "../../../../types"
 import ClaimLink from "../../../claim-link"
 
 export type TInitializeClaimLinkArgs = {
   sender: string
-  token: string
+  token?: ETokenAddress
   amount: string
   expiration?: string
   chainId: number

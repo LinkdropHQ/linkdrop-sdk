@@ -1,8 +1,8 @@
-import { TTokenType } from "../../../../types"
+import { TTokenType, ETokenAddress } from "../../../../types"
 
 type TConstructorArgs = {
   sender: string
-  token: string
+  token?: ETokenAddress
   amount: string
   expiration?: string
   chainId: number
