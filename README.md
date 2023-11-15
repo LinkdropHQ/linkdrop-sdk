@@ -22,7 +22,7 @@ const expiration = "1695985897077" // unix timestamp after which the claim link 
 const claimLink = await sdk.createClaimLink({ from, token, amount, expiration, chainId, tokenType })
 const { amount, fee, totalAmount } = await claimLink.updateAmount(amount)
 ```
-Methods `createClaimLink` and `updateAmount` will return an error if amount is not valid according to limits.
+Methods `createClaimLink` and `updateAmount` will throw an error if amount is not valid according to limits.
 To define the minimum and maximum limit of amount that can be sent via link, use the getLimits method
 ```js
 
