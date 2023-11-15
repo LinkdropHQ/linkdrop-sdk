@@ -2,6 +2,7 @@
 
 ## 2.0.0-alpha.9
 - update for getLimits method. token argumant is not required for NATIVE tokens
+- bug fix for escrow address detection
 
 ## 2.0.0-alpha.8
 - updated escrow contract definition
