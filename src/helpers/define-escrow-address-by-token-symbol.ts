@@ -35,7 +35,7 @@ const defineEscrowAddressByTokenSymbol: TDefineEscrowAddressByTokenSymbol = (
     }
     case ETokenSymbol.usdc: {
       if (chainId === EChains.polygon) {
-        return configs.escrowContracts[`${chainId}_${ETokenAddress.usdcBridgedPolygon}`]
+        return configs.escrowContracts[`${chainId}_${ETokenAddress.usdcPolygon}`]
       } else if (chainId === EChains.mumbai) {
         return configs.escrowContracts[`${chainId}_${ETokenAddress.usdcMumbai}`]
       } else if (chainId === EChains.base) {
@@ -48,7 +48,7 @@ const defineEscrowAddressByTokenSymbol: TDefineEscrowAddressByTokenSymbol = (
     }
     case ETokenSymbol.usdce: {
       if (chainId === EChains.polygon) {
-        return configs.escrowContracts[`${chainId}_${ETokenAddress.usdcPolygon}`]
+        return configs.escrowContracts[`${chainId}_${ETokenAddress.usdcBridgedPolygon}`]
       } else {
         return null
       }

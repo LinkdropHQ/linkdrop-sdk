@@ -80,7 +80,7 @@ class ClaimLink implements IClaimLinkSDK {
       }
       this.token = token.toLowerCase()
     } else {
-      this.token = '0x0000000000000000000000000000000000000000'
+      this.token = configs.nativeTokenAddress
     }
 
     this.escrowAddress = defineEscrowAddress(

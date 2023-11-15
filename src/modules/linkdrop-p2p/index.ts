@@ -17,6 +17,7 @@ import { toBigInt } from 'ethers'
 import ClaimLink from '../claim-link'
 import { errors } from '../../texts'
 import { ETokenAddress } from '../../types'
+import * as configs from '../../configs'
 
 class LinkdropP2P implements ILinkdropP2P {
   apiKey: string
@@ -58,7 +59,7 @@ class LinkdropP2P implements ILinkdropP2P {
     }
 
     const limitsResult = await this.getLimits({
-      token: token || '0x0000000000000000000000000000000000000000',
+      token: token || configs.nativeTokenAddress,
       chainId,
       tokenType
     })
@@ -100,10 +101,21 @@ class LinkdropP2P implements ILinkdropP2P {
     if (!apiHost) {
       throw new Error(errors.chain_not_supported())
     }
+
+    let tokenAddress = token
+
+    if (tokenType === 'ERC20') {
+      if (!tokenAddress) {
+        throw new Error(errors.argument_not_provided('token'))
+      }
+    } else {
+      tokenAddress = configs.nativeTokenAddress
+    }
+  
     const limits = await linkApi.getLimits(
       apiHost,
       this.apiKey,
-      token,
+      tokenAddress,
       tokenType
     )
 

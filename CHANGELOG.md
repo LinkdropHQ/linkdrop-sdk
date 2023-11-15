@@ -1,5 +1,8 @@
 # Linkdrop P2P SDK
 
+## 2.0.0-alpha.9
+- update for getLimits method. token argumant is not required for NATIVE tokens
+
 ## 2.0.0-alpha.8
 - updated escrow contract definition
 - no native token address is needed to create NATIVE link
