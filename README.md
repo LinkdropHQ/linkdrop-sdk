@@ -22,15 +22,15 @@ const expiration = "1695985897077" // unix timestamp after which the claim link 
 const claimLink = await sdk.createClaimLink({ from, token, amount, expiration, chainId, tokenType })
 const { amount, fee, totalAmount } = await claimLink.updateAmount(amount)
 ```
-
-To check the minimum and maximum limit of amount that can be sent via link, use the getLimits method
+Methods `createClaimLink` and `updateAmount` will return an error if amount is not valid according to limits.
+To define the minimum and maximum limit of amount that can be sent via link, use the getLimits method
 ```js
 
-const token = "0x0fa8781a83e46826621b3bc094ea2a0212e71b23" // token contract address
+const token = "0x0fa8781a83e46826621b3bc094ea2a0212e71b23" // token contract address. Not required if tokenType is NATIVE
 const tokenType = "ERC20" // one of "NATIVE" | "ERC20" 
 const chainId = 80001 // network chain ID
 
-const { maxTransferAmount, minTransferAmount } = await sdk.getLimits({
+const { minTransferAmount, maxTransferAmount } = await sdk.getLimits({
   token,
   tokenType,
   chainId
