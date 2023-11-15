@@ -1,7 +1,7 @@
 import { EChains, TTokenType } from "../../../../types"
 
 export type TGetLimitsArgs = {
-  token: string
+  token?: string
   tokenType: TTokenType
   chainId: EChains
 }

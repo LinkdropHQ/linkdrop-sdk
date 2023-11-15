@@ -16,6 +16,8 @@ export const baseGoerliJSONRPCUrl = 'https://base-goerli.publicnode.com'
 
 export const baseUrl = 'http://localhost:3000'
 
+export const nativeTokenAddress = '0x0000000000000000000000000000000000000000'
+
 export const escrowContracts = {
   [`${EChains.base}_${ETokenAddress.nativeBase}`]: EEscrowAddress.nativeBase,
   [`${EChains.polygon}_${ETokenAddress.nativePolygon}`]: EEscrowAddress.nativePolygon,
