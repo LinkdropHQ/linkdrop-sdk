@@ -23,7 +23,7 @@ const claimLink = await sdk.createClaimLink({ from, token, amount, expiration, c
 const { amount, fee, totalAmount } = await claimLink.updateAmount(amount)
 ```
 
-To check the minimum and maximum limit of amount that can be sent, use the getLimits method
+To check the minimum and maximum limit of amount that can be sent via link, use the getLimits method
 ```js
 
 const token = "0x0fa8781a83e46826621b3bc094ea2a0212e71b23" // token contract address
