@@ -23,6 +23,21 @@ const claimLink = await sdk.createClaimLink({ from, token, amount, expiration, c
 const { amount, fee, totalAmount } = await claimLink.updateAmount(amount)
 ```
 
+To check the minimum and maximum limit of amount that can be sent via link, use the getLimits method
+```js
+
+const token = "0x0fa8781a83e46826621b3bc094ea2a0212e71b23" // token contract address
+const tokenType = "ERC20" // one of "NATIVE" | "ERC20" 
+const chainId = 80001 // network chain ID
+
+const { maxTransferAmount, minTransferAmount } = await sdk.getLimits({
+  token,
+  tokenType,
+  chainId
+})
+
+```
+
 **2a. Deposit tokens to escrow contract via EIP-3009 (transferWithAuthorization) :**  
 To avoid asking for sender private key directly, we ask to pass a function that generates a EIP712 signature using Sender's private key. The function should be similar to ethers `signer.signTypedData` - https://docs.ethers.org/v6/api/providers/#Signer-signTypedData
 ```js
