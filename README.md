@@ -67,14 +67,36 @@ const { claimUrl, transferId } = await claimLink.generateClaimUrl({ signTypedDat
 ```
 ### Retrieving claim link details
 This methods help to retrieve claim link details by using deposit transaction hash (or sender & transferId). 
+
 As claim URL is never stored in database, it will be `null` on retrieval and new claim URL can be generated with `claimLink.generateClaimUrl` method call. 
 ```js
 // fetch claim link using deposit transaction hash
-const claim = await sdk.retrieveClaimLink({ chainId, txHash }) 
+const claimLink = await sdk.retrieveClaimLink({ chainId, txHash }) 
 
 // or by using sender + transferId
 const claimLink = await sdk.retrieveClaimLink({ chainId, sender, transferId }) 
 ```
+
+You can also fetch information about all created links
+```js
+const onlyActive = true // to get only active links set parameter to true
+const chainId = 80001
+const sender = '0x2331bca1f2de4661ed88a30c99a7a9449aa84195'
+const limit = 10 // parameter specifies the number of claim links in response. Not required. Default: 0
+const offset = 10 // parameter is used to exclude from a response the first N claim links. Not required. Default: 0
+
+const {
+  claimLinks, // claim links fetched according to search parameters
+  resultSet // information about fetched data (count, offset, total)
+} = await sdk.getSenderHistory({
+  onlyActive,
+  chainId,
+  sender,
+  limit,
+  offset
+}) 
+```
+
 ## Receiver methods
 ```js
 // claim link contains all needed info to render the claim page
