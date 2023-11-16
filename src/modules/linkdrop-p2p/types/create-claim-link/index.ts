@@ -16,6 +16,6 @@ type TCreateClaimLink = ({
   amount,
   expiration,
   chainId
-}: TCreateClaimLinkArgs) => Promise<ClaimLink | void>
+}: TCreateClaimLinkArgs) => Promise<ClaimLink>
 
 export default TCreateClaimLink

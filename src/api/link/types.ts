@@ -123,16 +123,22 @@ type TGetLimits = (
 
 type TGetHistoryResponse = {
   success: boolean
-  max_transfer_amount: string
-  min_transfer_amount: string
+  claim_links: TClaimLinkItem[]
+  result_set: {
+    total: number
+    count: number
+    offset: number
+  }
 }
 
 type TGetHistory = (
   apiHost: string,
   apiKey: string,
   sender: string,
-  onlyActive?: boolean
-) => Promise<TGetLimitsResponse>
+  onlyActive?: boolean,
+  offset?: number,
+  size?: number
+) => Promise<TGetHistoryResponse>
 
 export type TRequests = {
   redeemLink: TRedeemLink

@@ -1,3 +1,3 @@
-type TRedeem= (dest: string) => Promise<string | void> // txhash
+type TRedeem= (dest: string) => Promise<string>
 
 export default TRedeem

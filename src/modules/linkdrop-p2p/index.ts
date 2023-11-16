@@ -4,9 +4,11 @@ import ILinkdropP2P, {
   TGetClaimLink,
   TRetrieveClaimLink,
   TInitializeClaimLink,
-  TGetLimits
+  TGetLimits,
+  TGetHistory
 } from './types'
 import { linkApi } from '../../api'
+import { ValidationError } from '../../errors'
 import {
   decodeLink,
   defineApiHost,
@@ -27,7 +29,13 @@ class LinkdropP2P implements ILinkdropP2P {
     apiKey,
     baseUrl
   }: TConstructorArgs) {
+    if (!apiKey) {
+      throw new ValidationError(errors.argument_not_provided('apiKey'))
+    }
     this.apiKey = apiKey
+    if (!baseUrl) {
+      throw new ValidationError(errors.argument_not_provided('baseUrl'))
+    }
     this.baseUrl = baseUrl
   }
 
@@ -40,22 +48,22 @@ class LinkdropP2P implements ILinkdropP2P {
     tokenType
   }) => {
     if (!chainId) {
-      throw new Error(errors.argument_not_provided('chainId'))
+      throw new ValidationError(errors.argument_not_provided('chainId'))
     }
     const apiHost = defineApiHost(chainId)
     if (!apiHost) {
-      throw new Error(errors.chain_not_supported())
+      throw new ValidationError(errors.chain_not_supported())
     }
     if (!from) {
-      throw new Error(errors.argument_not_provided('from'))
+      throw new ValidationError(errors.argument_not_provided('from'))
     }
 
     if (!amount) {
-      throw new Error(errors.argument_not_provided('amount'))
+      throw new ValidationError(errors.argument_not_provided('amount'))
     }
 
     if (!token && tokenType !== 'NATIVE') {
-      throw new Error(errors.argument_not_provided('token'))
+      throw new ValidationError(errors.argument_not_provided('token'))
     }
 
     const limitsResult = await this.getLimits({
@@ -74,11 +82,11 @@ class LinkdropP2P implements ILinkdropP2P {
     } = limitsResult
 
     if (toBigInt(amount) < toBigInt(minTransferAmount)) {
-      throw new Error(errors.amount_should_be_more_than_minlimit(minTransferAmount.toString()))
+      throw new ValidationError(errors.amount_should_be_more_than_minlimit(minTransferAmount.toString()))
     }
 
     if (toBigInt(amount) > toBigInt(maxTransferAmount)) {
-      throw new Error(errors.amount_should_be_less_than_maxlimit(maxTransferAmount.toString()))
+      throw new ValidationError(errors.amount_should_be_less_than_maxlimit(maxTransferAmount.toString()))
     }
 
     return this._initializeClaimLink({
@@ -94,19 +102,48 @@ class LinkdropP2P implements ILinkdropP2P {
     })
   }
 
+  getSenderHistory: TGetHistory = async ({
+    onlyActive,
+    chainId,
+    sender,
+    size,
+    offset
+  }) => {
+    const apiHost = defineApiHost(chainId)
+    if (!apiHost) {
+      throw new ValidationError(errors.chain_not_supported())
+    }
+    const {
+      claim_links,
+      result_set
+    } = await linkApi.getHistory(
+      apiHost,
+      this.apiKey,
+      sender,
+      onlyActive,
+      offset,
+      size
+    )
+
+    return {
+      claimLinks: claim_links,
+      resultSet: result_set
+    }
+  }
+
   getLimits: TGetLimits = async ({
     token, chainId, tokenType
   }) => {
     const apiHost = defineApiHost(chainId)
     if (!apiHost) {
-      throw new Error(errors.chain_not_supported())
+      throw new ValidationError(errors.chain_not_supported())
     }
 
     let tokenAddress = token
 
     if (tokenType === 'ERC20') {
       if (!tokenAddress) {
-        throw new Error(errors.argument_not_provided('token'))
+        throw new ValidationError(errors.argument_not_provided('token'))
       }
     } else {
       tokenAddress = configs.nativeTokenAddress
@@ -143,7 +180,7 @@ class LinkdropP2P implements ILinkdropP2P {
     const apiHost = defineApiHost(chainId)
 
     if (!apiHost) {
-      throw new Error(errors.chain_not_supported())
+      throw new ValidationError(errors.chain_not_supported())
     }
 
     if (!tokenType) {
@@ -202,12 +239,14 @@ class LinkdropP2P implements ILinkdropP2P {
         sender.toLowerCase(),
         transferId
       )
+
       const {
         token,
         expiration,
         amount,
         token_type
       } = claim_link
+
       const claimLinkData = {
         token: token as ETokenAddress,
         expiration,
@@ -233,9 +272,12 @@ class LinkdropP2P implements ILinkdropP2P {
   }) => {
     const apiHost = defineApiHost(chainId)
     if (!apiHost) {
-      throw new Error(errors.chain_not_supported())
+      throw new ValidationError(errors.chain_not_supported())
     }
-    if (sender && transferId) {
+    if (sender) {
+      if (!transferId) {
+        throw new ValidationError(errors.argument_not_provided('transferId'))
+      }
       const { claim_link } = await linkApi.getTransferStatus(
         apiHost,
         this.apiKey,
@@ -264,10 +306,13 @@ class LinkdropP2P implements ILinkdropP2P {
       }
       return this._initializeClaimLink(claimLinkData)
     } else {
+      if (!txHash) {
+        throw new ValidationError(errors.argument_not_provided('txHash'))
+      }
       const { claim_link } = await linkApi.getTransferStatusByTxHash(
         apiHost,
         this.apiKey,
-        txHash as string
+        txHash
       )
       const {
         token,
