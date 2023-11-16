@@ -137,7 +137,7 @@ type TGetHistory = (
   sender: string,
   onlyActive?: boolean,
   offset?: number,
-  size?: number
+  limit?: number
 ) => Promise<TGetHistoryResponse>
 
 export type TRequests = {

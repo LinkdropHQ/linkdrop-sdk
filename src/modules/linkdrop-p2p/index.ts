@@ -106,7 +106,7 @@ class LinkdropP2P implements ILinkdropP2P {
     onlyActive,
     chainId,
     sender,
-    size,
+    limit,
     offset
   }) => {
     const apiHost = defineApiHost(chainId)
@@ -122,7 +122,7 @@ class LinkdropP2P implements ILinkdropP2P {
       sender,
       onlyActive,
       offset,
-      size
+      limit
     )
 
     return {
