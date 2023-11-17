@@ -12,6 +12,6 @@ type TRetrieveClaimLink = ({
   txHash,
   sender,
   transferId
-}: TRetrieveClaimLinkArgs) => Promise<ClaimLink | void>
+}: TRetrieveClaimLinkArgs) => Promise<ClaimLink>
 
 export default TRetrieveClaimLink

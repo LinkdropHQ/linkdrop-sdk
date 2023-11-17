@@ -8,6 +8,6 @@ type TDepositWithAuthorizationArgs = {
 type TDepositWithAuthorization = ({
   signTypedData,
   getRandomBytes
-}: TDepositWithAuthorizationArgs) => Promise<TDepositResult | void> // txhash
+}: TDepositWithAuthorizationArgs) => Promise<TDepositResult>
 
 export default TDepositWithAuthorization

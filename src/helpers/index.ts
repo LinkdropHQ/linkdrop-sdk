@@ -10,9 +10,11 @@ import defineEscrowAddressByTokenSymbol from './define-escrow-address-by-token-s
 import defineTokenType from './define-token-type'
 import defineTokenSymbol from './define-token-symbol'
 import defineIfEscrowAddressIsCorrect from './define-if-escrow-address-is-correct'
+import createQueryString from './create-query-string'
 
 export {
   defineJSONRpcUrl,
+  createQueryString,
   defineIfEscrowAddressIsCorrect,
   defineTokenSymbol,
   defineNetworkName,
