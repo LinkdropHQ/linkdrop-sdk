@@ -82,7 +82,7 @@ You can also fetch information about all created links
 const onlyActive = true // to get only active links set parameter to true
 const chainId = 80001
 const sender = '0x2331bca1f2de4661ed88a30c99a7a9449aa84195'
-const limit = 10 // parameter specifies the number of claim links in response. Not required. Default: 0
+const limit = 10 // parameter specifies the number of claim links in response. Not required. Default: 100
 const offset = 10 // parameter is used to exclude from a response the first N claim links. Not required. Default: 0
 
 const {
