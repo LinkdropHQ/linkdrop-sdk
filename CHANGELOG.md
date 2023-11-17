@@ -1,5 +1,7 @@
 # Linkdrop P2P SDK
 
+## 2.0.0-beta.0
+
 ## 2.0.0-alpha.10
 - added getSenderHistory method
 - removed `void` return from public methods
