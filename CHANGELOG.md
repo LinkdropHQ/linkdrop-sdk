@@ -1,6 +1,12 @@
 # Linkdrop P2P SDK
 
 ## 2.0.0-beta.0
+- added tokenAddress parameter to getSenderHistory method
+- bug fix with escrow address for old links
+- operations included to ClaimLink
+- apiKey hidden from properties of ClaimLink
+- expiration type changed to 'number'
+
 
 ## 2.0.0-alpha.10
 - added getSenderHistory method

@@ -14,7 +14,7 @@ export type TClaimLinkItemOperation = {
 }
 
 export type TClaimLinkItem = {
-  transfer_id: string
+  transfer_id?: string
   amount: string
   fee: string
   total_amount: string
@@ -22,8 +22,10 @@ export type TClaimLinkItem = {
   chainId: number
   sender: string
   // ---- should be added
-  expiration: string
-  token_type: TTokenType
+  expiration: number
+  created_at?: string
+  updated_at?: string
+  token_type?: TTokenType
   // ---- should be added
   escrow: string
   version: string
