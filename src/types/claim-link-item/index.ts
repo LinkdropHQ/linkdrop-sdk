@@ -8,7 +8,8 @@ export type TClaimLinkItemOperationStatus = 'pending' | 'completed' | 'error'
 export type TClaimLinkItemOperation = {
   type: string
   timestamp: string
-  txHash: string
+  tx_hash?: string
+
   status: TClaimLinkItemOperationStatus
   receiver: string
 }

@@ -33,7 +33,8 @@ import {
   defineEscrowAddress,
   defineIfEscrowAddressIsCorrect,
   encodeLink,
-  parseLink
+  parseLink,
+  updateOperations
 } from '../../helpers'
 import { errors } from '../../texts'
 import * as configs from '../../configs'
@@ -193,7 +194,7 @@ class ClaimLink implements IClaimLinkSDK {
 
     return {
       status: claim_link.status,
-      operations: claim_link.operations
+      operations: updateOperations(claim_link.operations),
     }
   }
 

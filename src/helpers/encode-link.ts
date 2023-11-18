@@ -1,6 +1,6 @@
 import { ethers, encodeBase58 } from 'ethers'
 import { TLink, TTokenType } from "../types"
-import { defineTokenSymbol } from '../helpers'
+import { defineTokenSymbol } from '.'
 
 type TEncodeLink = (
   claimHost: string,
