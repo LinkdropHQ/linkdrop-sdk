@@ -18,9 +18,9 @@ export type TClaimLinkItem = {
   transfer_id?: string
   amount: string
   fee: string
-  total_amount: string
+  total_amount?: string
   token: string
-  chainId: number
+  chain_id?: number
   sender: string
   // ---- should be added
   expiration: number
