@@ -133,12 +133,16 @@ class LinkdropP2P implements ILinkdropP2P {
         ...claimLink,
         transferId: claimLink.transfer_id,
         tokenType: claimLink.token_type,
+        chainId: claimLink.chain_id,
+        totalAmount: claimLink.total_amount,
         operations: updateOperations(claimLink.operations)
       }
 
       delete claimLinkUpdated.transfer_id
       delete claimLinkUpdated.created_at
       delete claimLinkUpdated.updated_at
+      delete claimLinkUpdated.total_amount
+      delete claimLinkUpdated.chain_id
       delete claimLinkUpdated.token_type
 
       return claimLinkUpdated
