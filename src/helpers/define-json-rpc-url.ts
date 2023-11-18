@@ -1,4 +1,4 @@
-import { defineNetworkName } from './'
+import { defineNetworkName } from '.'
 import {
   polygonJSONRPCUrl,
   mumbaiJSONRPCUrl,

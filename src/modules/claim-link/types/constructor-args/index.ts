@@ -1,10 +1,10 @@
-import { TTokenType, ETokenAddress } from "../../../../types"
+import { TTokenType, ETokenAddress, TClaimLinkItemOperation } from "../../../../types"
 
 type TConstructorArgs = {
   sender: string
   token?: ETokenAddress
   amount: string
-  expiration?: string
+  expiration?: number
   chainId: number
   apiHost: string
   apiKey: string
@@ -12,6 +12,8 @@ type TConstructorArgs = {
   transferId?: string
   claimUrl?: string
   tokenType: TTokenType
+  escrowAddress?: string
+  operations?: TClaimLinkItemOperation[]
 }
 
 

@@ -67,14 +67,41 @@ const { claimUrl, transferId } = await claimLink.generateClaimUrl({ signTypedDat
 ```
 ### Retrieving claim link details
 This methods help to retrieve claim link details by using deposit transaction hash (or sender & transferId). 
+
 As claim URL is never stored in database, it will be `null` on retrieval and new claim URL can be generated with `claimLink.generateClaimUrl` method call. 
 ```js
 // fetch claim link using deposit transaction hash
-const claim = await sdk.retrieveClaimLink({ chainId, txHash }) 
+const claimLink = await sdk.retrieveClaimLink({ chainId, txHash }) 
 
 // or by using sender + transferId
 const claimLink = await sdk.retrieveClaimLink({ chainId, sender, transferId }) 
 ```
+### Fetching claim links created by the sender
+
+You can also fetch information about created links
+```js
+const onlyActive = true // to get only active links (have not been redeemed or refunded yet) set parameter to true
+const chainId = 80001
+const sender = '0x2331bca1f2de4661ed88a30c99a7a9449aa84195'
+const limit = 10 // parameter specifies the number of claim links in response. Not required. Default: 100
+const offset = 10 // parameter is used to exclude from a response the first N claim links. Not required. Default: 0
+const token = "0x0000000000000000000000000000000000000000" // the parameter defines claim links related to which token address should be found. Not required. By default, the search will be performed on all token addresses
+
+const {
+  claimLinks, // claim links fetched according to search parameters
+  resultSet // information about fetched data (count, offset, total)
+} = await sdk.getSenderHistory({
+  // required params:
+  onlyActive, // whether to only get the claim links that haven't been redeemed/refunded yet 
+  chainId,
+  sender,
+  // optional params:
+  limit,
+  offset,
+  token
+}) 
+```
+
 ## Receiver methods
 ```js
 // claim link contains all needed info to render the claim page
@@ -94,6 +121,7 @@ Claim Link object contains methods and properties to facilitate both creation an
 - _tokenType_ (string, token standard type, one of `'NATIVE' | 'ERC20'`)
 - _amount_ (string, atomic amount of tokens receiver going to claim, e.g. "1000000" for 1 USDC)
 - _fee_ (string, atomic amount of tokens sender needs to pay as a fee, e.g. "100000" or 0.1 USDC)
+- _expiration_ (string, unix timestamp after which the claim link will expire and amount will be sent back to sender unless it was claimed before)
 - _totalAmount_ (string, total amount sender needs to deposit, _amount_ + _fee_, e.g. "1100000" or 1.1 USDC)
 - _token_ (string, token contract address, e.g. "0x2791bca1f2de4661ed88a30c99a7a9449aa84174")
 - _chainId_ (number, network chain ID, e.g. 147 for Polygon network)
@@ -101,7 +129,15 @@ Claim Link object contains methods and properties to facilitate both creation an
 - _escrow_ (string, Escrow contract address "0x1111bca1f2de4661ed88a30c44a7a9449aa84106")
 - _version_ (string, claim link version, e.g. "1")
 - _claimUrl_ (string, the URL that shall be shared with recipient, e.g. `https://p2p.linkdrop.io/#/usdc?k=8uoxFBZtJZA72xHJzkdZnZoKbT15Swhn4f5z6jV8Q9U&s=JeGDRq7xAPRYhhYkXRJTXh1St97nRN2m2CQG27LzAnyEA4L4APm9GbDx6kDYEZYjmeGdJgyLpY1ap9FyPtogtG48r&i=mYfAE4p&c=137&v=1`
+- _status_ (string, claim link status, one of `'created' | 'depositing' | 'deposited' | 'redeemed'| 'redeeming' | 'error' | 'refunded' | 'refunding' | 'cancelled'`)
+- _operations_ (array of operations related to the claim link)
 
+_operation_:  
+ - _type_: (string, operation type, one of `'deposit' | 'redeem' | 'refund'`)
+ - _timestamp_ (unix timestamp when operation was made)
+ - _txHash_: (string, ethereum transaction hash corresponding to the operation)
+ - _status_: (string, operation status, one of `'pending' | 'completed' | 'error'`)
+ - _receiver_: (string, Receiver's Ethereum address, present only for redeem operations, e.g. "0x2331bca1f2de4661ed88a30c99a7a9449aa84195")
 
 #### Get Claim Link Status
 In order to get the latest status of the claim link, use the following method: 
@@ -109,12 +145,3 @@ In order to get the latest status of the claim link, use the following method:
 const { status, operations } = await claimLink.getStatus()
 ```
 
-- _status_ (string, claim link status, one of `'created' | 'depositing' | 'deposited' | 'redeemed'| 'redeeming' | 'error' | 'refunded' | 'refunding' | 'cancelled'`)
-- _operations_ (array of operations related to the claim link)
-
-_operation_:  
- - _type_: (string, operation type, one of `'deposit' | 'redeem' | 'refund'`)
- - _timestamp_ (unix timestamp when operation was made)
- - _tx_hash_: (string, ethereum transaction hash corresponding to the operation)
- - _status_: (string, operation status, one of `'pending' | 'completed' | 'error'`)
- - _receiver_: (string, Receiver's Ethereum address, present only for redeem operations, e.g. "0x2331bca1f2de4661ed88a30c99a7a9449aa84195")

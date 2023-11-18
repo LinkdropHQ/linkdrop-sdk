@@ -5,7 +5,7 @@ export type TCreateClaimLinkArgs = {
   from: string
   token?: string
   amount: string
-  expiration?: string
+  expiration?: number
   chainId: number
   tokenType: TTokenType
 }
@@ -16,6 +16,6 @@ type TCreateClaimLink = ({
   amount,
   expiration,
   chainId
-}: TCreateClaimLinkArgs) => Promise<ClaimLink | void>
+}: TCreateClaimLinkArgs) => Promise<ClaimLink>
 
 export default TCreateClaimLink

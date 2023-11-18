@@ -11,6 +11,6 @@ type TGenerateClaimUrl = ({
 }: TGenerateClaimUrlArgs) => Promise<{
   claimUrl: string,
   transferId: string
-} | void>
+}>
 
 export default TGenerateClaimUrl

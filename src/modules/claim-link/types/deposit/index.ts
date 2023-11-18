@@ -8,6 +8,6 @@ type TDepositArgs = {
 type TDeposit = ({
   sendTransaction,
   getRandomBytes
-}: TDepositArgs) => Promise<TDepositResult | void> // txhash
+}: TDepositArgs) => Promise<TDepositResult>
 
 export default TDeposit

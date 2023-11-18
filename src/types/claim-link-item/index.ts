@@ -8,22 +8,25 @@ export type TClaimLinkItemOperationStatus = 'pending' | 'completed' | 'error'
 export type TClaimLinkItemOperation = {
   type: string
   timestamp: string
-  txHash: string
+  tx_hash?: string
+
   status: TClaimLinkItemOperationStatus
   receiver: string
 }
 
 export type TClaimLinkItem = {
-  transfer_id: string
+  transfer_id?: string
   amount: string
   fee: string
-  total_amount: string
+  total_amount?: string
   token: string
-  chainId: number
+  chain_id?: number
   sender: string
   // ---- should be added
-  expiration: string
-  token_type: TTokenType
+  expiration: number
+  created_at?: string
+  updated_at?: string
+  token_type?: TTokenType
   // ---- should be added
   escrow: string
   version: string

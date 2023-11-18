@@ -13,7 +13,7 @@ type TDepositWithAuth = (
   sender: string,
   escrow: string,
   transfer_id: string,
-  expiration: string,
+  expiration: number,
   amount: string,
   authorization: string
 ) => Promise<TDepositWithAuthResponse>
@@ -31,7 +31,7 @@ type TDeposit = (
   sender: string,
   escrow: string,
   transfer_id: string,
-  expiration: string,
+  expiration: number,
   amount: string,
   tx_hash: string
 ) => Promise<TDepositWithResponse>
@@ -121,6 +121,26 @@ type TGetLimits = (
   tokenType: TTokenType
 ) => Promise<TGetLimitsResponse>
 
+type TGetHistoryResponse = {
+  success: boolean
+  claim_links: TClaimLinkItem[]
+  result_set: {
+    total: number
+    count: number
+    offset: number
+  }
+}
+
+type TGetHistory = (
+  apiHost: string,
+  apiKey: string,
+  sender: string,
+  onlyActive?: boolean,
+  offset?: number,
+  limit?: number,
+  token?: string
+) => Promise<TGetHistoryResponse>
+
 export type TRequests = {
   redeemLink: TRedeemLink
   redeemRecoveredLink: TRedeemRecoveredLink
@@ -129,5 +149,6 @@ export type TRequests = {
   getTransferStatusByTxHash: TGetTransferDataByTxHash
   getFee: TGetFee,
   deposit: TDeposit,
-  getLimits: TGetLimits
+  getLimits: TGetLimits,
+  getHistory: TGetHistory
 }

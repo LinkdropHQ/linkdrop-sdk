@@ -1,4 +1,5 @@
 import { TRequests } from './types'
+import { createQueryString } from '../../helpers'
 
 function request<TResponse>(
   url: string,
@@ -165,6 +166,30 @@ const requests: TRequests = {
       }
     })
   },
+
+  getHistory: (
+    apiHost,
+    apiKey,
+    sender,
+    onlyActive,
+    offset,
+    limit,
+    token
+  ) => {
+    const queryVariables = createQueryString({
+      only_active: onlyActive,
+      offset,
+      limit,
+      token_address: token
+    })
+    return request(`${apiHost}/payment-status/sender/${sender}/get-sender-history?${queryVariables}`, {
+      headers: {
+        'authorization': `Bearer ${apiKey}`,
+        'content-type': 'application/json'
+      }
+    })
+  },
+
   getLimits: (
     apiHost,
     apiKey,

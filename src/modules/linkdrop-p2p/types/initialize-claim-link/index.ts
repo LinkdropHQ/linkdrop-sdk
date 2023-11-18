@@ -5,7 +5,7 @@ export type TInitializeClaimLinkArgs = {
   sender: string
   token?: ETokenAddress
   amount: string
-  expiration?: string
+  expiration?: number
   chainId: number
   apiHost: string
   apiKey: string
@@ -27,6 +27,6 @@ type TInitializeClaimLink = ({
   transferId,
   claimUrl,
   tokenType
-}: TInitializeClaimLinkArgs) => Promise<(ClaimLink | void)>
+}: TInitializeClaimLinkArgs) => Promise<(ClaimLink)>
 
 export default TInitializeClaimLink

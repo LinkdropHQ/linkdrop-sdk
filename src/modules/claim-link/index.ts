@@ -16,8 +16,10 @@ import {
   TEscrowPaymentDomain,
   TLink,
   TTokenType,
-  ETokenAddress
+  ETokenAddress,
+  TClaimLinkItemOperation
 } from '../../types'
+import { ValidationError } from '../../errors'
 import { LinkdropEscrowNetworkToken } from '../../abi'
 import {
   generateReceiverSig,
@@ -31,7 +33,8 @@ import {
   defineEscrowAddress,
   defineIfEscrowAddressIsCorrect,
   encodeLink,
-  parseLink
+  parseLink,
+  updateOperations
 } from '../../helpers'
 import { errors } from '../../texts'
 import * as configs from '../../configs'
@@ -40,9 +43,9 @@ import { ethers } from 'ethers'
 class ClaimLink implements IClaimLinkSDK {
   sender: string
   token: string
-  expiration: string
+  expiration: number
   chainId: number
-  apiKey: string
+  #apiKey: string
   apiHost: string
   baseUrl: string
   escrowAddress: string | null
@@ -52,6 +55,7 @@ class ClaimLink implements IClaimLinkSDK {
   totalAmount: string
   fee: string
   tokenType: TTokenType
+  operations: TClaimLinkItemOperation[]
 
   constructor({
     sender,
@@ -64,26 +68,41 @@ class ClaimLink implements IClaimLinkSDK {
     apiKey,
     transferId,
     claimUrl,
-    tokenType
+    tokenType,
+    escrowAddress,
+    operations
   }: TConstructorArgs) {
+    if (!sender) {
+      throw new ValidationError(errors.argument_not_provided('sender'))
+    }
     this.sender = sender.toLowerCase()
+    if (!amount) {
+      throw new ValidationError(errors.argument_not_provided('amount'))
+    }
+    this.operations = operations || []
     this.amount = amount
-    this.expiration = expiration || String(Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 30)
+    this.expiration = expiration || Math.floor(Date.now() / 1000 + 60 * 60 * 24 * 30)
+    if (!chainId) {
+      throw new ValidationError(errors.argument_not_provided('chainId'))
+    }
     this.chainId = chainId
     this.apiHost = apiHost
-    this.apiKey = apiKey
+    this.#apiKey = apiKey
+    if (!tokenType) {
+      throw new ValidationError(errors.argument_not_provided('tokenType'))
+    }
     this.tokenType = tokenType
 
     if (tokenType === 'ERC20') {
       if (!token) {
-        throw new Error(errors.argument_not_provided('token'))
+        throw new ValidationError(errors.argument_not_provided('token'))
       }
       this.token = token.toLowerCase()
     } else {
       this.token = configs.nativeTokenAddress
     }
 
-    this.escrowAddress = defineEscrowAddress(
+    this.escrowAddress = escrowAddress || defineEscrowAddress(
       this.chainId,
       this.token
     )
@@ -114,6 +133,9 @@ class ClaimLink implements IClaimLinkSDK {
   }
 
   redeem: TRedeem = async (dest) => {
+    if (!dest) {
+      throw new ValidationError(errors.argument_not_provided('dest'))
+    }
     if (!this.escrowAddress) {
       throw new Error(errors.escrow_not_available(
         this.token,
@@ -133,7 +155,7 @@ class ClaimLink implements IClaimLinkSDK {
     if (senderSig) {
       const redeem = await linkApi.redeemRecoveredLink(
         this.apiHost,
-        this.apiKey,
+        this.#apiKey,
         dest,
         sender.toLowerCase(),
         this.escrowAddress,
@@ -146,7 +168,7 @@ class ClaimLink implements IClaimLinkSDK {
     } else {
       const redeem = await linkApi.redeemLink(
         this.apiHost,
-        this.apiKey,
+        this.#apiKey,
         dest,
         sender.toLowerCase(),
         this.escrowAddress,
@@ -165,14 +187,14 @@ class ClaimLink implements IClaimLinkSDK {
 
     const { claim_link } = await linkApi.getTransferStatus(
       this.apiHost,
-      this.apiKey,
+      this.#apiKey,
       this.sender.toLowerCase(),
       this.transferId
     )
 
     return {
       status: claim_link.status,
-      operations: claim_link.operations
+      operations: updateOperations(claim_link.operations),
     }
   }
 
@@ -251,11 +273,17 @@ class ClaimLink implements IClaimLinkSDK {
     if (!this.expiration) {
       throw new Error(errors.property_not_provided('expiration'))
     }
+
     if (!this.amount) {
       throw new Error(errors.property_not_provided('amount'))
     }
+
     if (!sendTransaction) {
-      throw new Error(errors.argument_not_provided('sendTransaction'))
+      throw new ValidationError(errors.argument_not_provided('sendTransaction'))
+    }
+
+    if (!getRandomBytes) {
+      throw new ValidationError(errors.argument_not_provided('getRandomBytes'))
     }
 
     const keypair = await generateKeypair(getRandomBytes)
@@ -280,7 +308,7 @@ class ClaimLink implements IClaimLinkSDK {
 
     const result = await linkApi.deposit(
       this.apiHost,
-      this.apiKey,
+      this.#apiKey,
       this.token,
       this.tokenType,
       this.sender.toLowerCase(),
@@ -291,32 +319,30 @@ class ClaimLink implements IClaimLinkSDK {
       txHash
     )
 
-    if (result) {
-      const linkParams: TLink = {
-        linkKey: keypair.privateKey,
-        transferId: this.transferId,
-        chainId: this.chainId,
-        tokenType: this.tokenType,
-        sender: this.sender.toLowerCase()
-      }
+    const linkParams: TLink = {
+      linkKey: keypair.privateKey,
+      transferId: this.transferId,
+      chainId: this.chainId,
+      tokenType: this.tokenType,
+      sender: this.sender.toLowerCase()
+    }
 
-      const claimUrl = encodeLink(
-        this.baseUrl,
-        linkParams,
-        this.token
-      )
+    const claimUrl = encodeLink(
+      this.baseUrl,
+      linkParams,
+      this.token
+    )
 
-      if (!claimUrl) {
-        throw new Error(errors.not_possible_create_claim_url())
-      }
+    if (!claimUrl) {
+      throw new Error(errors.not_possible_create_claim_url())
+    }
 
-      this.claimUrl = claimUrl
+    this.claimUrl = claimUrl
 
-      return {
-        txHash,
-        transferId: this.transferId,
-        claimUrl
-      }
+    return {
+      txHash,
+      transferId: this.transferId,
+      claimUrl
     }
   }
 
@@ -324,6 +350,13 @@ class ClaimLink implements IClaimLinkSDK {
     signTypedData,
     getRandomBytes
   }) => {
+
+    if (!signTypedData) {
+      throw new ValidationError(errors.argument_not_provided('signTypedData'))
+    }
+    if (!getRandomBytes) {
+      throw new ValidationError(errors.argument_not_provided('getRandomBytes'))
+    }
 
     if (this.tokenType === 'NATIVE') {
       throw new Error(errors.deploy_with_auth_wrong_type())
@@ -345,9 +378,6 @@ class ClaimLink implements IClaimLinkSDK {
     if (!this.amount) {
       throw new Error(errors.property_not_provided('amount'))
     }
-    if (!signTypedData) {
-      throw new Error(errors.argument_not_provided('signTypedData'))
-    }
 
     const keypair = await generateKeypair(getRandomBytes)
 
@@ -361,60 +391,58 @@ class ClaimLink implements IClaimLinkSDK {
       validAfter,
       validBefore,
       this.transferId,
-      this.expiration,
+      String(this.expiration),
       domain,
       this.chainId,
       this.token
     )
 
-    if (auth) {
-      const result = await linkApi.depositWithAuthorization(
-        this.apiHost,
-        this.apiKey,
-        this.token,
-        this.tokenType,
-        this.sender.toLowerCase(),
-        this.escrowAddress,
-        this.transferId,
-        this.expiration,
-        this.totalAmount,
-        auth
-      )
+    const result = await linkApi.depositWithAuthorization(
+      this.apiHost,
+      this.#apiKey,
+      this.token,
+      this.tokenType,
+      this.sender.toLowerCase(),
+      this.escrowAddress,
+      this.transferId,
+      this.expiration,
+      this.totalAmount,
+      auth
+    )
 
-      const { tx_hash } = result
+    const { tx_hash } = result
 
-      const linkParams: TLink = {
-        linkKey: keypair.privateKey,
-        transferId: this.transferId,
-        chainId: this.chainId,
-        tokenType: this.tokenType,
-        sender: this.sender.toLowerCase()
-      }
+    const linkParams: TLink = {
+      linkKey: keypair.privateKey,
+      transferId: this.transferId,
+      chainId: this.chainId,
+      tokenType: this.tokenType,
+      sender: this.sender.toLowerCase()
+    }
 
-      const claimUrl = encodeLink(
-        this.baseUrl,
-        linkParams,
-        this.token
-      )
+    const claimUrl = encodeLink(
+      this.baseUrl,
+      linkParams,
+      this.token
+    )
 
-      if (!claimUrl) {
-        throw new Error(errors.not_possible_create_claim_url())
-      }
+    if (!claimUrl) {
+      throw new Error(errors.not_possible_create_claim_url())
+    }
 
-      this.claimUrl = claimUrl
+    this.claimUrl = claimUrl
 
-      return {
-        txHash: tx_hash,
-        claimUrl: this.claimUrl,
-        transferId: this.transferId
-      }
+    return {
+      txHash: tx_hash,
+      claimUrl: this.claimUrl,
+      transferId: this.transferId
     }
   }
 
   _getCurrentFee: TGetCurrentFee = async (newAmount) => {
     const result = await linkApi.getFee(
       this.apiHost,
-      this.apiKey,
+      this.#apiKey,
       newAmount,
       this.token,
       this.sender.toLowerCase(),
@@ -433,11 +461,11 @@ class ClaimLink implements IClaimLinkSDK {
     } = await this._getCurrentFee(amount)
 
     if (toBigInt(amount) < toBigInt(minTransferAmount)) {
-      throw new Error(errors.amount_should_be_more_than_minlimit(minTransferAmount.toString()))
+      throw new ValidationError(errors.amount_should_be_more_than_minlimit(minTransferAmount.toString()))
     }
 
     if (toBigInt(amount) > toBigInt(maxTransferAmount)) {
-      throw new Error(errors.amount_should_be_less_than_maxlimit(maxTransferAmount.toString()))
+      throw new ValidationError(errors.amount_should_be_less_than_maxlimit(maxTransferAmount.toString()))
     }
 
     if (!this.transferId) {
@@ -451,26 +479,25 @@ class ClaimLink implements IClaimLinkSDK {
         totalAmount
       }
     }
+
     const statusData = await this.getStatus()
-    if (statusData) {
-      if (statusData.status === 'created') {
-        const {
-          fee,
-          total_amount: totalAmount
-        } = await this._getCurrentFee(amount)
+    if (statusData.status === 'created') {
+      const {
+        fee,
+        total_amount: totalAmount
+      } = await this._getCurrentFee(amount)
 
-        this.amount = amount
-        this.fee = fee
-        this.totalAmount = totalAmount
+      this.amount = amount
+      this.fee = fee
+      this.totalAmount = totalAmount
 
-        return {
-          amount,
-          fee,
-          totalAmount
-        }
-      } else {
-        throw new Error(errors.cannot_update_amount())
+      return {
+        amount,
+        fee,
+        totalAmount
       }
+    } else {
+      throw new Error(errors.cannot_update_amount())
     }
   }
 
@@ -500,11 +527,11 @@ class ClaimLink implements IClaimLinkSDK {
     signTypedData
   }) => {
     if (!getRandomBytes) {
-      throw new Error(errors.argument_not_provided('getRandomBytes'))
+      throw new ValidationError(errors.argument_not_provided('getRandomBytes'))
     }
 
     if (!signTypedData) {
-      throw new Error(errors.argument_not_provided('signTypedData'))
+      throw new ValidationError(errors.argument_not_provided('signTypedData'))
     }
 
     if (!this.transferId) {
@@ -520,33 +547,31 @@ class ClaimLink implements IClaimLinkSDK {
       escrowPaymentDomain
     )
 
-    if (result) {
-      const { linkKey, senderSig } = result
+    const { linkKey, senderSig } = result
 
-      const linkParams: TLink = {
-        linkKey,
-        senderSig,
-        transferId: this.transferId,
-        chainId: this.chainId,
-        tokenType: this.tokenType
-      }
+    const linkParams: TLink = {
+      linkKey,
+      senderSig,
+      transferId: this.transferId,
+      chainId: this.chainId,
+      tokenType: this.tokenType
+    }
 
-      const claimUrl = encodeLink(
-        this.baseUrl,
-        linkParams,
-        this.token
-      )
+    const claimUrl = encodeLink(
+      this.baseUrl,
+      linkParams,
+      this.token
+    )
 
-      if (!claimUrl) {
-        throw new Error(errors.not_possible_create_claim_url())
-      }
+    if (!claimUrl) {
+      throw new Error(errors.not_possible_create_claim_url())
+    }
 
-      this.claimUrl = claimUrl
+    this.claimUrl = claimUrl
 
-      return {
-        claimUrl: this.claimUrl,
-        transferId: this.transferId
-      }
+    return {
+      claimUrl: this.claimUrl,
+      transferId: this.transferId
     }
   }
 }

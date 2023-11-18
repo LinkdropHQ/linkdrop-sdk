@@ -22,13 +22,11 @@ const generateLinkKeyandSignature = async (
     transferId: transferId
   }
 
-  if (signTypedData) {
-    const senderSig = await signTypedData(domain, types, message)
-    return {
-      linkKey: linkKey.privateKey,
-      linkKeyId: linkKey.address,
-      senderSig
-    }
+  const senderSig = await signTypedData(domain, types, message)
+  return {
+    linkKey: linkKey.privateKey,
+    linkKeyId: linkKey.address,
+    senderSig
   }
 }
 
