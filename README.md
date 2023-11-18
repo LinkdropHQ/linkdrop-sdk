@@ -76,10 +76,11 @@ const claimLink = await sdk.retrieveClaimLink({ chainId, txHash })
 // or by using sender + transferId
 const claimLink = await sdk.retrieveClaimLink({ chainId, sender, transferId }) 
 ```
+### Fetching claim links created by the sender
 
 You can also fetch information about created links
 ```js
-const onlyActive = true // to get only active links set parameter to true
+const onlyActive = true // to get only active links (have not been redeemed or refunded yet) set parameter to true
 const chainId = 80001
 const sender = '0x2331bca1f2de4661ed88a30c99a7a9449aa84195'
 const limit = 10 // parameter specifies the number of claim links in response. Not required. Default: 100
@@ -90,9 +91,11 @@ const {
   claimLinks, // claim links fetched according to search parameters
   resultSet // information about fetched data (count, offset, total)
 } = await sdk.getSenderHistory({
-  onlyActive,
+  // required params:
+  onlyActive, // whether to only get the claim links that haven't been redeemed/refunded yet 
   chainId,
   sender,
+  // optional params:
   limit,
   offset,
   token
