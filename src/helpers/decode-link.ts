@@ -1,5 +1,5 @@
 import { ETokenSymbol, TLink } from '../types'
-import { defineTokenType } from './'
+import { defineTokenType } from '.'
 import { ethers, decodeBase58 } from 'ethers'
 type TDecodeLink = (link: string) => TLink
 

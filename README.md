@@ -84,7 +84,7 @@ const chainId = 80001
 const sender = '0x2331bca1f2de4661ed88a30c99a7a9449aa84195'
 const limit = 10 // parameter specifies the number of claim links in response. Not required. Default: 100
 const offset = 10 // parameter is used to exclude from a response the first N claim links. Not required. Default: 0
-const tokenAddress = "0x0000000000000000000000000000000000000000" // the parameter defines claim links related to which token address should be found. Not required. By default, the search will be performed on all token addresses
+const token = "0x0000000000000000000000000000000000000000" // the parameter defines claim links related to which token address should be found. Not required. By default, the search will be performed on all token addresses
 
 const {
   claimLinks, // claim links fetched according to search parameters
@@ -95,7 +95,7 @@ const {
   sender,
   limit,
   offset,
-  tokenAddress
+  token
 }) 
 ```
 
@@ -132,7 +132,7 @@ Claim Link object contains methods and properties to facilitate both creation an
 _operation_:  
  - _type_: (string, operation type, one of `'deposit' | 'redeem' | 'refund'`)
  - _timestamp_ (unix timestamp when operation was made)
- - _tx_hash_: (string, ethereum transaction hash corresponding to the operation)
+ - _txHash_: (string, ethereum transaction hash corresponding to the operation)
  - _status_: (string, operation status, one of `'pending' | 'completed' | 'error'`)
  - _receiver_: (string, Receiver's Ethereum address, present only for redeem operations, e.g. "0x2331bca1f2de4661ed88a30c99a7a9449aa84195")
 

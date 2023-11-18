@@ -6,7 +6,7 @@ export type TGetHistoryArgs = {
   onlyActive?: boolean
   offset?: number
   limit?: number
-  tokenAddress?: string
+  token?: string
 }
 
 type TGetHistory = ({
@@ -15,7 +15,7 @@ type TGetHistory = ({
   onlyActive,
   offset,
   limit,
-  tokenAddress
+  token
 }: TGetHistoryArgs) => Promise<({
   claimLinks: TClaimLinkItem[],
   resultSet: {
