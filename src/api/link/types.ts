@@ -13,7 +13,7 @@ type TDepositWithAuth = (
   sender: string,
   escrow: string,
   transfer_id: string,
-  expiration: string,
+  expiration: number,
   amount: string,
   authorization: string
 ) => Promise<TDepositWithAuthResponse>
@@ -31,7 +31,7 @@ type TDeposit = (
   sender: string,
   escrow: string,
   transfer_id: string,
-  expiration: string,
+  expiration: number,
   amount: string,
   tx_hash: string
 ) => Promise<TDepositWithResponse>
@@ -137,7 +137,8 @@ type TGetHistory = (
   sender: string,
   onlyActive?: boolean,
   offset?: number,
-  limit?: number
+  limit?: number,
+  tokenAddress?: string
 ) => Promise<TGetHistoryResponse>
 
 export type TRequests = {

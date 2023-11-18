@@ -5,7 +5,7 @@ export type TInitializeClaimLinkArgs = {
   sender: string
   token?: ETokenAddress
   amount: string
-  expiration?: string
+  expiration?: number
   chainId: number
   apiHost: string
   apiKey: string

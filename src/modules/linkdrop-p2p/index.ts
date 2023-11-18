@@ -18,7 +18,7 @@ import {
 import { toBigInt } from 'ethers'
 import ClaimLink from '../claim-link'
 import { errors } from '../../texts'
-import { ETokenAddress } from '../../types'
+import { ETokenAddress, TTokenType } from '../../types'
 import * as configs from '../../configs'
 
 class LinkdropP2P implements ILinkdropP2P {
@@ -107,7 +107,8 @@ class LinkdropP2P implements ILinkdropP2P {
     chainId,
     sender,
     limit,
-    offset
+    offset,
+    tokenAddress
   }) => {
     const apiHost = defineApiHost(chainId)
     if (!apiHost) {
@@ -122,11 +123,27 @@ class LinkdropP2P implements ILinkdropP2P {
       sender,
       onlyActive,
       offset,
-      limit
+      limit,
+      tokenAddress
     )
 
+    const claimLinks = claim_links.map(claimLink => {
+      const claimLinkUpdated = {
+        ...claimLink,
+        transferId: claimLink.transfer_id,
+        tokenType: claimLink.token_type
+      }
+
+      delete claimLinkUpdated.transfer_id
+      delete claimLinkUpdated.created_at
+      delete claimLinkUpdated.updated_at
+      delete claimLinkUpdated.token_type
+
+      return claimLinkUpdated
+    })
+
     return {
-      claimLinks: claim_links,
+      claimLinks,
       resultSet: result_set
     }
   }
@@ -211,7 +228,8 @@ class LinkdropP2P implements ILinkdropP2P {
           token,
           expiration,
           amount,
-          token_type
+          token_type,
+          operations
         } = claim_link
 
         const claimLinkData = {
@@ -224,7 +242,8 @@ class LinkdropP2P implements ILinkdropP2P {
           apiKey: this.apiKey,
           transferId: transferId.toLowerCase(),
           claimUrl,
-          tokenType: token_type,
+          operations,
+          tokenType: (token_type as TTokenType),
           baseUrl: this.baseUrl
         }
         return this._initializeClaimLink(claimLinkData)
@@ -257,7 +276,7 @@ class LinkdropP2P implements ILinkdropP2P {
         apiKey: this.apiKey,
         transferId: transferId.toLowerCase(),
         claimUrl,
-        tokenType: token_type,
+        tokenType: (token_type as TTokenType),
         baseUrl: this.baseUrl
       }
       return this._initializeClaimLink(claimLinkData)
@@ -289,7 +308,8 @@ class LinkdropP2P implements ILinkdropP2P {
         token,
         expiration,
         amount,
-        token_type
+        token_type,
+        operations
       } = claim_link
 
       const claimLinkData = {
@@ -300,9 +320,10 @@ class LinkdropP2P implements ILinkdropP2P {
         sender: sender.toLowerCase(),
         apiHost,
         apiKey: this.apiKey,
-        tokenType: token_type,
+        tokenType: (token_type as TTokenType),
         transferId: transferId.toLowerCase(),
-        baseUrl: this.baseUrl
+        baseUrl: this.baseUrl,
+        operations
       }
       return this._initializeClaimLink(claimLinkData)
     } else {
@@ -320,8 +341,10 @@ class LinkdropP2P implements ILinkdropP2P {
         amount,
         sender,
         transfer_id,
-        token_type
+        token_type,
+        operations
       } = claim_link
+
       const claimLinkData = {
         token: token as ETokenAddress,
         expiration,
@@ -330,8 +353,9 @@ class LinkdropP2P implements ILinkdropP2P {
         sender: sender.toLowerCase(),
         apiHost,
         apiKey: this.apiKey,
-        transferId: transfer_id.toLowerCase(),
-        tokenType: token_type,
+        transferId: (transfer_id as string).toLowerCase(),
+        tokenType: (token_type as TTokenType),
+        operations,
         baseUrl: this.baseUrl
       }
       return this._initializeClaimLink(claimLinkData)

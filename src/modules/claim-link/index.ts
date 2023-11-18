@@ -16,7 +16,8 @@ import {
   TEscrowPaymentDomain,
   TLink,
   TTokenType,
-  ETokenAddress
+  ETokenAddress,
+  TClaimLinkItemOperation
 } from '../../types'
 import { ValidationError } from '../../errors'
 import { LinkdropEscrowNetworkToken } from '../../abi'
@@ -41,9 +42,9 @@ import { ethers } from 'ethers'
 class ClaimLink implements IClaimLinkSDK {
   sender: string
   token: string
-  expiration: string
+  expiration: number
   chainId: number
-  apiKey: string
+  #apiKey: string
   apiHost: string
   baseUrl: string
   escrowAddress: string | null
@@ -53,6 +54,7 @@ class ClaimLink implements IClaimLinkSDK {
   totalAmount: string
   fee: string
   tokenType: TTokenType
+  operations: TClaimLinkItemOperation[]
 
   constructor({
     sender,
@@ -65,7 +67,9 @@ class ClaimLink implements IClaimLinkSDK {
     apiKey,
     transferId,
     claimUrl,
-    tokenType
+    tokenType,
+    escrowAddress,
+    operations
   }: TConstructorArgs) {
     if (!sender) {
       throw new ValidationError(errors.argument_not_provided('sender'))
@@ -74,14 +78,15 @@ class ClaimLink implements IClaimLinkSDK {
     if (!amount) {
       throw new ValidationError(errors.argument_not_provided('amount'))
     }
+    this.operations = operations || []
     this.amount = amount
-    this.expiration = expiration || String(Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 30)
+    this.expiration = expiration || Math.floor(Date.now() / 1000 + 60 * 60 * 24 * 30)
     if (!chainId) {
       throw new ValidationError(errors.argument_not_provided('chainId'))
     }
     this.chainId = chainId
     this.apiHost = apiHost
-    this.apiKey = apiKey
+    this.#apiKey = apiKey
     if (!tokenType) {
       throw new ValidationError(errors.argument_not_provided('tokenType'))
     }
@@ -96,7 +101,7 @@ class ClaimLink implements IClaimLinkSDK {
       this.token = configs.nativeTokenAddress
     }
 
-    this.escrowAddress = defineEscrowAddress(
+    this.escrowAddress = escrowAddress || defineEscrowAddress(
       this.chainId,
       this.token
     )
@@ -149,7 +154,7 @@ class ClaimLink implements IClaimLinkSDK {
     if (senderSig) {
       const redeem = await linkApi.redeemRecoveredLink(
         this.apiHost,
-        this.apiKey,
+        this.#apiKey,
         dest,
         sender.toLowerCase(),
         this.escrowAddress,
@@ -162,7 +167,7 @@ class ClaimLink implements IClaimLinkSDK {
     } else {
       const redeem = await linkApi.redeemLink(
         this.apiHost,
-        this.apiKey,
+        this.#apiKey,
         dest,
         sender.toLowerCase(),
         this.escrowAddress,
@@ -181,7 +186,7 @@ class ClaimLink implements IClaimLinkSDK {
 
     const { claim_link } = await linkApi.getTransferStatus(
       this.apiHost,
-      this.apiKey,
+      this.#apiKey,
       this.sender.toLowerCase(),
       this.transferId
     )
@@ -302,7 +307,7 @@ class ClaimLink implements IClaimLinkSDK {
 
     const result = await linkApi.deposit(
       this.apiHost,
-      this.apiKey,
+      this.#apiKey,
       this.token,
       this.tokenType,
       this.sender.toLowerCase(),
@@ -385,7 +390,7 @@ class ClaimLink implements IClaimLinkSDK {
       validAfter,
       validBefore,
       this.transferId,
-      this.expiration,
+      String(this.expiration),
       domain,
       this.chainId,
       this.token
@@ -393,7 +398,7 @@ class ClaimLink implements IClaimLinkSDK {
 
     const result = await linkApi.depositWithAuthorization(
       this.apiHost,
-      this.apiKey,
+      this.#apiKey,
       this.token,
       this.tokenType,
       this.sender.toLowerCase(),
@@ -436,7 +441,7 @@ class ClaimLink implements IClaimLinkSDK {
   _getCurrentFee: TGetCurrentFee = async (newAmount) => {
     const result = await linkApi.getFee(
       this.apiHost,
-      this.apiKey,
+      this.#apiKey,
       newAmount,
       this.token,
       this.sender.toLowerCase(),

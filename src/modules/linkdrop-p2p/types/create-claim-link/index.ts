@@ -5,7 +5,7 @@ export type TCreateClaimLinkArgs = {
   from: string
   token?: string
   amount: string
-  expiration?: string
+  expiration?: number
   chainId: number
   tokenType: TTokenType
 }

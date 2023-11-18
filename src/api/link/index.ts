@@ -173,12 +173,14 @@ const requests: TRequests = {
     sender,
     onlyActive,
     offset,
-    limit
+    limit,
+    tokenAddress
   ) => {
     const queryVariables = createQueryString({
       only_active: onlyActive,
       offset,
-      limit
+      limit,
+      token_address: tokenAddress
     })
     return request(`${apiHost}/payment-status/sender/${sender}/get-sender-history?${queryVariables}`, {
       headers: {
