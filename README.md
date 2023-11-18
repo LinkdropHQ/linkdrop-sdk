@@ -139,9 +139,9 @@ _operation_:
  - _status_: (string, operation status, one of `'pending' | 'completed' | 'error'`)
  - _receiver_: (string, Receiver's Ethereum address, present only for redeem operations, e.g. "0x2331bca1f2de4661ed88a30c99a7a9449aa84195")
 
-
 #### Get Claim Link Status
 In order to get the latest status of the claim link, use the following method: 
 ```js
 const { status, operations } = await claimLink.getStatus()
 ```
+
