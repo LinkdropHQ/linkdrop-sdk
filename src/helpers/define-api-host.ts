@@ -1,21 +1,21 @@
 import { EChains } from '../types'
-import {
-  polygonApiUrl,
-  baseApiUrl,
-  mumbaiApiUrl,
-  baseGoeliApiUrl
-} from '../configs'
+import * as configs from '../configs'
 
 type TDefineApiHost = (
-  chainId: number | null
+  chainId: number | null,
+  apiHost: string | null
 ) => string | null
 
-const defineApiHost: TDefineApiHost = (chainId) => {
+const defineApiHost: TDefineApiHost = (
+  chainId,
+  apiHost
+) => {
+  const apiHostActual = apiHost || configs.apiUrl
   switch (Number(chainId)) {
-    case EChains.polygon: return polygonApiUrl
-    case EChains.base: return baseApiUrl
-    case EChains.mumbai: return mumbaiApiUrl
-    case EChains.baseGoerli: return   baseGoeliApiUrl
+    case EChains.polygon: return `${apiHostActual}/polygon`
+    case EChains.base: return `${apiHostActual}/base`
+    case EChains.mumbai: return `${apiHostActual}/mumbai`
+    case EChains.baseGoerli: return `${apiHostActual}/base-goerli`
 
     default:
       return null
