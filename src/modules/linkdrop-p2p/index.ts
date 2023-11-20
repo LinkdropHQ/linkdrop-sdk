@@ -53,7 +53,7 @@ class LinkdropP2P implements ILinkdropP2P {
     if (!chainId) {
       throw new ValidationError(errors.argument_not_provided('chainId'))
     }
-    const apiHost = this.apiUrl || defineApiHost(chainId)
+    const apiHost = defineApiHost(chainId, this.apiUrl)
     if (!apiHost) {
       throw new ValidationError(errors.chain_not_supported())
     }
@@ -113,7 +113,7 @@ class LinkdropP2P implements ILinkdropP2P {
     offset,
     token
   }) => {
-    const apiHost = this.apiUrl || defineApiHost(chainId)
+    const apiHost = defineApiHost(chainId, this.apiUrl)
     if (!apiHost) {
       throw new ValidationError(errors.chain_not_supported())
     }
@@ -159,7 +159,7 @@ class LinkdropP2P implements ILinkdropP2P {
   getLimits: TGetLimits = async ({
     token, chainId, tokenType
   }) => {
-    const apiHost = this.apiUrl || defineApiHost(chainId)
+    const apiHost = defineApiHost(chainId, this.apiUrl)
     if (!apiHost) {
       throw new ValidationError(errors.chain_not_supported())
     }
@@ -202,7 +202,7 @@ class LinkdropP2P implements ILinkdropP2P {
       tokenSymbol
     } = decodeLink(claimUrl)
 
-    const apiHost = this.apiUrl || defineApiHost(chainId)
+    const apiHost = defineApiHost(chainId, this.apiUrl)
 
     if (!apiHost) {
       throw new ValidationError(errors.chain_not_supported())
@@ -300,7 +300,7 @@ class LinkdropP2P implements ILinkdropP2P {
     sender,
     transferId
   }) => {
-    const apiHost = this.apiUrl || defineApiHost(chainId)
+    const apiHost = defineApiHost(chainId, this.apiUrl)
     if (!apiHost) {
       throw new ValidationError(errors.chain_not_supported())
     }
