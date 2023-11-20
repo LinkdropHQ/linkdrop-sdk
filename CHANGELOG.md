@@ -1,5 +1,9 @@
 # Linkdrop P2P SDK
 
+## 2.0.0-beta.1
+- added optional `apiUrl` parameter
+- `apiKey` parameter transformed to optional
+
 ## 2.0.0-beta.0
 - added "token" parameter to getSenderHistory method
 - bug fix with escrow address for old links

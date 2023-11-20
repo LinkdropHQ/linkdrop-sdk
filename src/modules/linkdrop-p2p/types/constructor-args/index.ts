@@ -1,6 +1,7 @@
 type TConstructorArgs = {
-  apiKey: string
+  apiKey?: string
   baseUrl: string
+  apiUrl?: string
 }
 
 export default TConstructorArgs

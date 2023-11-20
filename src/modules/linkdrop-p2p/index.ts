@@ -23,17 +23,19 @@ import { ETokenAddress, TTokenType } from '../../types'
 import * as configs from '../../configs'
 
 class LinkdropP2P implements ILinkdropP2P {
-  apiKey: string
+  apiKey: string | null
   baseUrl: string
+  apiUrl: string
 
   constructor({
     apiKey,
-    baseUrl
+    baseUrl,
+    apiUrl
   }: TConstructorArgs) {
-    if (!apiKey) {
-      throw new ValidationError(errors.argument_not_provided('apiKey'))
+    this.apiKey = apiKey || null
+    if (apiUrl) {
+      this.apiUrl = apiUrl
     }
-    this.apiKey = apiKey
     if (!baseUrl) {
       throw new ValidationError(errors.argument_not_provided('baseUrl'))
     }
@@ -51,7 +53,7 @@ class LinkdropP2P implements ILinkdropP2P {
     if (!chainId) {
       throw new ValidationError(errors.argument_not_provided('chainId'))
     }
-    const apiHost = defineApiHost(chainId)
+    const apiHost = defineApiHost(chainId, this.apiUrl)
     if (!apiHost) {
       throw new ValidationError(errors.chain_not_supported())
     }
@@ -111,7 +113,7 @@ class LinkdropP2P implements ILinkdropP2P {
     offset,
     token
   }) => {
-    const apiHost = defineApiHost(chainId)
+    const apiHost = defineApiHost(chainId, this.apiUrl)
     if (!apiHost) {
       throw new ValidationError(errors.chain_not_supported())
     }
@@ -157,7 +159,7 @@ class LinkdropP2P implements ILinkdropP2P {
   getLimits: TGetLimits = async ({
     token, chainId, tokenType
   }) => {
-    const apiHost = defineApiHost(chainId)
+    const apiHost = defineApiHost(chainId, this.apiUrl)
     if (!apiHost) {
       throw new ValidationError(errors.chain_not_supported())
     }
@@ -200,7 +202,7 @@ class LinkdropP2P implements ILinkdropP2P {
       tokenSymbol
     } = decodeLink(claimUrl)
 
-    const apiHost = defineApiHost(chainId)
+    const apiHost = defineApiHost(chainId, this.apiUrl)
 
     if (!apiHost) {
       throw new ValidationError(errors.chain_not_supported())
@@ -298,7 +300,7 @@ class LinkdropP2P implements ILinkdropP2P {
     sender,
     transferId
   }) => {
-    const apiHost = defineApiHost(chainId)
+    const apiHost = defineApiHost(chainId, this.apiUrl)
     if (!apiHost) {
       throw new ValidationError(errors.chain_not_supported())
     }
