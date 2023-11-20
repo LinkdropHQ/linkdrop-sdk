@@ -7,7 +7,7 @@ type TDepositWithAuthResponse = {
 
 type TDepositWithAuth = (
   apiHost: string,
-  apiKey: string,
+  apiKey: string | null,
   token: string,
   token_type: TTokenType,
   sender: string,
@@ -25,7 +25,7 @@ type TDepositWithResponse = {
 
 type TDeposit = (
   apiHost: string,
-  apiKey: string,
+  apiKey: string | null,
   token: string,
   token_type: TTokenType,
   sender: string,
@@ -43,7 +43,7 @@ type TRedeemLinkResponse = {
 
 type TRedeemLink = (
   apiHost: string,
-  apiKey: string,
+  apiKey: string | null,
   receiver: string,
   sender: string,
   escrow: string,
@@ -58,7 +58,7 @@ type TRedeemRecoveredLinkResponse = {
 
 type TRedeemRecoveredLink = (
   apiHost: string,
-  apiKey: string,
+  apiKey: string | null,
   receiver: string,
   sender: string,
   escrow: string,
@@ -74,7 +74,7 @@ type TGetTransferDataResponse = {
 
 type TGetTransferData = (
   apiHost: string,
-  apiKey: string,
+  apiKey: string | null,
   sender: string,
   transfer_id: string,
 ) => Promise<TGetTransferDataResponse>
@@ -86,7 +86,7 @@ type TGetTransferDataByTxHashResponse = {
 
 type TGetTransferDataByTxHash = (
   apiHost: string,
-  apiKey: string,
+  apiKey: string | null,
   tx_hash: string,
 ) => Promise<TGetTransferDataByTxHashResponse>
 
@@ -101,7 +101,7 @@ type TGetFeeResponse = {
 
 type TGetFee = (
   apiHost: string,
-  apiKey: string,
+  apiKey: string | null,
   amount: string,
   tokenAddress: string,
   sender: string,
@@ -116,7 +116,7 @@ type TGetLimitsResponse = {
 
 type TGetLimits = (
   apiHost: string,
-  apiKey: string,
+  apiKey: string | null,
   tokenAddress: string,
   tokenType: TTokenType
 ) => Promise<TGetLimitsResponse>
@@ -133,7 +133,7 @@ type TGetHistoryResponse = {
 
 type TGetHistory = (
   apiHost: string,
-  apiKey: string,
+  apiKey: string | null,
   sender: string,
   onlyActive?: boolean,
   offset?: number,

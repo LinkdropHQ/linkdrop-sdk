@@ -3,9 +3,15 @@
 ```js
 import { LinkdropP2P } from 'linkdrop-p2p-sdk'
 
-// baseUrl is the host to be used to generate claim URLs
-// const baseUrl = "https://p2p.linkdrop.io" 
-const sdk = LinkdropP2P({ apiKey, baseUrl }) 
+const baseUrl = "https://p2p.linkdrop.io" // baseUrl is the host to be used to generate claim URLs. Required
+const apiKey = "spfurjdmvfkdlfo" // apiKey is the string parameter that will be passed to headers as Bearer token ("authorization" header). Not required. Default value: null
+const apiUrl = "https://api.myurl.com" // apiUrl is the string parameter that will be used as request url prefix for endpoints. Not required. Default value: https://escrow-api.linkdrop.io/v2/:network-name
+
+const sdk = LinkdropP2P({
+  apiKey,
+  baseUrl,
+  apiUrl
+}) 
 ```
 ## Sender methods
 ### Creating claim link
