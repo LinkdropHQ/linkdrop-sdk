@@ -45,7 +45,7 @@ class ClaimLink implements IClaimLinkSDK {
   token: string
   expiration: number
   chainId: number
-  #apiKey: string
+  #apiKey: string | null
   apiHost: string
   baseUrl: string
   escrowAddress: string | null

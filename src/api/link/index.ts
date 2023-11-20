@@ -15,6 +15,18 @@ function request<TResponse>(
     .then((data) => data as TResponse)
 }
 
+const defineHeaders = (apiKey: string | null) => {
+  const headers = {
+    'content-type': 'application/json'
+  }
+
+  if (apiKey) {
+    headers['authorization'] = `Bearer ${apiKey}`
+  }
+
+  return headers
+}
+
 const requests: TRequests = {
   redeemRecoveredLink: (
     apiHost,
@@ -27,10 +39,7 @@ const requests: TRequests = {
     sender_sig
   ) => {
     return request(`${apiHost}/redeem-recovered`, {
-      headers: {
-        'authorization': `Bearer ${apiKey}`,
-        'content-type': 'application/json'
-      },
+      headers: defineHeaders(apiKey),
       method: 'POST',
       body: JSON.stringify({
         receiver,
@@ -52,10 +61,7 @@ const requests: TRequests = {
     receiver_sig
   ) => {
     return request(`${apiHost}/redeem`, {
-      headers: {
-        'authorization': `Bearer ${apiKey}`,
-        'content-type': 'application/json'
-      },
+      headers: defineHeaders(apiKey),
       method: 'POST',
       body: JSON.stringify({
         receiver,
@@ -79,10 +85,7 @@ const requests: TRequests = {
     authorization
   ) => {
     return request(`${apiHost}/deposit-with-authorization`, {
-      headers: {
-        'authorization': `Bearer ${apiKey}`,
-        'content-type': 'application/json'
-      },
+      headers: defineHeaders(apiKey),
       method: 'POST',
       body: JSON.stringify({
         sender,
@@ -109,10 +112,7 @@ const requests: TRequests = {
     tx_hash
   ) => {
     return request(`${apiHost}/deposit`, {
-      headers: {
-        'authorization': `Bearer ${apiKey}`,
-        'content-type': 'application/json'
-      },
+      headers: defineHeaders(apiKey),
       method: 'POST',
       body: JSON.stringify({
         sender,
@@ -133,10 +133,7 @@ const requests: TRequests = {
     transferId
   ) => {
     return request(`${apiHost}/payment-status/sender/${sender}/transfer/${transferId}`, {
-      headers: {
-        'authorization': `Bearer ${apiKey}`,
-        'content-type': 'application/json'
-      }
+      headers: defineHeaders(apiKey),
     })
   },
   getTransferStatusByTxHash: (
@@ -145,10 +142,7 @@ const requests: TRequests = {
     txHash
   ) => {
     return request(`${apiHost}/payment-status/transaction/${txHash}`, {
-      headers: {
-        'authorization': `Bearer ${apiKey}`,
-        'content-type': 'application/json'
-      }
+      headers: defineHeaders(apiKey),
     })
   },
   getFee: (
@@ -160,10 +154,7 @@ const requests: TRequests = {
     tokenType
   ) => {
     return request(`${apiHost}/fee?amount=${amount}&token_address=${tokenAddress}&sender=${sender}&token_type=${tokenType}`, {
-      headers: {
-        'authorization': `Bearer ${apiKey}`,
-        'content-type': 'application/json'
-      }
+      headers: defineHeaders(apiKey),
     })
   },
 
@@ -183,10 +174,7 @@ const requests: TRequests = {
       token_address: token
     })
     return request(`${apiHost}/payment-status/sender/${sender}/get-sender-history?${queryVariables}`, {
-      headers: {
-        'authorization': `Bearer ${apiKey}`,
-        'content-type': 'application/json'
-      }
+      headers: defineHeaders(apiKey),
     })
   },
 
@@ -197,10 +185,7 @@ const requests: TRequests = {
     tokenType
   ) => {
     return request(`${apiHost}/limits?token_address=${tokenAddress}&token_type=${tokenType}`, {
-      headers: {
-        'authorization': `Bearer ${apiKey}`,
-        'content-type': 'application/json'
-      }
+      headers: defineHeaders(apiKey),
     })
   }
 }

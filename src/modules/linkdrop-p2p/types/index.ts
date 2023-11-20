@@ -7,8 +7,9 @@ import TGetLimits from './get-limits'
 import TGetHistory from './get-history'
 
 interface ILinkdropP2P {
-  apiKey: string
+  apiKey: string | null
   baseUrl: string
+  apiUrl?: string
 
   createClaimLink: TCreateClaimLink
   retrieveClaimLink: TRetrieveClaimLink
