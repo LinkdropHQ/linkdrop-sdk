@@ -5,6 +5,8 @@ import TConstructorArgs from './constructor-args'
 import TInitializeClaimLink from './initialize-claim-link'
 import TGetLimits from './get-limits'
 import TGetHistory from './get-history'
+import TParseVersion from './parse-version'
+import TGetVersionFromEscrowContract from './get-version-from-escrow-contract'
 
 interface ILinkdropP2P {
   apiKey: string | null
@@ -17,11 +19,15 @@ interface ILinkdropP2P {
   _initializeClaimLink: TInitializeClaimLink,
   getLimits: TGetLimits
   getSenderHistory: TGetHistory
+  parseVersion: TParseVersion
+  getVersionFromEscrowContract: TGetVersionFromEscrowContract
 }
 
 export {
   TCreateClaimLink,
   TConstructorArgs,
+  TGetVersionFromEscrowContract,
+  TParseVersion,
   TGetClaimLink,
   TRetrieveClaimLink,
   TInitializeClaimLink,
