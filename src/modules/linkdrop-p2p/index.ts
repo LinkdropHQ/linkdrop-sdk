@@ -5,7 +5,9 @@ import ILinkdropP2P, {
   TRetrieveClaimLink,
   TInitializeClaimLink,
   TGetLimits,
-  TGetHistory
+  TGetHistory,
+  TParseVersion,
+  TGetVersionFromEscrowContract
 } from './types'
 import { linkApi } from '../../api'
 import { ValidationError } from '../../errors'
@@ -14,12 +16,14 @@ import {
   defineApiHost,
   parseLink,
   updateOperations,
-  defineEscrowAddressByTokenSymbol
+  defineEscrowAddressByTokenSymbol,
+  parseQueryParams
 } from '../../helpers'
 import { toBigInt } from 'ethers'
 import ClaimLink from '../claim-link'
 import { errors } from '../../texts'
 import { ETokenAddress, TTokenType } from '../../types'
+import escrows from '../../configs/escrows'
 import * as configs from '../../configs'
 
 class LinkdropP2P implements ILinkdropP2P {
@@ -40,6 +44,14 @@ class LinkdropP2P implements ILinkdropP2P {
       throw new ValidationError(errors.argument_not_provided('baseUrl'))
     }
     this.baseUrl = baseUrl
+  }
+
+  parseVersion: TParseVersion = (claimUrl) => {
+    const hashIndex = claimUrl.indexOf('#');
+    const paramsString = claimUrl.substring(hashIndex + 1).split('?')[1]
+    const parsedParams = parseQueryParams(paramsString)
+
+    return  parsedParams["v"] || '1'
   }
 
   createClaimLink: TCreateClaimLink = async ({
@@ -154,6 +166,18 @@ class LinkdropP2P implements ILinkdropP2P {
       claimLinks,
       resultSet: result_set
     }
+  }
+
+
+  getVersionFromEscrowContract: TGetVersionFromEscrowContract = (escrowAddress) => {
+    const escrowVersions = Object.keys(escrows)
+    const result = escrowVersions.find(version => {
+      const escrowsForVersion = escrows[version]
+      if (escrowsForVersion && escrowsForVersion.length > 0) {
+        return escrowsForVersion.find(item => item.toLowerCase() === escrowAddress.toLowerCase())
+      }
+    })
+    return result || null
   }
 
   getLimits: TGetLimits = async ({
