@@ -6,7 +6,7 @@ import ILinkdropP2P, {
   TInitializeClaimLink,
   TGetLimits,
   TGetHistory,
-  TParseVersion,
+  TGetVersionFromClaimUrl,
   TGetVersionFromEscrowContract
 } from './types'
 import { linkApi } from '../../api'
@@ -46,12 +46,16 @@ class LinkdropP2P implements ILinkdropP2P {
     this.baseUrl = baseUrl
   }
 
-  parseVersion: TParseVersion = (claimUrl) => {
+  getVersionFromClaimUrl: TGetVersionFromClaimUrl = (claimUrl) => {
     const hashIndex = claimUrl.indexOf('#');
     const paramsString = claimUrl.substring(hashIndex + 1).split('?')[1]
     const parsedParams = parseQueryParams(paramsString)
+    const version = parsedParams["v"]
+    if (!version) {
+      throw new Error(errors.version_not_found())
+    }
 
-    return  parsedParams["v"] || '1'
+    return version
   }
 
   createClaimLink: TCreateClaimLink = async ({

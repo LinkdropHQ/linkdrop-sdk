@@ -1,5 +1,9 @@
 # Linkdrop P2P SDK
 
+## 2.0.0-beta.3
+- method parseVersion renamed to getVersionFromClaimUrl
+- added error handling to method getVersionFromClaimUrl
+
 ## 2.0.0-beta.2
 - added method to parse link for version
 - added method to define version from escrow contract
