@@ -14,5 +14,6 @@ export default {
   'amount_should_be_more_than_minlimit': (minLimit: string) => `Amount should be greater than or equal to ${minLimit}`,
   'amount_should_be_less_than_maxlimit': (maxLimit: string) => `Max amount ${maxLimit}`,
   'escrow_not_available': (tokenAddress: string, chainId: number) => `Escrow contract is not available for token ${tokenAddress} (chain id: ${chainId})`,
-  'escrow_is_not_correct': () => `Escrow contract address is not correct. Please check chainId and token address`
+  'escrow_is_not_correct': () => `Escrow contract address is not correct. Please check chainId and token address`,
+  'version_not_found': () => 'Version not found for the provided escrow contract address'
 }
