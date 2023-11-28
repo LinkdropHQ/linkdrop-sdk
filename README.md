@@ -82,6 +82,7 @@ const claimLink = await sdk.retrieveClaimLink({ chainId, txHash })
 // or by using sender + transferId
 const claimLink = await sdk.retrieveClaimLink({ chainId, sender, transferId }) 
 ```
+
 ### Fetching claim links created by the sender
 
 You can also fetch information about created links
@@ -117,6 +118,18 @@ const claimLink = await sdk.getClaimLink(claimUrl)
 const txHash = await claimLink.redeem(dest)
 ```
 
+You can also define version of the link using method `getVersionFromClaimUrl`
+```js
+const version = sdk.getVersionFromClaimUrl(claimUrl)
+```
+
+Additionally you can use the `getVersionFromEscrowContract` method to determine the specific version of the link according to escrow contract
+```js
+const escrowAddress = '0x0B79cC1E78C47fF08cA6f355e8aCD32AEa5bFe58'
+const version = await sdk.getVersionFromEscrowContract(escrowAddress)
+```
+
+
 ## ClaimLink
 Claim Link object contains methods and properties to facilitate both creation and redemption of the claim link. 
   
@@ -150,4 +163,3 @@ In order to get the latest status of the claim link, use the following method:
 ```js
 const { status, operations } = await claimLink.getStatus()
 ```
-
