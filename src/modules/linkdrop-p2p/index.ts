@@ -52,7 +52,7 @@ class LinkdropP2P implements ILinkdropP2P {
     const parsedParams = parseQueryParams(paramsString)
     const version = parsedParams["v"]
     if (!version) {
-      throw new Error(errors.version_not_found())
+      throw new Error(errors.version_not_provided())
     }
 
     return version
@@ -181,7 +181,12 @@ class LinkdropP2P implements ILinkdropP2P {
         return escrowsForVersion.find(item => item.toLowerCase() === escrowAddress.toLowerCase())
       }
     })
-    return result || null
+
+    if (!result) {
+      throw new Error(errors.version_not_found())
+    }
+
+    return result
   }
 
   getLimits: TGetLimits = async ({
