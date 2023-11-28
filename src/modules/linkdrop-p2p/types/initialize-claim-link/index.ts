@@ -1,4 +1,4 @@
-import { EChains, TTokenType, ETokenAddress } from "../../../../types"
+import { EChains, TTokenType, ETokenAddress, TGetRandomBytes } from "../../../../types"
 import ClaimLink from "../../../claim-link"
 
 export type TInitializeClaimLinkArgs = {

@@ -19,10 +19,11 @@ import {
   defineEscrowAddressByTokenSymbol,
   parseQueryParams
 } from '../../helpers'
+import { generateKeypair } from '../../utils'
 import { toBigInt } from 'ethers'
 import ClaimLink from '../claim-link'
 import { errors } from '../../texts'
-import { ETokenAddress, TTokenType } from '../../types'
+import { ETokenAddress, TGetRandomBytes, TTokenType } from '../../types'
 import escrows from '../../configs/escrows'
 import * as configs from '../../configs'
 
@@ -30,11 +31,13 @@ class LinkdropP2P implements ILinkdropP2P {
   apiKey: string | null
   baseUrl: string
   apiUrl: string
+  getRandomBytes: TGetRandomBytes
 
   constructor({
     apiKey,
     baseUrl,
-    apiUrl
+    apiUrl,
+    getRandomBytes
   }: TConstructorArgs) {
     this.apiKey = apiKey || null
     if (apiUrl) {
@@ -44,6 +47,10 @@ class LinkdropP2P implements ILinkdropP2P {
       throw new ValidationError(errors.argument_not_provided('baseUrl'))
     }
     this.baseUrl = baseUrl
+
+    if (!getRandomBytes) {
+      throw new ValidationError(errors.argument_not_provided('baseUrl'))
+    }
   }
 
   getVersionFromClaimUrl: TGetVersionFromClaimUrl = (claimUrl) => {
@@ -221,7 +228,19 @@ class LinkdropP2P implements ILinkdropP2P {
   }
 
   _initializeClaimLink: TInitializeClaimLink = async (claimLinkData) => {
-    const claimLink = new ClaimLink(claimLinkData)
+    let transferId = claimLinkData.transferId
+    let keyPair
+    if (!transferId) {
+      keyPair = await generateKeypair(this.getRandomBytes)
+      transferId = keyPair.address
+    }
+    const claimLink = new ClaimLink({
+      ...claimLinkData,
+      transferId,
+      getRandomBytes: this.getRandomBytes,
+      privateKey: keyPair ? keyPair.privateKey : null
+    })
+
     await claimLink.initialize()
     return claimLink
   }

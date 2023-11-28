@@ -17,7 +17,8 @@ import {
   TLink,
   TTokenType,
   ETokenAddress,
-  TClaimLinkItemOperation
+  TClaimLinkItemOperation,
+  TGetRandomBytes
 } from '../../types'
 import { ValidationError } from '../../errors'
 import { LinkdropEscrowNetworkToken } from '../../abi'
@@ -49,6 +50,7 @@ class ClaimLink implements IClaimLinkSDK {
   apiHost: string
   baseUrl: string
   escrowAddress: string | null
+  getRandomBytes: TGetRandomBytes
   transferId: string
   claimUrl: string
   amount: string
@@ -56,6 +58,7 @@ class ClaimLink implements IClaimLinkSDK {
   fee: string
   tokenType: TTokenType
   operations: TClaimLinkItemOperation[]
+  privateKey: string
 
   constructor({
     sender,
@@ -70,11 +73,14 @@ class ClaimLink implements IClaimLinkSDK {
     claimUrl,
     tokenType,
     escrowAddress,
-    operations
+    operations,
+    privateKey,
+    getRandomBytes
   }: TConstructorArgs) {
     if (!sender) {
       throw new ValidationError(errors.argument_not_provided('sender'))
     }
+    this.getRandomBytes = getRandomBytes
     this.sender = sender.toLowerCase()
     if (!amount) {
       throw new ValidationError(errors.argument_not_provided('amount'))
@@ -82,6 +88,9 @@ class ClaimLink implements IClaimLinkSDK {
     this.operations = operations || []
     this.amount = amount
     this.expiration = expiration || Math.floor(Date.now() / 1000 + 60 * 60 * 24 * 30)
+    if (!chainId) {
+      throw new ValidationError(errors.argument_not_provided('chainId'))
+    }
     if (!chainId) {
       throw new ValidationError(errors.argument_not_provided('chainId'))
     }
@@ -125,9 +134,17 @@ class ClaimLink implements IClaimLinkSDK {
       this.claimUrl = claimUrl
     }
 
-    if (transferId) {
-      this.transferId = transferId.toLowerCase()
+    if (!transferId) {
+      throw new Error(errors.argument_not_provided('transferId'))
     }
+
+    this.transferId = transferId.toLowerCase()
+
+    if (!privateKey) {
+      throw new Error(errors.argument_not_provided('transferId'))
+    }
+
+    this.privateKey = privateKey
 
     this.baseUrl = baseUrl || configs.baseUrl
   }
@@ -261,8 +278,7 @@ class ClaimLink implements IClaimLinkSDK {
   }
 
   deposit: TDeposit = async ({
-    sendTransaction,
-    getRandomBytes
+    sendTransaction
   }) => {
 
 
@@ -281,14 +297,6 @@ class ClaimLink implements IClaimLinkSDK {
     if (!sendTransaction) {
       throw new ValidationError(errors.argument_not_provided('sendTransaction'))
     }
-
-    if (!getRandomBytes) {
-      throw new ValidationError(errors.argument_not_provided('getRandomBytes'))
-    }
-
-    const keypair = await generateKeypair(getRandomBytes)
-
-    this.transferId = keypair.address.toLowerCase()
 
     const iface = new ethers.Interface(LinkdropEscrowNetworkToken.abi)
 
@@ -320,7 +328,7 @@ class ClaimLink implements IClaimLinkSDK {
     )
 
     const linkParams: TLink = {
-      linkKey: keypair.privateKey,
+      linkKey: this.privateKey,
       transferId: this.transferId,
       chainId: this.chainId,
       tokenType: this.tokenType,
@@ -347,15 +355,11 @@ class ClaimLink implements IClaimLinkSDK {
   }
 
   depositWithAuthorization: TDepositWithAuthorization = async ({
-    signTypedData,
-    getRandomBytes
+    signTypedData
   }) => {
 
     if (!signTypedData) {
       throw new ValidationError(errors.argument_not_provided('signTypedData'))
-    }
-    if (!getRandomBytes) {
-      throw new ValidationError(errors.argument_not_provided('getRandomBytes'))
     }
 
     if (this.tokenType === 'NATIVE') {
@@ -378,10 +382,6 @@ class ClaimLink implements IClaimLinkSDK {
     if (!this.amount) {
       throw new Error(errors.property_not_provided('amount'))
     }
-
-    const keypair = await generateKeypair(getRandomBytes)
-
-    this.transferId = keypair.address.toLowerCase()
 
     const auth = await getDepositAuthorization(
       signTypedData,
@@ -413,7 +413,7 @@ class ClaimLink implements IClaimLinkSDK {
     const { tx_hash } = result
 
     const linkParams: TLink = {
-      linkKey: keypair.privateKey,
+      linkKey: this.privateKey,
       transferId: this.transferId,
       chainId: this.chainId,
       tokenType: this.tokenType,
@@ -523,10 +523,9 @@ class ClaimLink implements IClaimLinkSDK {
   }
 
   generateClaimUrl: TGenerateClaimUrl = async ({
-    getRandomBytes,
     signTypedData
   }) => {
-    if (!getRandomBytes) {
+    if (!this.getRandomBytes) {
       throw new ValidationError(errors.argument_not_provided('getRandomBytes'))
     }
 
@@ -542,7 +541,7 @@ class ClaimLink implements IClaimLinkSDK {
 
     const result = await generateLinkKeyandSignature(
       signTypedData,
-      getRandomBytes,
+      this.getRandomBytes,
       this.transferId,
       escrowPaymentDomain
     )

@@ -1,4 +1,9 @@
-import { TTokenType, ETokenAddress, TClaimLinkItemOperation } from "../../../../types"
+import {
+  TTokenType,
+  ETokenAddress,
+  TClaimLinkItemOperation,
+  TGetRandomBytes
+} from "../../../../types"
 
 type TConstructorArgs = {
   sender: string
@@ -14,6 +19,8 @@ type TConstructorArgs = {
   tokenType: TTokenType
   escrowAddress?: string
   operations?: TClaimLinkItemOperation[]
+  getRandomBytes: TGetRandomBytes
+  privateKey: string
 }
 
 
