@@ -126,7 +126,7 @@ const version = sdk.getVersionFromClaimUrl(claimUrl)
 Additionally you can use the `getVersionFromEscrowContract` method to determine the specific version of the link according to escrow contract
 ```js
 const escrowAddress = '0x0B79cC1E78C47fF08cA6f355e8aCD32AEa5bFe58'
-const version = await sdk.getVersionFromEscrowContract(escrowAddress)
+const version = sdk.getVersionFromEscrowContract(escrowAddress)
 ```
 
 
