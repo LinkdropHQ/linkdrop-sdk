@@ -5,7 +5,9 @@ import ILinkdropP2P, {
   TRetrieveClaimLink,
   TInitializeClaimLink,
   TGetLimits,
-  TGetHistory
+  TGetHistory,
+  TGetVersionFromClaimUrl,
+  TGetVersionFromEscrowContract
 } from './types'
 import { linkApi } from '../../api'
 import { ValidationError } from '../../errors'
@@ -14,12 +16,14 @@ import {
   defineApiHost,
   parseLink,
   updateOperations,
-  defineEscrowAddressByTokenSymbol
+  defineEscrowAddressByTokenSymbol,
+  parseQueryParams
 } from '../../helpers'
 import { toBigInt } from 'ethers'
 import ClaimLink from '../claim-link'
 import { errors } from '../../texts'
 import { ETokenAddress, TTokenType } from '../../types'
+import escrows from '../../configs/escrows'
 import * as configs from '../../configs'
 
 class LinkdropP2P implements ILinkdropP2P {
@@ -40,6 +44,18 @@ class LinkdropP2P implements ILinkdropP2P {
       throw new ValidationError(errors.argument_not_provided('baseUrl'))
     }
     this.baseUrl = baseUrl
+  }
+
+  getVersionFromClaimUrl: TGetVersionFromClaimUrl = (claimUrl) => {
+    const hashIndex = claimUrl.indexOf('#');
+    const paramsString = claimUrl.substring(hashIndex + 1).split('?')[1]
+    const parsedParams = parseQueryParams(paramsString)
+    const version = parsedParams["v"]
+    if (!version) {
+      throw new Error(errors.version_not_provided())
+    }
+
+    return version
   }
 
   createClaimLink: TCreateClaimLink = async ({
@@ -154,6 +170,23 @@ class LinkdropP2P implements ILinkdropP2P {
       claimLinks,
       resultSet: result_set
     }
+  }
+
+
+  getVersionFromEscrowContract: TGetVersionFromEscrowContract = (escrowAddress) => {
+    const escrowVersions = Object.keys(escrows)
+    const result = escrowVersions.find(version => {
+      const escrowsForVersion = escrows[version]
+      if (escrowsForVersion && escrowsForVersion.length > 0) {
+        return escrowsForVersion.find(item => item.toLowerCase() === escrowAddress.toLowerCase())
+      }
+    })
+
+    if (!result) {
+      throw new Error(errors.version_not_found())
+    }
+
+    return result
   }
 
   getLimits: TGetLimits = async ({

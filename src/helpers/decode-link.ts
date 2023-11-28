@@ -1,24 +1,14 @@
 import { ETokenSymbol, TLink } from '../types'
-import { defineTokenType } from '.'
+import { defineTokenType, parseQueryParams } from '.'
 import { ethers, decodeBase58 } from 'ethers'
 type TDecodeLink = (link: string) => TLink
-
-function parseQuery(queryString) {
-  const pairs = queryString.split('&');
-  const result = {};
-  pairs.forEach(pair => {
-    const [key, value] = pair.split('=');
-    result[key] = decodeURIComponent(value || '');
-  });
-  return result;
-}
 
 const decodeLink: TDecodeLink = (link) => {
   // Use URLSearchParams to get query parameters
   const hashIndex = link.indexOf('#');
   //if (hashIndex === -1) return null;
   const paramsString = link.substring(hashIndex + 1).split('?')[1]
-  const parsedParams = parseQuery(paramsString)
+  const parsedParams = parseQueryParams(paramsString)
 
   const tokenSymbol = (link.split('#/')[1]).split('?')[0] as ETokenSymbol
   const tokenType = defineTokenType(tokenSymbol)
