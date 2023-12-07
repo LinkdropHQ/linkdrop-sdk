@@ -1,6 +1,6 @@
 # Linkdrop P2P SDK
 
-## 3.0.0-beta.1
+## 3.0.0-beta.0
 - added ERC20 token support
 - updated LinkdropP2P constructor
 - updated methods for ClaimLink (deposit, depositWithAuthorization)
