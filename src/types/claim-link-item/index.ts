@@ -17,7 +17,8 @@ export type TClaimLinkItemOperation = {
 export type TClaimLinkItem = {
   transfer_id?: string
   amount: string
-  fee: string
+  fee_amount: string
+  fee_token: string
   total_amount?: string
   token: string
   chain_id?: number

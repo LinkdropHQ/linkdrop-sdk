@@ -1,12 +1,16 @@
-import { TTokenType, ETokenAddress, TClaimLinkItemOperation } from "../../../../types"
+import {
+  TTokenType,
+  ETokenAddress,
+  TClaimLinkItemOperation,
+  TGetRandomBytes
+} from "../../../../types"
 
 type TConstructorArgs = {
   sender: string
   token?: ETokenAddress
-  amount: string
-  expiration?: number
+  expiration: number
   chainId: number
-  apiHost: string
+  apiUrl: string
   apiKey: string | null
   baseUrl?: string
   transferId?: string
@@ -14,6 +18,14 @@ type TConstructorArgs = {
   tokenType: TTokenType
   escrowAddress?: string
   operations?: TClaimLinkItemOperation[]
+  getRandomBytes: TGetRandomBytes
+  privateKey: string | null
+
+  amount: string
+  feeAmount: string
+  feeAuthorization?: string
+  feeToken: string
+  totalAmount: string
 }
 
 

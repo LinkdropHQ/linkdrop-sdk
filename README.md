@@ -6,13 +6,18 @@ import { LinkdropP2P } from 'linkdrop-p2p-sdk'
 const baseUrl = "https://p2p.linkdrop.io" // baseUrl is the host to be used to generate claim URLs. Required
 const apiKey = "spfurjdmvfkdlfo" // apiKey is the string parameter that will be passed to headers as Bearer token ("authorization" header). Not required. Default value: null
 const apiUrl = "https://api.myurl.com" // apiUrl is the string parameter that will be used as request url prefix for endpoints. Not required. Default value: https://escrow-api.linkdrop.io/v2
+const getRandomBytes = (length) => { 
+  return new Uint8Array(crypto.randomBytes(length));
+} // To avoid using and linking native crypto libraries, we ask to pass a random bytes generation function. Required
 
 const sdk = LinkdropP2P({
   apiKey,
   baseUrl,
-  apiUrl
+  apiUrl,
+  getRandomBytes
 }) 
 ```
+
 ## Sender methods
 ### Creating claim link
 **1. Initialize claim link object:**  
@@ -26,7 +31,7 @@ const amount = "1000000" // atomic amount of tokens that sender wants to send (b
 const expiration = "1695985897077" // unix timestamp after which the claim link will expire and amount will be sent back to sender unless it was claimed before. Optional param, it not passed, it's going to be set to 15 days from now, 
 
 const claimLink = await sdk.createClaimLink({ from, token, amount, expiration, chainId, tokenType })
-const { amount, fee, totalAmount } = await claimLink.updateAmount(amount)
+const { amount, feeAmount, totalAmount } = await claimLink.updateAmount(amount)
 ```
 Methods `createClaimLink` and `updateAmount` will throw an error if amount is not valid according to limits.
 To define the minimum and maximum limit of amount that can be sent via link, use the getLimits method
@@ -44,31 +49,28 @@ const { minTransferAmount, maxTransferAmount } = await sdk.getLimits({
 
 ```
 
-**2a. Deposit tokens to escrow contract via EIP-3009 (transferWithAuthorization) :**  
+**2a. Deposit USDC tokens to escrow contract via EIP-3009 (transferWithAuthorization) :**  
 To avoid asking for sender private key directly, we ask to pass a function that generates a EIP712 signature using Sender's private key. The function should be similar to ethers `signer.signTypedData` - https://docs.ethers.org/v6/api/providers/#Signer-signTypedData
 ```js
 const signTypedData = (domain, types, message) => signer.signTypedData(domain, types, message)
+const { claimUrl, transferId, txHash } = await claimLink.depositWithAuthorization({ signTypedData }) 
 ```
-To avoid using and linking native crypto libraries, we ask to pass a random bytes generation function:
-```js
-const getRandomBytes = (length) => { 
-  return new Uint8Array(crypto.randomBytes(length));
-}
-const { claimUrl, transferId, txHash } = await claimLink.depositWithAuthorization({ signTypedData, getRandomBytes }) 
-```
-**2a. Deposit native tokens (ETH/MATIC) to escrow contract via direct call :**  
+
+**2b. Deposit native tokens (ETH/MATIC) and other ERC20 tokens to escrow contract via direct call :**  
 To avoid asking for sender private key directly, we ask to pass a function that signs and sends Ethereum transaction. The function should be similar to ethers `signer.sendTransaction` - https://docs.ethers.org/v6/api/providers/#Signer-signTypedData
 ```js
 const sendTransaction = async ({ to, value, gasLimit, data }) => { 
   const tx = await signer.sendTransaction({ to, value, gasLimit, data })
   return { hash: tx.hash }
 }
-const { claimUrl, transferId, txHash } = await claimLink.deposit({ sendTransaction, getRandomBytes }) 
+const { claimUrl, transferId, txHash } = await claimLink.deposit({ sendTransaction }) 
 ```
-**3. Re-generate Claim URL:**  
+For ERC20 tokens (except USDC tokens) before depositing, you need to approve tokens so that the contract has the opportunity to send them to the recipient
+
+**3. Re-generate Claim URL:**
 Sender can generate a new claim URL (if the original claim URL is lost):
 ```js
-const { claimUrl, transferId } = await claimLink.generateClaimUrl({ signTypedData, getRandomBytes })
+const { claimUrl, transferId } = await claimLink.generateClaimUrl({ signTypedData })
 // share claimUrl with receiver
 ```
 ### Retrieving claim link details
@@ -79,8 +81,8 @@ As claim URL is never stored in database, it will be `null` on retrieval and new
 // fetch claim link using deposit transaction hash
 const claimLink = await sdk.retrieveClaimLink({ chainId, txHash }) 
 
-// or by using sender + transferId
-const claimLink = await sdk.retrieveClaimLink({ chainId, sender, transferId }) 
+// or by using transferId
+const claimLink = await sdk.retrieveClaimLink({ chainId, transferId }) 
 ```
 
 ### Fetching claim links created by the sender
@@ -99,10 +101,10 @@ const {
   resultSet // information about fetched data (count, offset, total)
 } = await sdk.getSenderHistory({
   // required params:
-  onlyActive, // whether to only get the claim links that haven't been redeemed/refunded yet 
   chainId,
   sender,
   // optional params:
+  onlyActive, // whether to only get the claim links that haven't been redeemed/refunded yet 
   limit,
   offset,
   token
@@ -125,7 +127,7 @@ const version = sdk.getVersionFromClaimUrl(claimUrl)
 
 Additionally you can use the `getVersionFromEscrowContract` method to determine the specific version of the link according to escrow contract
 ```js
-const escrowAddress = '0x0B79cC1E78C47fF08cA6f355e8aCD32AEa5bFe58'
+const escrowAddress = '0x0b962bbbf101941d0d0ec1041d01668dac36647a'
 const version = sdk.getVersionFromEscrowContract(escrowAddress)
 ```
 

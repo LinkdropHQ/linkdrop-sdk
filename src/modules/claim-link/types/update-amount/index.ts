@@ -1,6 +1,6 @@
 type TUpdateAmountResult = {
   amount: string
-  fee: string
+  feeAmount: string
   totalAmount: string
 }
 
