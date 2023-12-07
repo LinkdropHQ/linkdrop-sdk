@@ -10,9 +10,6 @@ const decodeLink: TDecodeLink = (link) => {
   const paramsString = link.substring(hashIndex + 1).split('?')[1]
   const parsedParams = parseQueryParams(paramsString)
 
-  const tokenSymbol = (link.split('#/')[1]).split('?')[0] as ETokenSymbol
-  const tokenType = defineTokenType(tokenSymbol)
-
   const params = {
     linkKey: parsedParams["k"] || "",
     signature: parsedParams["sg"],
@@ -35,9 +32,7 @@ const decodeLink: TDecodeLink = (link) => {
     transferId,
     chainId,
     sender,
-    version: params.version,
-    tokenType,
-    tokenSymbol
+    version: params.version
   }
 }
 

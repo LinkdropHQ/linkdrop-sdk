@@ -7,16 +7,14 @@ import TGetLimits from './get-limits'
 import TGetHistory from './get-history'
 import TGetVersionFromClaimUrl from './get-version-from-claim-url'
 import TGetVersionFromEscrowContract from './get-version-from-escrow-contract'
+import TGetCurrentFee from './get-current-fee'
 
 interface ILinkdropP2P {
-  apiKey: string | null
-  baseUrl: string
-  apiUrl?: string
-
   createClaimLink: TCreateClaimLink
   retrieveClaimLink: TRetrieveClaimLink
   getClaimLink: TGetClaimLink
-  _initializeClaimLink: TInitializeClaimLink,
+  _initializeClaimLink: TInitializeClaimLink
+  _getCurrentFee: TGetCurrentFee
   getLimits: TGetLimits
   getSenderHistory: TGetHistory
   getVersionFromClaimUrl: TGetVersionFromClaimUrl
@@ -25,6 +23,7 @@ interface ILinkdropP2P {
 
 export {
   TCreateClaimLink,
+  TGetCurrentFee,
   TConstructorArgs,
   TGetVersionFromEscrowContract,
   TGetVersionFromClaimUrl,

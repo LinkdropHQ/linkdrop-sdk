@@ -1,11 +1,6 @@
 export enum EEscrowAddress {
-  usdcPolygon = '0xc4eb6e5933BC5E32dfd5C80Baf143212A95549B3',
-  usdcBridgedPolygon = '0xaD27383460183fd7E21B71dF3b4CAC9480Eb9a75',
-  usdcBase = '0xaD27383460183fd7E21B71dF3b4CAC9480Eb9a75',
-  usdcBaseGoerli = '0xaD27383460183fd7E21B71dF3b4CAC9480Eb9a75',
-  usdcMumbai = '0xaD27383460183fd7E21B71dF3b4CAC9480Eb9a75',
-  nativePolygon = '0x0B79cC1E78C47fF08cA6f355e8aCD32AEa5bFe58',
-  nativeBase = '0x0B79cC1E78C47fF08cA6f355e8aCD32AEa5bFe58',
-  nativeBaseGoerli = '0x0B79cC1E78C47fF08cA6f355e8aCD32AEa5bFe58',
-  nativeMumbai = '0x0B79cC1E78C47fF08cA6f355e8aCD32AEa5bFe58'
+  polygon = '0xc4eb6e5933bc5e32dfd5c80baf143212a95549b3',
+  base = '0xad27383460183fd7e21b71df3b4cac9480eb9a75',
+  baseGoerli = '0xad27383460183fd7e21b71df3b4cac9480eb9a75',
+  mumbai = '0x0b962bbbf101941d0d0ec1041d01668dac36647a'
 }

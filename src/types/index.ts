@@ -11,6 +11,7 @@ import { EChains } from './chains'
 import { ETokenAddress } from './token-address'
 import { ETokenSymbol } from './token-symbol'
 import { EEscrowAddress } from './escrow-address'
+import { ESelectors } from './selectors'
 
 import type {
   TClaimLinkItem,
@@ -21,6 +22,7 @@ import type {
 
 export {
   TTokenType,
+  ESelectors,
   TDepositResult,
   EEscrowAddress,
   ETokenAddress,

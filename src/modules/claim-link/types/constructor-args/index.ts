@@ -8,10 +8,9 @@ import {
 type TConstructorArgs = {
   sender: string
   token?: ETokenAddress
-  amount: string
-  expiration?: number
+  expiration: number
   chainId: number
-  apiHost: string
+  apiUrl: string
   apiKey: string | null
   baseUrl?: string
   transferId?: string
@@ -20,7 +19,13 @@ type TConstructorArgs = {
   escrowAddress?: string
   operations?: TClaimLinkItemOperation[]
   getRandomBytes: TGetRandomBytes
-  privateKey: string
+  privateKey: string | null
+
+  amount: string
+  feeAmount: string
+  feeAuthorization?: string
+  feeToken: string
+  totalAmount: string
 }
 
 

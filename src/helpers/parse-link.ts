@@ -25,14 +25,12 @@ const parseLink: TParseLink = async (
 
   const escrowPaymentDomain: TEscrowPaymentDomain = {
     name: "LinkdropEscrow",
-    version: "2",
+    version: "3",
     chainId: chainId,
     verifyingContract: escrowAddress,
   }
 
-
   if (decodedLink.sender) {
-
     return {
       senderSig: decodedLink.senderSig,
       linkKey: decodedLink.linkKey,

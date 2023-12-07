@@ -3,15 +3,19 @@ import ClaimLink from "../../../claim-link"
 
 export type TInitializeClaimLinkArgs = {
   sender: string
-  token?: ETokenAddress
+  token: ETokenAddress
   amount: string
-  expiration?: number
+  expiration: number
   chainId: number
-  apiHost: string
+  apiUrl: string
   apiKey: string | null
   baseUrl?: string
   transferId?: string
   claimUrl?: string
+  feeAmount?: string
+  totalAmount?: string
+  feeToken?: string
+  feeAuthorization?: string
   tokenType: TTokenType
 }
 
@@ -22,11 +26,15 @@ type TInitializeClaimLink = ({
   baseUrl,
   amount,
   sender, 
-  apiHost, 
+  apiUrl, 
   apiKey,
   transferId,
   claimUrl,
-  tokenType
+  tokenType,
+  feeAmount,
+  totalAmount,
+  feeAuthorization,
+  feeToken
 }: TInitializeClaimLinkArgs) => Promise<(ClaimLink)>
 
 export default TInitializeClaimLink

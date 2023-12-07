@@ -16,5 +16,16 @@ export default {
   'escrow_not_available': (tokenAddress: string, chainId: number) => `Escrow contract is not available for token ${tokenAddress} (chain id: ${chainId})`,
   'escrow_is_not_correct': () => `Escrow contract address is not correct. Please check chainId and token address`,
   'version_not_found': () => 'Version not found for the provided escrow contract address',
-  'version_not_provided': () => 'Version parameter "v" not found in URL'
+  'version_not_provided': () => 'Version parameter "v" not found in URL',
+  'cannot_deposit_after_retrieve': () => 'You cannot make a deposit again after retrieving the link',
+  'cannot_deposit_twice': () => 'The deposit has already been made',
+  'at_least_one_argument_not_provided': (args: string[]) => `At least one of the following arguments should be provided: ${args.join(', ')}`,
+  'variable_is_not_valid': (
+    variableName: string,
+    expectedValueType: string,
+    currentValue: any
+  ) => `Variable "${variableName}" is not valid. Expected value type: ${expectedValueType}. Current value: ${currentValue}`,
+  'stable_token_not_supported': (
+    address: string
+  ) => `Stable coin with address not supported for deployWithAuthorization method`
 }

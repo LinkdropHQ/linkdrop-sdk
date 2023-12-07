@@ -16,8 +16,7 @@ const defineIfEscrowAddressIsCorrect: TDefineIfEscrowAddressIsCorrect = (
 
   if (
     (
-      escrowAddress !== EEscrowAddress.nativeBase &&
-      escrowAddress !== EEscrowAddress.usdcBase
+      escrowAddress !== EEscrowAddress.base
     ) && chainId === EChains.base
   ) {
     return false
@@ -25,9 +24,7 @@ const defineIfEscrowAddressIsCorrect: TDefineIfEscrowAddressIsCorrect = (
 
   if (
     (
-      escrowAddress !== EEscrowAddress.nativePolygon &&
-      escrowAddress !== EEscrowAddress.usdcPolygon &&
-      escrowAddress !== EEscrowAddress.usdcBridgedPolygon
+      escrowAddress !== EEscrowAddress.polygon
     ) && chainId === EChains.polygon
   ) {
     return false
@@ -35,8 +32,7 @@ const defineIfEscrowAddressIsCorrect: TDefineIfEscrowAddressIsCorrect = (
 
   if (
     (
-      escrowAddress !== EEscrowAddress.nativeMumbai &&
-      escrowAddress !== EEscrowAddress.usdcMumbai
+      escrowAddress !== EEscrowAddress.mumbai
     ) && chainId === EChains.mumbai
   ) {
     return false
@@ -44,8 +40,7 @@ const defineIfEscrowAddressIsCorrect: TDefineIfEscrowAddressIsCorrect = (
 
   if (
     (
-      escrowAddress !== EEscrowAddress.nativeBaseGoerli &&
-      escrowAddress !== EEscrowAddress.usdcBaseGoerli
+      escrowAddress !== EEscrowAddress.baseGoerli
     ) && chainId === EChains.baseGoerli
   ) {
     return false
