@@ -55,7 +55,8 @@ To avoid asking for sender private key directly, we ask to pass a function that 
 const signTypedData = (domain, types, message) => signer.signTypedData(domain, types, message)
 const { claimUrl, transferId, txHash } = await claimLink.depositWithAuthorization({ signTypedData }) 
 ```
-**2a. Deposit native tokens (ETH/MATIC) and other ERC20 tokens to escrow contract via direct call :**  
+
+**2b. Deposit native tokens (ETH/MATIC) and other ERC20 tokens to escrow contract via direct call :**  
 To avoid asking for sender private key directly, we ask to pass a function that signs and sends Ethereum transaction. The function should be similar to ethers `signer.sendTransaction` - https://docs.ethers.org/v6/api/providers/#Signer-signTypedData
 ```js
 const sendTransaction = async ({ to, value, gasLimit, data }) => { 
@@ -65,7 +66,8 @@ const sendTransaction = async ({ to, value, gasLimit, data }) => {
 const { claimUrl, transferId, txHash } = await claimLink.deposit({ sendTransaction }) 
 ```
 For ERC20 tokens (except USDC tokens) before depositing, you need to approve tokens so that the contract has the opportunity to send them to the recipient
-**3. Re-generate Claim URL:**  
+
+**3. Re-generate Claim URL:**
 Sender can generate a new claim URL (if the original claim URL is lost):
 ```js
 const { claimUrl, transferId } = await claimLink.generateClaimUrl({ signTypedData })
