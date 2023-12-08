@@ -19,7 +19,7 @@ type TConstructorArgs = {
   escrowAddress?: string
   operations?: TClaimLinkItemOperation[]
   getRandomBytes: TGetRandomBytes
-  privateKey: string | null
+  linkKey: string | null
 
   amount: string
   feeAmount: string

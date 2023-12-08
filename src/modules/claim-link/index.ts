@@ -52,7 +52,7 @@ class ClaimLink implements IClaimLinkSDK {
   claimUrl: string
   tokenType: TTokenType
   operations: TClaimLinkItemOperation[]
-  privateKey: string | null
+  linkKey: string | null
   deposited: boolean = false
 
   feeAuthorization: string
@@ -76,7 +76,7 @@ class ClaimLink implements IClaimLinkSDK {
     tokenType,
     escrowAddress,
     operations,
-    privateKey,
+    linkKey,
     getRandomBytes,
     feeAuthorization,
     feeToken,
@@ -148,8 +148,8 @@ class ClaimLink implements IClaimLinkSDK {
 
     this.transferId = transferId.toLowerCase()
 
-    if (privateKey) {
-      this.privateKey = privateKey
+    if (linkKey) {
+      this.linkKey = linkKey
     }
 
     if (claimUrl) {
@@ -169,22 +169,18 @@ class ClaimLink implements IClaimLinkSDK {
         this.chainId
       ))
     }
-    const decodedLinkParams = await parseLink(
-      this.chainId,
-      this.escrowAddress,
-      this.claimUrl
-    )
+    const decodedLinkParams = parseLink(this.claimUrl)
     if (!decodedLinkParams) {
       throw new Error(errors.link_decode_failed())
     }
-    const { senderSig, linkKey, transferId, sender } = decodedLinkParams
+    const { senderSig, linkKey, transferId } = decodedLinkParams
     const receiverSig = await generateReceiverSig(linkKey, dest)
     if (senderSig) {
       const redeem = await linkApi.redeemRecoveredLink(
         this.apiUrl,
         this.#apiKey,
         dest,
-        sender.toLowerCase(),
+        this.sender.toLowerCase(),
         this.escrowAddress,
         transferId,
         receiverSig,
@@ -198,7 +194,7 @@ class ClaimLink implements IClaimLinkSDK {
         this.apiUrl,
         this.#apiKey,
         dest,
-        sender.toLowerCase(),
+        this.sender.toLowerCase(),
         this.escrowAddress,
         transferId,
         receiverSig,
@@ -234,7 +230,7 @@ class ClaimLink implements IClaimLinkSDK {
     sendTransaction
   }) => {
 
-    if (!this.privateKey) {
+    if (!this.linkKey) {
       throw new Error(errors.cannot_deposit_after_retrieve())
     }
 
@@ -303,7 +299,7 @@ class ClaimLink implements IClaimLinkSDK {
     )
 
     const linkParams: TLink = {
-      linkKey: this.privateKey,
+      linkKey: this.linkKey,
       transferId: this.transferId,
       chainId: this.chainId,
       sender: this.sender.toLowerCase()
@@ -311,8 +307,7 @@ class ClaimLink implements IClaimLinkSDK {
 
     const claimUrl = encodeLink(
       this.baseUrl,
-      linkParams,
-      this.token
+      linkParams
     )
 
     if (!claimUrl) {
@@ -339,7 +334,7 @@ class ClaimLink implements IClaimLinkSDK {
       throw new ValidationError(errors.stable_token_not_supported(this.token))
     }
 
-    if (!this.privateKey) {
+    if (!this.linkKey) {
       throw new Error(errors.cannot_deposit_after_retrieve())
     }
 
@@ -404,7 +399,7 @@ class ClaimLink implements IClaimLinkSDK {
     const { tx_hash } = result
 
     const linkParams: TLink = {
-      linkKey: this.privateKey,
+      linkKey: this.linkKey,
       transferId: this.transferId,
       chainId: this.chainId,
       sender: this.sender.toLowerCase()
@@ -412,8 +407,7 @@ class ClaimLink implements IClaimLinkSDK {
 
     const claimUrl = encodeLink(
       this.baseUrl,
-      linkParams,
-      this.token
+      linkParams
     )
 
     if (!claimUrl) {
@@ -462,20 +456,37 @@ class ClaimLink implements IClaimLinkSDK {
       throw new ValidationError(errors.amount_should_be_less_than_maxlimit(maxTransferAmount.toString()))
     }
 
-    const statusData = await this.getStatus()
-    if (statusData.status === 'created') {
-      this.amount = amount
-      this.feeAmount = fee_amount
-      this.totalAmount = totalAmount
-      this.feeAuthorization = feeAuthorization
+    if (!this.linkKey) {
+      const statusData = await this.getStatus()
+      if (statusData.status === 'created') {
+        this.amount = amount
+        this.feeAmount = fee_amount
+        this.totalAmount = totalAmount
+        this.feeAuthorization = feeAuthorization
 
-      return {
-        amount,
-        feeAmount: fee_amount,
-        totalAmount
+        return {
+          amount,
+          feeAmount: fee_amount,
+          totalAmount
+        }
+      } else {
+        throw new Error(errors.cannot_update_amount())
       }
-    } else {
+    }
+
+    if (this.deposited) {
       throw new Error(errors.cannot_update_amount())
+    }
+
+    this.amount = amount
+    this.feeAmount = fee_amount
+    this.totalAmount = totalAmount
+    this.feeAuthorization = feeAuthorization
+
+    return {
+      amount,
+      feeAmount: fee_amount,
+      totalAmount
     }
   }
 
@@ -531,8 +542,7 @@ class ClaimLink implements IClaimLinkSDK {
 
     const claimUrl = encodeLink(
       this.baseUrl,
-      linkParams,
-      this.token
+      linkParams
     )
 
     if (!claimUrl) {
