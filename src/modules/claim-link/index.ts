@@ -504,20 +504,6 @@ class ClaimLink implements IClaimLinkSDK {
       throw new Error(errors.cannot_update_amount())
     }
 
-    console.log('new amount data: ', {
-      amount,
-      fee_amount,
-      totalAmount,
-      feeAuthorization
-    })
-
-    console.log('old amount data: ', {
-      amount: this.amount,
-      fee_amount: this.feeAmount,
-      totalAmount:  this.totalAmount,
-      feeAuthorization: this.feeAuthorization
-    })
-
     this.amount = amount
     this.feeAmount = fee_amount
     this.totalAmount = totalAmount
