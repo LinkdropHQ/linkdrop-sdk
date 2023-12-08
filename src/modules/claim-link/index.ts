@@ -7,7 +7,8 @@ import IClaimLinkSDK, {
   TGenerateClaimUrl,
   TDefineDomain,
   TGetStatus,
-  TDeposit
+  TDeposit,
+  TDefineValue
 } from './types'
 import { toBigInt } from 'ethers'
 import {
@@ -226,6 +227,25 @@ class ClaimLink implements IClaimLinkSDK {
     return defineDomain(this.chainId, this.token)
   }
 
+  _defineValue: TDefineValue = (
+    tokenAddress,
+    feeToken,
+    totalAmount,
+    feeAmount
+  ) => {
+    if (feeToken === tokenAddress && tokenAddress !== configs.nativeTokenAddress) {
+      // stablecoin
+      return '0'
+    }
+    if (tokenAddress === configs.nativeTokenAddress) {
+      // native token
+      return totalAmount
+    }
+  
+    // erc20
+    return feeAmount
+  }
+
   deposit: TDeposit = async ({
     sendTransaction
   }) => {
@@ -275,10 +295,16 @@ class ClaimLink implements IClaimLinkSDK {
         this.feeAuthorization
       ])
     }
+    const value = this._defineValue(
+      this.token,
+      this.feeToken,
+      this.totalAmount,
+      this.feeToken
+    )
 
     const { hash: txHash } = await sendTransaction({
       to: this.escrowAddress,
-      value: this.token === configs.nativeTokenAddress ? this.totalAmount : this.feeAmount,
+      value,
       // needs update
       gasLimit: 150000, // Ensure you have enough gas
       // needs update
@@ -477,6 +503,20 @@ class ClaimLink implements IClaimLinkSDK {
     if (this.deposited) {
       throw new Error(errors.cannot_update_amount())
     }
+
+    console.log('new amount data: ', {
+      amount,
+      fee_amount,
+      totalAmount,
+      feeAuthorization
+    })
+
+    console.log('old amount data: ', {
+      amount: this.amount,
+      fee_amount: this.feeAmount,
+      totalAmount:  this.totalAmount,
+      feeAuthorization: this.feeAuthorization
+    })
 
     this.amount = amount
     this.feeAmount = fee_amount
