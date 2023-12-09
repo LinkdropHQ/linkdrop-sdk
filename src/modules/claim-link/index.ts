@@ -97,7 +97,7 @@ class ClaimLink implements IClaimLinkSDK {
       this.feeAuthorization = feeAuthorization
     }
     if (feeToken) {
-      this.feeToken = feeToken
+      this.feeToken = feeToken.toLowerCase()
     }
     if (!amount) {
       throw new ValidationError(errors.argument_not_provided('amount'))
@@ -299,7 +299,7 @@ class ClaimLink implements IClaimLinkSDK {
       this.token,
       this.feeToken,
       this.totalAmount,
-      this.feeToken
+      this.feeAmount
     )
 
     const { hash: txHash } = await sendTransaction({
@@ -467,11 +467,12 @@ class ClaimLink implements IClaimLinkSDK {
 
   updateAmount: TUpdateAmount = async (amount) => {
     const {
-      fee_amount,
+      fee_amount: feeAmount,
       total_amount: totalAmount,
       min_transfer_amount: minTransferAmount,
       max_transfer_amount: maxTransferAmount,
-      fee_authorization: feeAuthorization
+      fee_authorization: feeAuthorization,
+      fee_token: feeToken
     } = await this._getCurrentFee(amount)
 
     if (toBigInt(amount) < toBigInt(minTransferAmount)) {
@@ -486,14 +487,16 @@ class ClaimLink implements IClaimLinkSDK {
       const statusData = await this.getStatus()
       if (statusData.status === 'created') {
         this.amount = amount
-        this.feeAmount = fee_amount
+        this.feeAmount = feeAmount
         this.totalAmount = totalAmount
         this.feeAuthorization = feeAuthorization
+        this.feeToken = feeToken.toLowerCase()
 
         return {
           amount,
-          feeAmount: fee_amount,
-          totalAmount
+          feeAmount,
+          totalAmount,
+          feeToken
         }
       } else {
         throw new Error(errors.cannot_update_amount())
@@ -505,14 +508,16 @@ class ClaimLink implements IClaimLinkSDK {
     }
 
     this.amount = amount
-    this.feeAmount = fee_amount
+    this.feeAmount = feeAmount
     this.totalAmount = totalAmount
     this.feeAuthorization = feeAuthorization
+    this.feeToken = feeToken.toLowerCase()
 
     return {
       amount,
-      feeAmount: fee_amount,
-      totalAmount
+      feeAmount,
+      totalAmount,
+      feeToken
     }
   }
 
