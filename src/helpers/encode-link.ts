@@ -1,17 +1,14 @@
-import { ethers, encodeBase58 } from 'ethers'
-import { TLink, TTokenType } from "../types"
-import { defineTokenSymbol } from '.'
+import { encodeBase58 } from 'ethers'
+import { TLink } from "../types"
 
 type TEncodeLink = (
   claimHost: string,
-  link: TLink,
-  tokenAddress: string
+  link: TLink
 ) => string | void
 
 const encodeLink: TEncodeLink = (
   claimHost,
-  link,
-  tokenAddress
+  link
 ) => {
 
   const linkKey = encodeBase58(link.linkKey)
@@ -20,9 +17,8 @@ const encodeLink: TEncodeLink = (
   if (link.senderSig) {
     const sig = encodeBase58(link.senderSig)
     return `${claimHost}/#/code?k=${linkKey}&sg=${sig}&i=${transferId}&c=${link.chainId}&v=3`
-  } else if (link.sender) {
-    const sender = encodeBase58(link.sender)
-    return `${claimHost}/#/code?k=${linkKey}&s=${sender}&c=${link.chainId}&v=3`
+  } else {
+    return `${claimHost}/#/code?k=${linkKey}&c=${link.chainId}&v=3`
   }
 }
 

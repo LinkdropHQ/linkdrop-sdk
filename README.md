@@ -31,7 +31,7 @@ const amount = "1000000" // atomic amount of tokens that sender wants to send (b
 const expiration = "1695985897077" // unix timestamp after which the claim link will expire and amount will be sent back to sender unless it was claimed before. Optional param, it not passed, it's going to be set to 15 days from now, 
 
 const claimLink = await sdk.createClaimLink({ from, token, amount, expiration, chainId, tokenType })
-const { amount, feeAmount, totalAmount } = await claimLink.updateAmount(amount)
+const { amount, feeAmount, totalAmount, feeToken } = await claimLink.updateAmount(amount)
 ```
 Methods `createClaimLink` and `updateAmount` will throw an error if amount is not valid according to limits.
 To define the minimum and maximum limit of amount that can be sent via link, use the getLimits method

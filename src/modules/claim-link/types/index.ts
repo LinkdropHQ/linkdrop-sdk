@@ -7,6 +7,7 @@ import TGenerateClaimUrl from './generate-claim-url'
 import TDefineDomain from './define-domain'
 import TGetStatus from './get-status'
 import TDeposit from './deposit'
+import TDefineValue from './define-value'
 
 interface IClaimLink {
   _getCurrentFee: TGetCurrentFee
@@ -17,6 +18,7 @@ interface IClaimLink {
   generateClaimUrl: TGenerateClaimUrl
   getStatus: TGetStatus
   deposit: TDeposit
+  _defineValue: TDefineValue
 }
 
 export {
@@ -28,7 +30,8 @@ export {
   TGenerateClaimUrl,
   TDefineDomain,
   TGetStatus,
-  TDeposit
+  TDeposit,
+  TDefineValue
 }
 
 export default IClaimLink

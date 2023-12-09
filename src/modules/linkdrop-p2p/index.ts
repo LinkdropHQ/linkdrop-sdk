@@ -117,7 +117,7 @@ class LinkdropP2P implements ILinkdropP2P {
     }
 
     return this._initializeClaimLink({
-      token: token as ETokenAddress,
+      token: token as ETokenAddress || configs.nativeTokenAddress,
       expiration: expiration ||  Math.floor(Date.now() / 1000 + 60 * 60 * 24 * 30),
       chainId,
       amount,
@@ -292,7 +292,7 @@ class LinkdropP2P implements ILinkdropP2P {
       ...claimLinkData,
       transferId,
       getRandomBytes: this.getRandomBytes,
-      privateKey: keyPair ? keyPair.privateKey : null,
+      linkKey: keyPair ? keyPair.privateKey : null,
       feeAmount: feeAmount,
       feeToken: feeToken as string,
       feeAuthorization,
