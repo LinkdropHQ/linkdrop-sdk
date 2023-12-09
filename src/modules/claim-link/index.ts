@@ -174,7 +174,7 @@ class ClaimLink implements IClaimLinkSDK {
     if (!decodedLinkParams) {
       throw new Error(errors.link_decode_failed())
     }
-    const { senderSig, linkKey, transferId } = decodedLinkParams
+    const { senderSig, linkKey } = decodedLinkParams
     const receiverSig = await generateReceiverSig(linkKey, dest)
     if (senderSig) {
       const redeem = await linkApi.redeemRecoveredLink(
@@ -183,7 +183,7 @@ class ClaimLink implements IClaimLinkSDK {
         dest,
         this.sender.toLowerCase(),
         this.escrowAddress,
-        transferId,
+        this.transferId,
         receiverSig,
         senderSig,
         this.token
@@ -197,7 +197,7 @@ class ClaimLink implements IClaimLinkSDK {
         dest,
         this.sender.toLowerCase(),
         this.escrowAddress,
-        transferId,
+        this.transferId,
         receiverSig,
         this.token
       )
