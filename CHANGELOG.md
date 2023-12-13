@@ -7,6 +7,7 @@
 - removed token symbol from claim url
 - transfer status can be retrieved with transferId (sender not needed)
 - updated handling of errors
+- added all fee data to endpoints
 
 
 ## 2.0.0-beta.4
