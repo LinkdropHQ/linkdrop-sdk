@@ -87,9 +87,12 @@ const requests: TRequests = {
     escrow,
     transfer_id,
     expiration,
-    amount,
     authorization,
-    authorization_selector
+    authorization_selector,
+    fee_authorization,
+    amount,
+    fee_amount,
+    total_amount
   ) => {
     return request(`${apiHost}/deposit-with-authorization`, {
       headers: defineHeaders(apiKey),
@@ -103,7 +106,10 @@ const requests: TRequests = {
         expiration,
         amount,
         authorization,
-        authorization_selector
+        authorization_selector,
+        fee_amount,
+        total_amount,
+        fee_authorization
       })
     })
   },
@@ -117,8 +123,12 @@ const requests: TRequests = {
     escrow,
     transfer_id,
     expiration,
+    tx_hash,
+    fee_authorization,
     amount,
-    tx_hash
+    fee_amount,
+    total_amount,
+    fee_token
   ) => {
     return request(`${apiHost}/deposit`, {
       headers: defineHeaders(apiKey),
@@ -130,8 +140,12 @@ const requests: TRequests = {
         token,
         token_type,
         expiration,
+        tx_hash,
+        fee_authorization,
         amount,
-        tx_hash
+        fee_amount,
+        total_amount,
+        fee_token
       })
     })
   },

@@ -320,8 +320,12 @@ class ClaimLink implements IClaimLinkSDK {
       this.escrowAddress,
       this.transferId,
       this.expiration,
+      txHash,
+      this.feeAuthorization,
+      this.amount,
+      this.feeAmount,
       this.totalAmount,
-      txHash
+      this.feeToken
     )
 
     const linkParams: TLink = {
@@ -417,9 +421,12 @@ class ClaimLink implements IClaimLinkSDK {
       this.escrowAddress,
       this.transferId,
       this.expiration,
-      this.totalAmount,
       authResult,
-      authSelector
+      authSelector,
+      this.feeAuthorization,
+      this.amount,
+      this.feeAmount,
+      this.totalAmount
     )
 
     const { tx_hash } = result

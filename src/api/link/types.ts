@@ -14,9 +14,12 @@ type TDepositWithAuth = (
   escrow: string,
   transfer_id: string,
   expiration: number,
-  amount: string,
   authorization: string,
-  authorization_selector: string
+  authorization_selector: string,
+  fee_authorization: string,
+  amount: string,
+  fee_amount: string,
+  total_amount: string
 ) => Promise<TDepositWithAuthResponse>
 
 type TDepositWithResponse = {
@@ -33,8 +36,12 @@ type TDeposit = (
   escrow: string,
   transfer_id: string,
   expiration: number,
+  tx_hash: string,
+  fee_authorization: string,
   amount: string,
-  tx_hash: string
+  fee_amount: string,
+  total_amount: string,
+  fee_token: string
 ) => Promise<TDepositWithResponse>
 
 type TRedeemLinkResponse = {
