@@ -8,7 +8,8 @@ const escrows = {
     "0xc4eb6e5933bc5e32dfd5c80baf143212a95549b3"
   ],
   "3": [
-    "0x0b962bbbf101941d0d0ec1041d01668dac36647a"
+    "0x0b962bbbf101941d0d0ec1041d01668dac36647a",
+    "0x2d5dfe0e4582c905233df527242616017f36e192"
   ]
 }
 
