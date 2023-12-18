@@ -1,5 +1,9 @@
 # Linkdrop P2P SDK
 
+## 3.0.0-beta.1
+- added new escrow address contracts
+- updates for README.md
+
 ## 3.0.0-alpha.0
 - added ERC20 token support
 - updated LinkdropP2P constructor
