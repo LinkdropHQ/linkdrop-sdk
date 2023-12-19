@@ -182,12 +182,10 @@ class LinkdropP2P implements ILinkdropP2P {
 
     let tokenAddress = token
 
-    if (tokenType === 'ERC20') {
+    if (tokenAddress !== configs.nativeTokenAddress) {
       if (!tokenAddress) {
         throw new ValidationError(errors.argument_not_provided('token'))
       }
-    } else {
-      tokenAddress = configs.nativeTokenAddress
     }
   
     const limits = await linkApi.getLimits(
