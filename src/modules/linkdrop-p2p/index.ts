@@ -66,6 +66,7 @@ class LinkdropP2P implements ILinkdropP2P {
     from,
     tokenType
   }) => {
+    const startCreateClaimLink = +(new Date())
     if (!chainId) {
       throw new ValidationError(errors.argument_not_provided('chainId'))
     }
@@ -84,11 +85,17 @@ class LinkdropP2P implements ILinkdropP2P {
     if (!token && tokenType !== 'NATIVE') {
       throw new ValidationError(errors.argument_not_provided('token'))
     }
+    const limitsResultStart = +(new Date())
 
     const limitsResult = await this.getLimits({
       token: token || configs.nativeTokenAddress,
       chainId,
       tokenType
+    })
+
+
+    console.log({
+      limitsResult: limitsResultStart - startCreateClaimLink
     })
 
     if (!limitsResult) {
@@ -221,12 +228,19 @@ class LinkdropP2P implements ILinkdropP2P {
   }
 
   _initializeClaimLink: TInitializeClaimLink = async (claimLinkData) => {
+    const timeInitializeStarted = +(new Date())
+
     const claimLink = new ClaimLink(claimLinkData)
     await claimLink.initialize()
+    const timeInitializeFinished = +(new Date())
+    console.log({
+      _initializeClaimLink: timeInitializeFinished - timeInitializeStarted
+    })
     return claimLink
   }
 
   getClaimLink: TGetClaimLink = async (claimUrl) => {
+    const startTime = +(new Date())
     const {
       transferId,
       chainId,
@@ -234,6 +248,10 @@ class LinkdropP2P implements ILinkdropP2P {
       sender,
       tokenSymbol
     } = decodeLink(claimUrl)
+    const timeAfterDecode = +(new Date())
+    console.log({
+      decodeTime: timeAfterDecode - startTime
+    })
 
     const apiHost = defineApiHost(chainId, this.apiUrl)
 
@@ -257,6 +275,11 @@ class LinkdropP2P implements ILinkdropP2P {
         escrowAddress,
         claimUrl
       )
+      const timeAfteLinkParse = +(new Date())
+      console.log({
+        parseTime: timeAfteLinkParse - timeAfterDecode
+      })
+
       if (linkParsed) {
         const { claim_link } = await linkApi.getTransferStatus(
           apiHost,
@@ -264,6 +287,10 @@ class LinkdropP2P implements ILinkdropP2P {
           linkParsed.sender.toLowerCase(),
           transferId
         )
+        const timeAfteGetTransferStatus = +(new Date())
+        console.log({
+          getTransferStatus: timeAfteGetTransferStatus - timeAfteLinkParse
+        })
 
         const {
           token,
@@ -300,6 +327,10 @@ class LinkdropP2P implements ILinkdropP2P {
         sender.toLowerCase(),
         transferId
       )
+      const getTransferStatus = +(new Date())
+      console.log({
+        parseTime: getTransferStatus - timeAfterDecode
+      })
 
       const {
         token,

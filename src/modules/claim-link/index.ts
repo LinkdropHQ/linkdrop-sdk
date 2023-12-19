@@ -350,7 +350,7 @@ class ClaimLink implements IClaimLinkSDK {
     signTypedData,
     getRandomBytes
   }) => {
-
+    const startDepositWithAuthorization = +(new Date())
     if (!signTypedData) {
       throw new ValidationError(errors.argument_not_provided('signTypedData'))
     }
@@ -382,6 +382,7 @@ class ClaimLink implements IClaimLinkSDK {
     const keypair = await generateKeypair(getRandomBytes)
 
     this.transferId = keypair.address.toLowerCase()
+    const startGetDepositAuthorization = +(new Date())
 
     const auth = await getDepositAuthorization(
       signTypedData,
@@ -396,6 +397,14 @@ class ClaimLink implements IClaimLinkSDK {
       this.chainId,
       this.token
     )
+    const finishGetDepositAuthorization = +(new Date())
+
+    
+    console.log({
+      getDepositAuthorization: finishGetDepositAuthorization - startGetDepositAuthorization
+    })
+
+    const startApiDepositWithAuthorization = +(new Date())
 
     const result = await linkApi.depositWithAuthorization(
       this.apiHost,
@@ -410,6 +419,12 @@ class ClaimLink implements IClaimLinkSDK {
       auth
     )
 
+    const finishApiDepositWithAuthorization = +(new Date())
+
+    console.log({
+      apiDepositWithAuthorization: finishApiDepositWithAuthorization - startApiDepositWithAuthorization
+    })
+
     const { tx_hash } = result
 
     const linkParams: TLink = {
@@ -419,6 +434,7 @@ class ClaimLink implements IClaimLinkSDK {
       tokenType: this.tokenType,
       sender: this.sender.toLowerCase()
     }
+    const startEncodeLink = +(new Date())
 
     const claimUrl = encodeLink(
       this.baseUrl,
@@ -431,7 +447,10 @@ class ClaimLink implements IClaimLinkSDK {
     }
 
     this.claimUrl = claimUrl
-
+    const finishEncodeLink = +(new Date())
+    console.log({
+      encodeLink: finishEncodeLink - startEncodeLink
+    })
     return {
       txHash: tx_hash,
       claimUrl: this.claimUrl,
