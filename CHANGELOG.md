@@ -13,6 +13,8 @@
 - updated handling of errors
 - added all fee data to endpoints
 
+## 2.0.0-beta.5
+- removed extra request to get limits
 
 ## 2.0.0-beta.4
 - added error handling to method getVersionFromEscrowContract
