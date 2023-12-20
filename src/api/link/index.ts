@@ -36,7 +36,8 @@ const requests: TRequests = {
     escrow,
     transfer_id,
     receiver_sig,
-    sender_sig
+    sender_sig,
+    token
   ) => {
     return request(`${apiHost}/redeem-recovered`, {
       headers: defineHeaders(apiKey),
@@ -47,10 +48,12 @@ const requests: TRequests = {
         escrow,
         transfer_id,
         receiver_sig,
-        sender_sig
+        sender_sig,
+        token
       })
     })
   },
+
   redeemLink: (
     apiHost,
     apiKey,
@@ -58,7 +61,8 @@ const requests: TRequests = {
     sender,
     escrow,
     transfer_id,
-    receiver_sig
+    receiver_sig,
+    token
   ) => {
     return request(`${apiHost}/redeem`, {
       headers: defineHeaders(apiKey),
@@ -68,10 +72,12 @@ const requests: TRequests = {
         sender,
         escrow,
         transfer_id,
-        receiver_sig
+        receiver_sig,
+        token
       })
     })
   },
+
   depositWithAuthorization: (
     apiHost,
     apiKey,
@@ -81,8 +87,12 @@ const requests: TRequests = {
     escrow,
     transfer_id,
     expiration,
+    authorization,
+    authorization_selector,
+    fee_authorization,
     amount,
-    authorization
+    fee_amount,
+    total_amount
   ) => {
     return request(`${apiHost}/deposit-with-authorization`, {
       headers: defineHeaders(apiKey),
@@ -95,10 +105,15 @@ const requests: TRequests = {
         transfer_id,
         expiration,
         amount,
-        authorization
+        authorization,
+        authorization_selector,
+        fee_amount,
+        total_amount,
+        fee_authorization
       })
     })
   },
+
   deposit: (
     apiHost,
     apiKey,
@@ -108,8 +123,12 @@ const requests: TRequests = {
     escrow,
     transfer_id,
     expiration,
+    tx_hash,
+    fee_authorization,
     amount,
-    tx_hash
+    fee_amount,
+    total_amount,
+    fee_token
   ) => {
     return request(`${apiHost}/deposit`, {
       headers: defineHeaders(apiKey),
@@ -121,21 +140,26 @@ const requests: TRequests = {
         token,
         token_type,
         expiration,
+        tx_hash,
+        fee_authorization,
         amount,
-        tx_hash
+        fee_amount,
+        total_amount,
+        fee_token
       })
     })
   },
+
   getTransferStatus: (
     apiHost,
     apiKey,
-    sender,
     transferId
   ) => {
-    return request(`${apiHost}/payment-status/sender/${sender}/transfer/${transferId}`, {
+    return request(`${apiHost}/payment-status/transfer/${transferId}`, {
       headers: defineHeaders(apiKey),
     })
   },
+
   getTransferStatusByTxHash: (
     apiHost,
     apiKey,
@@ -145,15 +169,26 @@ const requests: TRequests = {
       headers: defineHeaders(apiKey),
     })
   },
+
   getFee: (
     apiHost,
     apiKey,
     amount,
     tokenAddress,
     sender,
-    tokenType
+    tokenType,
+    transferId,
+    expiration
   ) => {
-    return request(`${apiHost}/fee?amount=${amount}&token_address=${tokenAddress}&sender=${sender}&token_type=${tokenType}`, {
+    const queryVariables = createQueryString({
+      amount,
+      token_address: tokenAddress,
+      sender,
+      token_type: tokenType,
+      transfer_id: transferId,
+      expiration
+    })
+    return request(`${apiHost}/fee?${queryVariables}`, {
       headers: defineHeaders(apiKey),
     })
   },
@@ -184,7 +219,11 @@ const requests: TRequests = {
     tokenAddress,
     tokenType
   ) => {
-    return request(`${apiHost}/limits?token_address=${tokenAddress}&token_type=${tokenType}`, {
+    const queryVariables = createQueryString({
+      token_address: tokenAddress,
+      token_type: tokenType,
+    })
+    return request(`${apiHost}/limits?${queryVariables}`, {
       headers: defineHeaders(apiKey),
     })
   }

@@ -14,8 +14,12 @@ type TDepositWithAuth = (
   escrow: string,
   transfer_id: string,
   expiration: number,
+  authorization: string,
+  authorization_selector: string,
+  fee_authorization: string,
   amount: string,
-  authorization: string
+  fee_amount: string,
+  total_amount: string
 ) => Promise<TDepositWithAuthResponse>
 
 type TDepositWithResponse = {
@@ -32,8 +36,12 @@ type TDeposit = (
   escrow: string,
   transfer_id: string,
   expiration: number,
+  tx_hash: string,
+  fee_authorization: string,
   amount: string,
-  tx_hash: string
+  fee_amount: string,
+  total_amount: string,
+  fee_token: string
 ) => Promise<TDepositWithResponse>
 
 type TRedeemLinkResponse = {
@@ -49,6 +57,7 @@ type TRedeemLink = (
   escrow: string,
   transfer_id: string,
   receiver_sig: string,
+  token: string
 ) => Promise<TRedeemLinkResponse>
 
 type TRedeemRecoveredLinkResponse = {
@@ -64,7 +73,8 @@ type TRedeemRecoveredLink = (
   escrow: string,
   transfer_id: string,
   receiver_sig: string,
-  sender_sig: string
+  sender_sig: string,
+  token: string
 ) => Promise<TRedeemRecoveredLinkResponse>
 
 type TGetTransferDataResponse = {
@@ -75,7 +85,6 @@ type TGetTransferDataResponse = {
 type TGetTransferData = (
   apiHost: string,
   apiKey: string | null,
-  sender: string,
   transfer_id: string,
 ) => Promise<TGetTransferDataResponse>
 
@@ -91,11 +100,13 @@ type TGetTransferDataByTxHash = (
 ) => Promise<TGetTransferDataByTxHashResponse>
 
 type TGetFeeResponse = {
-  fee: string
   amount: string
   total_amount: string
   max_transfer_amount: string
   min_transfer_amount: string
+  fee_token: string
+  fee_amount: string
+  fee_authorization: string
   success: boolean
 }
 
@@ -105,7 +116,9 @@ type TGetFee = (
   amount: string,
   tokenAddress: string,
   sender: string,
-  tokenType: TTokenType
+  tokenType: TTokenType,
+  transferId: string,
+  expiration: number
 ) => Promise<TGetFeeResponse>
 
 type TGetLimitsResponse = {

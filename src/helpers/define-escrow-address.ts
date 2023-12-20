@@ -2,17 +2,15 @@ import * as configs from '../configs'
 
 type TDefineEscrowAddress = (
   chainId: number | null,
-  token: string
 ) => string | null
 
 const defineEscrowAddress: TDefineEscrowAddress = (
-  chainId,
-  token
+  chainId 
 ) => {
-  if (!chainId || !token) {
+  if (!chainId) {
     return null
   }
-  const escrow = configs.escrowContracts[`${chainId}_${token}`]
+  const escrow = configs.escrowContracts[chainId]
   if (!escrow) {
     return null
   }

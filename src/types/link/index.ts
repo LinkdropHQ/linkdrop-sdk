@@ -6,8 +6,6 @@ export type TLink = {
   sender?: string
   linkKey: string
   transferId: string
-  tokenType: TTokenType | null
   chainId: number
   version?: string
-  tokenSymbol?: ETokenSymbol
 }

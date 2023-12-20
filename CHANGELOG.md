@@ -1,5 +1,18 @@
 # Linkdrop P2P SDK
 
+## 3.0.0-beta.1
+- added new escrow address contracts
+- updates for README.md
+
+## 3.0.0-alpha.0
+- added ERC20 token support
+- updated LinkdropP2P constructor
+- updated methods for ClaimLink (deposit, depositWithAuthorization)
+- removed token symbol from claim url
+- transfer status can be retrieved with transferId (sender not needed)
+- updated handling of errors
+- added all fee data to endpoints
+
 ## 2.0.0-beta.5
 - removed extra request to get limits
 
