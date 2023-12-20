@@ -27,5 +27,6 @@ export default {
   ) => `Variable "${variableName}" is not valid. Expected value type: ${expectedValueType}. Current value: ${currentValue}`,
   'stable_token_not_supported': (
     address: string
-  ) => `Stable coin with address not supported for deployWithAuthorization method`
+  ) => `Stable coin with address not supported for deployWithAuthorization method`,
+  'cannot_update_amount_for_erc721': () => `Cannot update amount for ERC721 token`,
 }

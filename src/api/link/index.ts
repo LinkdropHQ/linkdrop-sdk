@@ -1,31 +1,9 @@
 import { TRequests } from './types'
-import { createQueryString } from '../../helpers'
-
-function request<TResponse>(
-  url: string,
-  config: RequestInit = {}
-): Promise<TResponse> {
-  return fetch(url, config)
-    .then((res) => {
-      if (res.ok) {
-        return res.json()
-      }
-      throw new Error(String(res.status))
-    })
-    .then((data) => data as TResponse)
-}
-
-const defineHeaders = (apiKey: string | null) => {
-  const headers = {
-    'content-type': 'application/json'
-  }
-
-  if (apiKey) {
-    headers['authorization'] = `Bearer ${apiKey}`
-  }
-
-  return headers
-}
+import { createQueryString, request, defineHeaders } from '../../helpers'
+import deposit from './deposit'
+import depositWithAuth from './deposit-with-authorization'
+import depositERC721 from './deposit-erc721'
+import depositERC1155 from './deposit-erc1155'
 
 const requests: TRequests = {
   redeemRecoveredLink: (
@@ -78,78 +56,10 @@ const requests: TRequests = {
     })
   },
 
-  depositWithAuthorization: (
-    apiHost,
-    apiKey,
-    token,
-    token_type,
-    sender,
-    escrow,
-    transfer_id,
-    expiration,
-    authorization,
-    authorization_selector,
-    fee_authorization,
-    amount,
-    fee_amount,
-    total_amount
-  ) => {
-    return request(`${apiHost}/deposit-with-authorization`, {
-      headers: defineHeaders(apiKey),
-      method: 'POST',
-      body: JSON.stringify({
-        sender,
-        token,
-        token_type,
-        escrow,
-        transfer_id,
-        expiration,
-        amount,
-        authorization,
-        authorization_selector,
-        fee_amount,
-        total_amount,
-        fee_authorization
-      })
-    })
-  },
-
-  deposit: (
-    apiHost,
-    apiKey,
-    token,
-    token_type,
-    sender,
-    escrow,
-    transfer_id,
-    expiration,
-    tx_hash,
-    fee_authorization,
-    amount,
-    fee_amount,
-    total_amount,
-    fee_token
-  ) => {
-    return request(`${apiHost}/deposit`, {
-      headers: defineHeaders(apiKey),
-      method: 'POST',
-      body: JSON.stringify({
-        sender,
-        escrow,
-        transfer_id,
-        token,
-        token_type,
-        expiration,
-        tx_hash,
-        fee_authorization,
-        amount,
-        fee_amount,
-        total_amount,
-        fee_token
-      })
-    })
-  },
-
+  depositWithAuthorization: depositWithAuth,
+  deposit,
+  depositERC721,
+  depositERC1155,
   getTransferStatus: (
     apiHost,
     apiKey,
@@ -173,12 +83,12 @@ const requests: TRequests = {
   getFee: (
     apiHost,
     apiKey,
-    amount,
     tokenAddress,
     sender,
     tokenType,
     transferId,
-    expiration
+    expiration,
+    amount
   ) => {
     const queryVariables = createQueryString({
       amount,

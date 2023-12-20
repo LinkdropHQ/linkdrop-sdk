@@ -1,6 +1,3 @@
-import { TTokenType, ETokenSymbol } from ".."
-
-
 export type TLink = {
   senderSig?: string
   sender?: string

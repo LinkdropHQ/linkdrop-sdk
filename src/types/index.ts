@@ -1,4 +1,3 @@
-import type { TTokenType } from './token-type'
 import type { TDomain } from './domain'
 import type { TEscrowPaymentDomain } from './escrow-payment-domain'
 import type { TLink } from './link'
@@ -12,6 +11,7 @@ import { ETokenAddress } from './token-address'
 import { ETokenSymbol } from './token-symbol'
 import { EEscrowAddress } from './escrow-address'
 import { ESelectors } from './selectors'
+import { ETokenType } from './token-type'
 
 import type {
   TClaimLinkItem,
@@ -21,7 +21,7 @@ import type {
 } from './claim-link-item'
 
 export {
-  TTokenType,
+  ETokenType,
   ESelectors,
   TDepositResult,
   EEscrowAddress,

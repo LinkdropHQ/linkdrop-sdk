@@ -1,8 +1,8 @@
-import { EChains, TTokenType } from "../../../../types"
+import { EChains, ETokenType } from "../../../../types"
 
 export type TGetLimitsArgs = {
   token?: string
-  tokenType: TTokenType
+  tokenType: ETokenType
   chainId: EChains
 }
 

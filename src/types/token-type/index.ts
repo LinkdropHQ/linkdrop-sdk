@@ -1,1 +1,6 @@
-export type TTokenType = 'NATIVE' | 'ERC20'
+export enum ETokenType {
+  NATIVE = 'NATIVE',
+  ERC20 = 'ERC20',
+  ERC721 = 'ERC721',
+  ERC1155 = 'ERC1155'
+}

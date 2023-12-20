@@ -1,13 +1,14 @@
-import { TTokenType } from "../../../../types"
+import { ETokenType } from "../../../../types"
 
 type TGetCurrentFee = (
   apiUrl: string,
-  amount: string,
   token: string,
-  tokenType: TTokenType,
+  tokenType: ETokenType,
   sender: string,
   transferId: string,
-  expiration: number
+  expiration: number,
+  amount: string,
+  tokenId?: string 
 ) => Promise<{
   amount: string
   total_amount: string

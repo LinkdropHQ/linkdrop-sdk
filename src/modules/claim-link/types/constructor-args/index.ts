@@ -1,5 +1,5 @@
 import {
-  TTokenType,
+  ETokenType,
   ETokenAddress,
   TClaimLinkItemOperation,
   TGetRandomBytes
@@ -15,11 +15,12 @@ type TConstructorArgs = {
   baseUrl?: string
   transferId?: string
   claimUrl?: string
-  tokenType: TTokenType
+  tokenType: ETokenType
   escrowAddress?: string
   operations?: TClaimLinkItemOperation[]
   getRandomBytes: TGetRandomBytes
   linkKey: string | null
+  tokenId?: string
 
   amount: string
   feeAmount: string

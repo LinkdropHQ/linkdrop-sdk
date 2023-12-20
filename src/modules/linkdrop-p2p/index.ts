@@ -16,14 +16,13 @@ import {
   decodeLink,
   defineApiHost,
   updateOperations,
-  defineEscrowAddress,
   parseQueryParams
 } from '../../helpers'
 import { generateKeypair } from '../../utils'
 import { toBigInt } from 'ethers'
 import ClaimLink from '../claim-link'
 import { errors } from '../../texts'
-import { ETokenAddress, TGetRandomBytes, TTokenType } from '../../types'
+import { ETokenAddress, TGetRandomBytes, ETokenType } from '../../types'
 import escrows from '../../configs/escrows'
 import * as configs from '../../configs'
 
@@ -220,25 +219,29 @@ class LinkdropP2P implements ILinkdropP2P {
     if (!feeAmount || !totalAmount) {
       const feeData = await this._getCurrentFee(
         claimLinkData.apiUrl,
-        claimLinkData.amount,
         claimLinkData.token,
         claimLinkData.tokenType,
         claimLinkData.sender,
         transferId as string,
-        claimLinkData.expiration
+        claimLinkData.expiration,
+        claimLinkData.tokenType === 'ERC721' ? '1' : claimLinkData.amount,
+        claimLinkData.tokenId
       )
       feeAmount = feeData.fee_amount
       totalAmount = feeData.total_amount
       feeAuthorization = feeData.fee_authorization
       feeToken = feeData.fee_token
 
-  
-      if (toBigInt(claimLinkData.amount) < toBigInt(feeData.min_transfer_amount)) {
-        throw new ValidationError(errors.amount_should_be_more_than_minlimit(feeData.min_transfer_amount.toString()))
-      }
-  
-      if (toBigInt(claimLinkData.amount) > toBigInt(feeData.max_transfer_amount)) {
-        throw new ValidationError(errors.amount_should_be_less_than_maxlimit(feeData.max_transfer_amount.toString()))
+      if (
+        claimLinkData.tokenType === 'NATIVE' || claimLinkData.tokenType === 'ERC20'
+      ) {
+        if (toBigInt(claimLinkData.amount) < toBigInt(feeData.min_transfer_amount)) {
+          throw new ValidationError(errors.amount_should_be_more_than_minlimit(feeData.min_transfer_amount.toString()))
+        }
+    
+        if (toBigInt(claimLinkData.amount) > toBigInt(feeData.max_transfer_amount)) {
+          throw new ValidationError(errors.amount_should_be_less_than_maxlimit(feeData.max_transfer_amount.toString()))
+        }
       }
     }
 
@@ -290,22 +293,24 @@ class LinkdropP2P implements ILinkdropP2P {
 
   _getCurrentFee: TGetCurrentFee = async (
     apiUrl,
-    amount,
     token,
     tokenType,
     sender,
     transferId,
-    expiration
+    expiration,
+    amount,
+    tokenId
   ) => {
     const result = await linkApi.getFee(
       apiUrl,
       this.#apiKey,
-      amount,
       token,
       sender.toLowerCase(),
       tokenType,
       transferId,
-      expiration
+      expiration,
+      amount,
+      tokenId
     )
 
     return result
@@ -321,12 +326,6 @@ class LinkdropP2P implements ILinkdropP2P {
 
     if (!apiHost) {
       throw new ValidationError(errors.chain_not_supported())
-    }
-
-    const escrowAddress = defineEscrowAddress(chainId)
-
-    if (!escrowAddress) {
-      throw new Error(errors.variable_cannot_be_defined('Escrow address'))
     }
 
     const { claim_link } = await linkApi.getTransferStatus(
@@ -362,7 +361,7 @@ class LinkdropP2P implements ILinkdropP2P {
       transferId: transferId.toLowerCase(),
       claimUrl,
       operations: updateOperations(operations),
-      tokenType: (token_type as TTokenType),
+      tokenType: (token_type as ETokenType),
       baseUrl: this.baseUrl,
       escrowAddress: escrow
     }
@@ -405,7 +404,7 @@ class LinkdropP2P implements ILinkdropP2P {
         sender: sender.toLowerCase(),
         apiUrl: apiHost,
         apiKey: this.#apiKey,
-        tokenType: (token_type as TTokenType),
+        tokenType: (token_type as ETokenType),
         transferId: transferId.toLowerCase(),
         baseUrl: this.baseUrl,
         operations: updateOperations(operations),
@@ -442,7 +441,7 @@ class LinkdropP2P implements ILinkdropP2P {
         apiUrl: apiHost,
         apiKey: this.#apiKey,
         transferId: (transfer_id as string).toLowerCase(),
-        tokenType: (token_type as TTokenType),
+        tokenType: (token_type as ETokenType),
         operations: updateOperations(operations),
         baseUrl: this.baseUrl,
         feeAmount: fee_amount,
