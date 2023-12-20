@@ -231,6 +231,15 @@ class LinkdropP2P implements ILinkdropP2P {
       totalAmount = feeData.total_amount
       feeAuthorization = feeData.fee_authorization
       feeToken = feeData.fee_token
+
+  
+      if (toBigInt(claimLinkData.amount) < toBigInt(feeData.min_transfer_amount)) {
+        throw new ValidationError(errors.amount_should_be_more_than_minlimit(feeData.min_transfer_amount.toString()))
+      }
+  
+      if (toBigInt(claimLinkData.amount) > toBigInt(feeData.max_transfer_amount)) {
+        throw new ValidationError(errors.amount_should_be_less_than_maxlimit(feeData.max_transfer_amount.toString()))
+      }
     }
 
     if (!transferId) {
