@@ -1,5 +1,8 @@
 # Linkdrop P2P SDK
 
+## 3.0.0-beta.2
+- updates for limits (moved from createClaimLink to _initializeClaimLink)
+
 ## 3.0.0-beta.1
 - added new escrow address contracts
 - updates for README.md
