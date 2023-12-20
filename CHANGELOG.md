@@ -1,5 +1,8 @@
 # Linkdrop P2P SDK
 
+## 2.0.0-beta.5
+- removed extra request to get limits
+
 ## 2.0.0-beta.4
 - added error handling to method getVersionFromEscrowContract
 - updated README

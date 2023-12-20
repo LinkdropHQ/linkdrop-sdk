@@ -85,29 +85,6 @@ class LinkdropP2P implements ILinkdropP2P {
       throw new ValidationError(errors.argument_not_provided('token'))
     }
 
-    const limitsResult = await this.getLimits({
-      token: token || configs.nativeTokenAddress,
-      chainId,
-      tokenType
-    })
-
-    if (!limitsResult) {
-      throw new Error(errors.limits_not_defined())
-    }
-
-    const {
-      minTransferAmount,
-      maxTransferAmount
-    } = limitsResult
-
-    if (toBigInt(amount) < toBigInt(minTransferAmount)) {
-      throw new ValidationError(errors.amount_should_be_more_than_minlimit(minTransferAmount.toString()))
-    }
-
-    if (toBigInt(amount) > toBigInt(maxTransferAmount)) {
-      throw new ValidationError(errors.amount_should_be_less_than_maxlimit(maxTransferAmount.toString()))
-    }
-
     return this._initializeClaimLink({
       token: token as ETokenAddress,
       expiration,

@@ -256,6 +256,14 @@ class ClaimLink implements IClaimLinkSDK {
       max_transfer_amount: maxTransferAmount
     } = await this._getCurrentFee(this.amount)
 
+    if (toBigInt(this.amount) < toBigInt(minTransferAmount)) {
+      throw new ValidationError(errors.amount_should_be_more_than_minlimit(minTransferAmount.toString()))
+    }
+
+    if (toBigInt(this.amount) > toBigInt(maxTransferAmount)) {
+      throw new ValidationError(errors.amount_should_be_less_than_maxlimit(maxTransferAmount.toString()))
+    }
+
     this.totalAmount = totalAmount
     this.fee = fee
   }
