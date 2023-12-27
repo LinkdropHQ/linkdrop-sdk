@@ -37,7 +37,8 @@ import {
   encodeLink,
   parseLink,
   updateOperations,
-  defineDomain
+  defineDomain,
+  getVersionFromClaimUrl
 } from '../../helpers'
 import { errors } from '../../texts'
 import * as configs from '../../configs'
@@ -113,11 +114,12 @@ class ClaimLink implements IClaimLinkSDK {
     if (feeToken) {
       this.feeToken = feeToken.toLowerCase()
     }
-    if (!amount) {
+    if (tokenType !== 'ERC721' && !amount) {
       throw new ValidationError(errors.argument_not_provided('amount'))
+    } else {
+      this.amount = amount
     }
     this.operations = operations || []
-    this.amount = amount
     this.expiration = expiration
     if (!chainId) {
       throw new ValidationError(errors.argument_not_provided('chainId'))
@@ -130,13 +132,13 @@ class ClaimLink implements IClaimLinkSDK {
     }
     this.tokenType = tokenType
 
-    if (tokenType === 'ERC20') {
+    if (tokenType === 'NATIVE') {
+      this.token = configs.nativeTokenAddress
+    } else {
       if (!token) {
         throw new ValidationError(errors.argument_not_provided('token'))
       }
       this.token = token.toLowerCase()
-    } else {
-      this.token = configs.nativeTokenAddress
     }
 
     this.escrowAddress = escrowAddress?.toLowerCase() || defineEscrowAddress(
@@ -180,6 +182,7 @@ class ClaimLink implements IClaimLinkSDK {
     if (!dest) {
       throw new ValidationError(errors.argument_not_provided('dest'))
     }
+
     if (!this.escrowAddress) {
       throw new Error(errors.escrow_not_available(
         this.token,
@@ -421,6 +424,20 @@ class ClaimLink implements IClaimLinkSDK {
       this.feeAmount
     )
 
+    console.log([
+      this.token,
+      this.transferId,
+      this.tokenId,
+      this.amount,
+      this.expiration,
+      this.feeAmount,
+      this.feeAuthorization
+    ], {
+      sendTransaction,
+      data,
+      value
+    })
+
     const txHash = await this.sendTransaction({
       sendTransaction,
       data,
@@ -484,12 +501,27 @@ class ClaimLink implements IClaimLinkSDK {
       this.feeAuthorization
     ])
 
+    console.log({
+      data
+    }, [
+      this.token,
+      this.transferId,
+      this.tokenId,
+      this.expiration,
+      this.feeAmount,
+      this.feeAuthorization
+    ])
+
     const value = this._defineValue(
       this.token,
       this.feeToken,
       this.totalAmount,
       this.feeAmount
     )
+
+    console.log({
+      value
+    })
 
     const txHash = await this.sendTransaction({
       sendTransaction,
@@ -548,9 +580,6 @@ class ClaimLink implements IClaimLinkSDK {
     const { hash: txHash } = await sendTransaction({
       to: this.escrowAddress,
       value,
-      // needs update
-      gasLimit: 150000, // Ensure you have enough gas
-      // needs update
       data
     })
     return txHash
@@ -716,7 +745,8 @@ class ClaimLink implements IClaimLinkSDK {
       this.tokenType,
       this.transferId,
       this.expiration,
-      newAmount
+      newAmount,
+      this.tokenId
     )
 
     return result

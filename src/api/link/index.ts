@@ -88,7 +88,8 @@ const requests: TRequests = {
     tokenType,
     transferId,
     expiration,
-    amount
+    amount,
+    tokenId
   ) => {
     const queryVariables = createQueryString({
       amount,
@@ -96,7 +97,8 @@ const requests: TRequests = {
       sender,
       token_type: tokenType,
       transfer_id: transferId,
-      expiration
+      expiration,
+      token_id: tokenId
     })
     return request(`${apiHost}/fee?${queryVariables}`, {
       headers: defineHeaders(apiKey),

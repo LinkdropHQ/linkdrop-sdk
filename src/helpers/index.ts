@@ -12,9 +12,11 @@ import parseQueryParams from './parse-query-params'
 import defineDomain from './define-domain'
 import request from './request'
 import defineHeaders from './define-headers'
+import getVersionFromClaimUrl from './get-version-from-claim-url'
 
 export {
   defineDomain,
+  getVersionFromClaimUrl,
   defineHeaders,
   request,
   updateOperations,

@@ -17,7 +17,7 @@ const defineIfEscrowAddressIsCorrect: TDefineIfEscrowAddressIsCorrect = (
   }
 
   if (
-    escrowAddress !== EEscrowAddress.baseERC20
+    escrowAddress !== EEscrowAddress.baseERC20.toLowerCase()
     && chainId === EChains.base
     && tokenType === ETokenType.ERC20
   ) {
@@ -25,7 +25,7 @@ const defineIfEscrowAddressIsCorrect: TDefineIfEscrowAddressIsCorrect = (
   }
 
   if (
-    escrowAddress !== EEscrowAddress.baseERC721
+    escrowAddress !== EEscrowAddress.baseERC721.toLowerCase()
     && chainId === EChains.base
     && tokenType === ETokenType.ERC721
   ) {
@@ -33,7 +33,7 @@ const defineIfEscrowAddressIsCorrect: TDefineIfEscrowAddressIsCorrect = (
   }
 
   if (
-    escrowAddress !== EEscrowAddress.baseERC1155
+    escrowAddress !== EEscrowAddress.baseERC1155.toLowerCase()
     && chainId === EChains.base
     && tokenType === ETokenType.ERC1155
   ) {
@@ -41,7 +41,7 @@ const defineIfEscrowAddressIsCorrect: TDefineIfEscrowAddressIsCorrect = (
   }
 
   if (
-    escrowAddress !== EEscrowAddress.baseNative
+    escrowAddress !== EEscrowAddress.baseNative.toLowerCase()
     && chainId === EChains.base
     && tokenType === ETokenType.NATIVE
   ) {
@@ -49,7 +49,7 @@ const defineIfEscrowAddressIsCorrect: TDefineIfEscrowAddressIsCorrect = (
   }
 
   if (
-    escrowAddress !== EEscrowAddress.polygonERC20
+    escrowAddress !== EEscrowAddress.polygonERC20.toLowerCase()
     && chainId === EChains.polygon
     && tokenType === ETokenType.ERC20
   ) {
@@ -57,7 +57,7 @@ const defineIfEscrowAddressIsCorrect: TDefineIfEscrowAddressIsCorrect = (
   }
 
   if (
-    escrowAddress !== EEscrowAddress.polygonERC721
+    escrowAddress !== EEscrowAddress.polygonERC721.toLowerCase()
     && chainId === EChains.polygon
     && tokenType === ETokenType.ERC721
   ) {
@@ -65,7 +65,7 @@ const defineIfEscrowAddressIsCorrect: TDefineIfEscrowAddressIsCorrect = (
   }
 
   if (
-    escrowAddress !== EEscrowAddress.polygonERC1155
+    escrowAddress !== EEscrowAddress.polygonERC1155.toLowerCase()
     && chainId === EChains.polygon
     && tokenType === ETokenType.ERC1155
   ) {
@@ -73,7 +73,7 @@ const defineIfEscrowAddressIsCorrect: TDefineIfEscrowAddressIsCorrect = (
   }
 
   if (
-    escrowAddress !== EEscrowAddress.polygonNative
+    escrowAddress !== EEscrowAddress.polygonNative.toLowerCase()
     && chainId === EChains.polygon
     && tokenType === ETokenType.NATIVE
   ) {
@@ -81,7 +81,7 @@ const defineIfEscrowAddressIsCorrect: TDefineIfEscrowAddressIsCorrect = (
   }
 
   if (
-    escrowAddress !== EEscrowAddress.mumbaiERC20
+    escrowAddress !== EEscrowAddress.mumbaiERC20.toLowerCase()
     && chainId === EChains.mumbai
     && tokenType === ETokenType.ERC20
   ) {
@@ -89,7 +89,7 @@ const defineIfEscrowAddressIsCorrect: TDefineIfEscrowAddressIsCorrect = (
   }
 
   if (
-    escrowAddress !== EEscrowAddress.mumbaiERC721
+    escrowAddress !== EEscrowAddress.mumbaiERC721.toLowerCase()
     && chainId === EChains.mumbai
     && tokenType === ETokenType.ERC721
   ) {
@@ -97,7 +97,7 @@ const defineIfEscrowAddressIsCorrect: TDefineIfEscrowAddressIsCorrect = (
   }
 
   if (
-    escrowAddress !== EEscrowAddress.mumbaiERC1155
+    escrowAddress !== EEscrowAddress.mumbaiERC1155.toLowerCase()
     && chainId === EChains.mumbai
     && tokenType === ETokenType.ERC1155
   ) {
@@ -105,7 +105,7 @@ const defineIfEscrowAddressIsCorrect: TDefineIfEscrowAddressIsCorrect = (
   }
   
   if (
-    escrowAddress !== EEscrowAddress.mumbaiNative
+    escrowAddress !== EEscrowAddress.mumbaiNative.toLowerCase()
     && chainId === EChains.mumbai
     && tokenType === ETokenType.NATIVE
   ) {
@@ -113,7 +113,7 @@ const defineIfEscrowAddressIsCorrect: TDefineIfEscrowAddressIsCorrect = (
   }
 
   if (
-    escrowAddress !== EEscrowAddress.baseGoerliERC20
+    escrowAddress !== EEscrowAddress.baseGoerliERC20.toLowerCase()
     && chainId === EChains.baseGoerli
     && tokenType === ETokenType.ERC20
   ) {
@@ -121,7 +121,7 @@ const defineIfEscrowAddressIsCorrect: TDefineIfEscrowAddressIsCorrect = (
   }
 
   if (
-    escrowAddress !== EEscrowAddress.baseGoerliERC1155
+    escrowAddress !== EEscrowAddress.baseGoerliERC1155.toLowerCase()
     && chainId === EChains.baseGoerli
     && tokenType === ETokenType.ERC1155
   ) {
@@ -129,7 +129,7 @@ const defineIfEscrowAddressIsCorrect: TDefineIfEscrowAddressIsCorrect = (
   }
 
   if (
-    escrowAddress !== EEscrowAddress.baseGoerliERC721
+    escrowAddress !== EEscrowAddress.baseGoerliERC721.toLowerCase()
     && chainId === EChains.baseGoerli
     && tokenType === ETokenType.ERC721
   ) {
@@ -137,7 +137,7 @@ const defineIfEscrowAddressIsCorrect: TDefineIfEscrowAddressIsCorrect = (
   }
 
   if (
-    escrowAddress !== EEscrowAddress.baseGoerliNative
+    escrowAddress !== EEscrowAddress.baseGoerliNative.toLowerCase()
     && chainId === EChains.baseGoerli
     && tokenType === ETokenType.NATIVE
   ) {
