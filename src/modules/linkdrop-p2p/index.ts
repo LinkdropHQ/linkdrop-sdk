@@ -19,7 +19,7 @@ import {
   getVersionFromClaimUrl
 } from '../../helpers'
 import { generateKeypair } from '../../utils'
-import { ethers, toBigInt } from 'ethers'
+import { toBigInt } from 'ethers'
 import ClaimLink from '../claim-link'
 import { errors } from '../../texts'
 import { ETokenAddress, TGetRandomBytes, ETokenType } from '../../types'
@@ -174,6 +174,10 @@ class LinkdropP2P implements ILinkdropP2P {
     const apiHost = defineApiHost(chainId, this.apiUrl)
     if (!apiHost) {
       throw new ValidationError(errors.chain_not_supported())
+    }
+
+    if (tokenType === 'ERC721' || tokenType === 'ERC1155') {
+      throw new ValidationError(errors.limits_disabled_for_erc721_or_erc1155())
     }
 
     let tokenAddress = token

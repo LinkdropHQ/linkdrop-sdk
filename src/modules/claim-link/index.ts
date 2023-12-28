@@ -37,8 +37,7 @@ import {
   encodeLink,
   parseLink,
   updateOperations,
-  defineDomain,
-  getVersionFromClaimUrl
+  defineDomain
 } from '../../helpers'
 import { errors } from '../../texts'
 import * as configs from '../../configs'

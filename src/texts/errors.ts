@@ -29,4 +29,6 @@ export default {
     address: string
   ) => `Stable coin with address not supported for deployWithAuthorization method`,
   'cannot_update_amount_for_erc721': () => `Cannot update amount for ERC721 token`,
+  'limits_disabled_for_erc721_or_erc1155': () => `Cannot fetch limits for ERC1155 or ERC721 tokens`,
+
 }
