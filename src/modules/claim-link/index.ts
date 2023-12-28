@@ -424,20 +424,6 @@ class ClaimLink implements IClaimLinkSDK {
       this.feeAmount
     )
 
-    console.log([
-      this.token,
-      this.transferId,
-      this.tokenId,
-      this.amount,
-      this.expiration,
-      this.feeAmount,
-      this.feeAuthorization
-    ], {
-      sendTransaction,
-      data,
-      value
-    })
-
     const txHash = await this.sendTransaction({
       sendTransaction,
       data,
@@ -501,27 +487,12 @@ class ClaimLink implements IClaimLinkSDK {
       this.feeAuthorization
     ])
 
-    console.log({
-      data
-    }, [
-      this.token,
-      this.transferId,
-      this.tokenId,
-      this.expiration,
-      this.feeAmount,
-      this.feeAuthorization
-    ])
-
     const value = this._defineValue(
       this.token,
       this.feeToken,
       this.totalAmount,
       this.feeAmount
     )
-
-    console.log({
-      value
-    })
 
     const txHash = await this.sendTransaction({
       sendTransaction,

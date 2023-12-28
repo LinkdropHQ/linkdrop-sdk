@@ -468,6 +468,7 @@ class LinkdropP2P implements ILinkdropP2P {
   
         return await linkdropP2P2._initializeClaimLink({
           ...claimLinkData,
+          apiHost: linkdropP2P2.apiUrl,
           tokenType: token_type as ('ERC20' | 'NATIVE')
         })
       }

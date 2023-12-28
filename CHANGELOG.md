@@ -1,5 +1,9 @@
 # Linkdrop P2P SDK
 
+## 3.1.0-alpha.0
+- backward compatibility (v2 => v3)
+- ERC721 and ERC1155 tokens support
+
 ## 3.0.0-beta.2
 - updates for limits (moved from createClaimLink to _initializeClaimLink)
 
