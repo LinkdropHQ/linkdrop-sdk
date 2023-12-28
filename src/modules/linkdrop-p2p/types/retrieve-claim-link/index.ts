@@ -1,5 +1,5 @@
 import ClaimLink from "../../../claim-link"
-import * as LinkdropP2P2 from 'linkdrop-p2p-sdk2'
+import { ClaimLinkV2 } from '../../../../index'
 
 export type TRetrieveClaimLinkArgs = {
   chainId: number
@@ -13,6 +13,6 @@ type TRetrieveClaimLink = ({
   txHash,
   sender,
   transferId
-}: TRetrieveClaimLinkArgs) => Promise<ClaimLink | LinkdropP2P2.ClaimLink>
+}: TRetrieveClaimLinkArgs) => Promise<ClaimLink | ClaimLinkV2>
 
 export default TRetrieveClaimLink

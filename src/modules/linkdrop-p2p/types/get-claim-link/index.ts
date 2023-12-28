@@ -1,6 +1,6 @@
 import ClaimLink from "../../../claim-link"
-import * as LinkdropP2P2 from 'linkdrop-p2p-sdk2'
+import { ClaimLinkV2 } from '../../../../index'
 
-type TGetClaimLink = (claimUrl: string) => Promise<ClaimLink | LinkdropP2P2.ClaimLink>
+type TGetClaimLink = (claimUrl: string) => Promise<ClaimLink | ClaimLinkV2>
 
 export default TGetClaimLink
