@@ -1,4 +1,4 @@
-import { TTokenType } from "../token-type"
+import { ETokenType } from "../token-type"
 
 export type TClaimLinkItemStatus = 'created' | 'depositing' | 'deposited' | 'redeemed'| 'redeeming' | 'error' | 'refunded' | 'refunding' | 'cancelled'
 
@@ -23,14 +23,13 @@ export type TClaimLinkItem = {
   token: string
   chain_id?: number
   sender: string
-  // ---- should be added
   expiration: number
   created_at?: string
   updated_at?: string
-  token_type?: TTokenType
-  // ---- should be added
+  token_type?: ETokenType
   escrow: string
   version: string
+  token_id?: string
   status: TClaimLinkItemStatus
   operations:  TClaimLinkItemOperation[]
 }

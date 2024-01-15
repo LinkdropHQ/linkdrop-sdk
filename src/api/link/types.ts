@@ -1,48 +1,8 @@
-import { TClaimLinkItem, TTokenType } from '../../types'
-
-type TDepositWithAuthResponse = {
-  success: boolean,
-  tx_hash: string
-}
-
-type TDepositWithAuth = (
-  apiHost: string,
-  apiKey: string | null,
-  token: string,
-  token_type: TTokenType,
-  sender: string,
-  escrow: string,
-  transfer_id: string,
-  expiration: number,
-  authorization: string,
-  authorization_selector: string,
-  fee_authorization: string,
-  amount: string,
-  fee_amount: string,
-  total_amount: string
-) => Promise<TDepositWithAuthResponse>
-
-type TDepositWithResponse = {
-  success: boolean,
-  tx_hash: string
-}
-
-type TDeposit = (
-  apiHost: string,
-  apiKey: string | null,
-  token: string,
-  token_type: TTokenType,
-  sender: string,
-  escrow: string,
-  transfer_id: string,
-  expiration: number,
-  tx_hash: string,
-  fee_authorization: string,
-  amount: string,
-  fee_amount: string,
-  total_amount: string,
-  fee_token: string
-) => Promise<TDepositWithResponse>
+import { TClaimLinkItem, ETokenType } from '../../types'
+import { TDeposit } from './deposit/types'
+import { TDepositWithAuth } from './deposit-with-authorization/types'
+import { TDepositERC721 } from './deposit-erc721/types'
+import { TDepositERC1155 } from './deposit-erc1155/types'
 
 type TRedeemLinkResponse = {
   success: boolean,
@@ -113,12 +73,13 @@ type TGetFeeResponse = {
 type TGetFee = (
   apiHost: string,
   apiKey: string | null,
-  amount: string,
   tokenAddress: string,
   sender: string,
-  tokenType: TTokenType,
+  tokenType: ETokenType,
   transferId: string,
-  expiration: number
+  expiration: number,
+  amount: string,
+  tokenId?: string
 ) => Promise<TGetFeeResponse>
 
 type TGetLimitsResponse = {
@@ -131,7 +92,7 @@ type TGetLimits = (
   apiHost: string,
   apiKey: string | null,
   tokenAddress: string,
-  tokenType: TTokenType
+  tokenType: ETokenType
 ) => Promise<TGetLimitsResponse>
 
 type TGetHistoryResponse = {
@@ -162,6 +123,8 @@ export type TRequests = {
   getTransferStatusByTxHash: TGetTransferDataByTxHash
   getFee: TGetFee,
   deposit: TDeposit,
+  depositERC721: TDepositERC721,
+  depositERC1155: TDepositERC1155,
   getLimits: TGetLimits,
   getHistory: TGetHistory
 }

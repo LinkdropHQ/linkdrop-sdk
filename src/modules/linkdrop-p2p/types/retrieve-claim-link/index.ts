@@ -1,4 +1,5 @@
 import ClaimLink from "../../../claim-link"
+import { ClaimLinkV2 } from '../../../../index'
 
 export type TRetrieveClaimLinkArgs = {
   chainId: number
@@ -12,6 +13,6 @@ type TRetrieveClaimLink = ({
   txHash,
   sender,
   transferId
-}: TRetrieveClaimLinkArgs) => Promise<ClaimLink>
+}: TRetrieveClaimLinkArgs) => Promise<ClaimLink | ClaimLinkV2>
 
 export default TRetrieveClaimLink

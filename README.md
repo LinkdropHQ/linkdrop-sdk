@@ -25,20 +25,36 @@ Learn more about the `claimLink` object in [the ClaimLink section](#claimlink-pr
 ```js
 const from = "0x2331bca1f2de4661ed88a30c99a7a9449aa84195" // Sender's Ethereum address
 const token = "0x0fa8781a83e46826621b3bc094ea2a0212e71b23" // token contract address
-const tokenType = "ERC20" // one of "NATIVE" | "ERC20" 
+const tokenType = "ERC1155" // one of "NATIVE" | "ERC20" | "ERC721" | "ERC1155"
 const chainId = 80001 // network chain ID
-const amount = "1000000" // atomic amount of tokens that sender wants to send (before fees)
-const expiration = "1695985897077" // unix timestamp after which the claim link will expire and amount will be sent back to sender unless it was claimed before. Optional param, it not passed, it's going to be set to 15 days from now, 
+const amount = "1000000" // atomic amount of tokens that sender wants to send (before fees). Not required for 'ERC721' tokens
+const expiration = "1695985897077" // unix timestamp after which the claim link will expire and amount will be sent back to sender unless it was claimed before. Optional param, it not passed, it's going to be set to 15 days from now,
+const tokenId = "1" // ID of token. Required for "ERC721" and "ERC1155"
 
-const claimLink = await sdk.createClaimLink({ from, token, amount, expiration, chainId, tokenType })
+const claimLink = await sdk.createClaimLink({
+  from,
+  token,
+  amount,
+  expiration,
+  chainId,
+  tokenType,
+  tokenId
+})
+```
+
+You can update amount for "NATIVE", "ERC20", and "ERC1155" tokens
+
+```js
 const { amount, feeAmount, totalAmount, feeToken } = await claimLink.updateAmount(amount)
 ```
+
 Methods `createClaimLink` and `updateAmount` will throw an error if amount is not valid according to limits.
-To define the minimum and maximum limit of amount that can be sent via link, use the getLimits method
+
+To define the minimum and maximum limit of amount that can be sent via link, use the getLimits method. Method is not available for ERC721 or ERC1155 tokens
 ```js
 
 const token = "0x0fa8781a83e46826621b3bc094ea2a0212e71b23" // token contract address. Not required if tokenType is NATIVE
-const tokenType = "ERC20" // one of "NATIVE" | "ERC20" 
+const tokenType = "ERC20" // one of "NATIVE" | "ERC20".
 const chainId = 80001 // network chain ID
 
 const { minTransferAmount, maxTransferAmount } = await sdk.getLimits({
@@ -56,7 +72,7 @@ const signTypedData = (domain, types, message) => signer.signTypedData(domain, t
 const { claimUrl, transferId, txHash } = await claimLink.depositWithAuthorization({ signTypedData }) 
 ```
 
-**2b. Deposit native tokens (ETH/MATIC) and other ERC20 tokens to escrow contract via direct call :**  
+**2b. Deposit native tokens (ETH/MATIC), ERC721, ERC1155 or ERC20 tokens to escrow contract via direct call :**  
 To avoid asking for sender private key directly, we ask to pass a function that signs and sends Ethereum transaction. The function should be similar to ethers `signer.sendTransaction` - https://docs.ethers.org/v6/api/providers/#Signer-signTypedData
 ```js
 const sendTransaction = async ({ to, value, gasLimit, data }) => { 
@@ -65,7 +81,7 @@ const sendTransaction = async ({ to, value, gasLimit, data }) => {
 }
 const { claimUrl, transferId, txHash } = await claimLink.deposit({ sendTransaction }) 
 ```
-For ERC20 tokens (except USDC tokens) before depositing, you need to approve tokens so that the contract has the opportunity to send them to the recipient
+For ERC20 (except USDC tokens), ERC721 and ERC1155 tokens before depositing, you need to approve tokens so that the contract has the opportunity to send them to the recipient
 
 **3. Re-generate Claim URL:**
 Sender can generate a new claim URL (if the original claim URL is lost):
@@ -139,7 +155,7 @@ Claim Link object contains methods and properties to facilitate both creation an
 
 ### ClaimLink properties:
 - _transferId_ (string, transfer unique id, e.g. "1695985897077")
-- _tokenType_ (string, token standard type, one of `'NATIVE' | 'ERC20'`)
+- _tokenType_ (string, token standard type, one of `'NATIVE' | 'ERC20' | 'ERC721' | 'ERC1155'`)
 - _amount_ (string, atomic amount of tokens receiver going to claim, e.g. "1000000" for 1 USDC)
 - _fee_ (string, atomic amount of tokens sender needs to pay as a fee, e.g. "100000" or 0.1 USDC)
 - _expiration_ (string, unix timestamp after which the claim link will expire and amount will be sent back to sender unless it was claimed before)

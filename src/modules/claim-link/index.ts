@@ -8,18 +8,22 @@ import IClaimLinkSDK, {
   TDefineDomain,
   TGetStatus,
   TDeposit,
-  TDefineValue
+  TDefineValue,
+  TDepositERC20,
+  TDepositNative,
+  TDepositERC721,
+  TDepositERC1155
 } from './types'
 import { toBigInt } from 'ethers'
 import {
   TEscrowPaymentDomain,
   TLink,
-  TTokenType,
+  ETokenType,
   TClaimLinkItemOperation,
   TGetRandomBytes
 } from '../../types'
 import { ValidationError } from '../../errors'
-import { LinkdropEscrowNetworkToken } from '../../abi'
+import { LinkdropEscrowToken, LinkdropEscrowNFT } from '../../abi'
 import {
   generateReceiverSig,
   getDepositAuthorization,
@@ -51,10 +55,12 @@ class ClaimLink implements IClaimLinkSDK {
   getRandomBytes: TGetRandomBytes
   transferId: string
   claimUrl: string
-  tokenType: TTokenType
+  tokenType: ETokenType
   operations: TClaimLinkItemOperation[]
   linkKey: string | null
   deposited: boolean = false
+
+  tokenId: string
 
   feeAuthorization: string
   amount: string
@@ -81,13 +87,21 @@ class ClaimLink implements IClaimLinkSDK {
     getRandomBytes,
     feeAuthorization,
     feeToken,
-    claimUrl
+    claimUrl,
+    tokenId
   }: TConstructorArgs) {
 
     this.getRandomBytes = getRandomBytes
 
     if (!sender) {
       throw new ValidationError(errors.argument_not_provided('sender'))
+    }
+
+    if (tokenType === 'ERC721' || tokenType === 'ERC1155') {
+      if (!tokenId) {
+        throw new ValidationError(errors.argument_not_provided('tokenId'))
+      }
+      this.tokenId = tokenId
     }
 
     this.sender = sender.toLowerCase()
@@ -99,11 +113,12 @@ class ClaimLink implements IClaimLinkSDK {
     if (feeToken) {
       this.feeToken = feeToken.toLowerCase()
     }
-    if (!amount) {
+    if (tokenType !== 'ERC721' && !amount) {
       throw new ValidationError(errors.argument_not_provided('amount'))
+    } else {
+      this.amount = amount
     }
     this.operations = operations || []
-    this.amount = amount
     this.expiration = expiration
     if (!chainId) {
       throw new ValidationError(errors.argument_not_provided('chainId'))
@@ -116,17 +131,18 @@ class ClaimLink implements IClaimLinkSDK {
     }
     this.tokenType = tokenType
 
-    if (tokenType === 'ERC20') {
+    if (tokenType === 'NATIVE') {
+      this.token = configs.nativeTokenAddress
+    } else {
       if (!token) {
         throw new ValidationError(errors.argument_not_provided('token'))
       }
       this.token = token.toLowerCase()
-    } else {
-      this.token = configs.nativeTokenAddress
     }
 
     this.escrowAddress = escrowAddress?.toLowerCase() || defineEscrowAddress(
-      this.chainId
+      this.chainId,
+      this.tokenType 
     )
 
     if (!this.escrowAddress) {
@@ -138,7 +154,8 @@ class ClaimLink implements IClaimLinkSDK {
 
     if (!defineIfEscrowAddressIsCorrect(
       this.chainId,
-      this.escrowAddress
+      this.escrowAddress,
+      this.tokenType 
     )) {
       throw new Error(errors.escrow_is_not_correct())
     }
@@ -164,6 +181,7 @@ class ClaimLink implements IClaimLinkSDK {
     if (!dest) {
       throw new ValidationError(errors.argument_not_provided('dest'))
     }
+
     if (!this.escrowAddress) {
       throw new Error(errors.escrow_not_available(
         this.token,
@@ -226,26 +244,6 @@ class ClaimLink implements IClaimLinkSDK {
   _defineDomain: TDefineDomain = () => {
     return defineDomain(this.chainId, this.token)
   }
-
-  initialize: TInitialize = async () => {
-    const {
-      total_amount: totalAmount,
-      fee,
-      min_transfer_amount: minTransferAmount,
-      max_transfer_amount: maxTransferAmount
-    } = await this._getCurrentFee(this.amount)
-
-    if (toBigInt(this.amount) < toBigInt(minTransferAmount)) {
-      throw new ValidationError(errors.amount_should_be_more_than_minlimit(minTransferAmount.toString()))
-    }
-
-    if (toBigInt(this.amount) > toBigInt(maxTransferAmount)) {
-      throw new ValidationError(errors.amount_should_be_less_than_maxlimit(maxTransferAmount.toString()))
-    }
-
-    this.totalAmount = totalAmount
-    this.fee = fee
-  }
   
   _defineValue: TDefineValue = (
     tokenAddress,
@@ -264,6 +262,297 @@ class ClaimLink implements IClaimLinkSDK {
   
     // erc20
     return feeAmount
+  }
+
+  _depositERC20: TDepositERC20 = async ({
+    sendTransaction
+  }) => {
+    const iface = new ethers.Interface(LinkdropEscrowToken.abi)
+    const data = iface.encodeFunctionData("deposit", [
+      this.token,
+      this.transferId,
+      this.totalAmount,
+      this.expiration,
+      this.feeToken,
+      this.feeAmount,
+      this.feeAuthorization
+    ])
+
+    const value = this._defineValue(
+      this.token,
+      this.feeToken,
+      this.totalAmount,
+      this.feeAmount
+    )
+
+    const txHash = await this.sendTransaction({
+      sendTransaction,
+      data,
+      value
+    })
+
+    await linkApi.deposit(
+      this.apiUrl,
+      this.#apiKey,
+      this.token,
+      this.tokenType,
+      this.sender.toLowerCase(),
+      this.escrowAddress as string,
+      this.transferId,
+      this.expiration,
+      txHash,
+      this.feeAuthorization,
+      this.amount,
+      this.feeAmount,
+      this.totalAmount,
+      this.feeToken
+    )
+
+    const linkParams: TLink = {
+      linkKey: this.linkKey as string,
+      transferId: this.transferId,
+      chainId: this.chainId,
+      sender: this.sender.toLowerCase()
+    }
+
+    const claimUrl = encodeLink(
+      this.baseUrl,
+      linkParams
+    )
+
+    if (!claimUrl) {
+      throw new Error(errors.not_possible_create_claim_url())
+    }
+
+    this.claimUrl = claimUrl
+    this.deposited = true
+
+    return {
+      txHash,
+      transferId: this.transferId,
+      claimUrl
+    }
+  }
+
+  _depositNative: TDepositNative = async ({
+    sendTransaction
+  }) => {
+    const iface = new ethers.Interface(LinkdropEscrowToken.abi)
+    const data = iface.encodeFunctionData("depositETH", [
+      this.transferId,
+      this.totalAmount,
+      this.expiration,
+      this.feeAmount,
+      this.feeAuthorization
+    ])
+
+    const value = this._defineValue(
+      this.token,
+      this.feeToken,
+      this.totalAmount,
+      this.feeAmount
+    )
+
+    const txHash = await this.sendTransaction({
+      sendTransaction,
+      data,
+      value
+    })
+
+    await linkApi.deposit(
+      this.apiUrl,
+      this.#apiKey,
+      this.token,
+      this.tokenType,
+      this.sender.toLowerCase(),
+      this.escrowAddress as string,
+      this.transferId,
+      this.expiration,
+      txHash,
+      this.feeAuthorization,
+      this.amount,
+      this.feeAmount,
+      this.totalAmount,
+      this.feeToken
+    )
+
+    const linkParams: TLink = {
+      linkKey: this.linkKey as string,
+      transferId: this.transferId,
+      chainId: this.chainId,
+      sender: this.sender.toLowerCase()
+    }
+
+    const claimUrl = encodeLink(
+      this.baseUrl,
+      linkParams
+    )
+
+    if (!claimUrl) {
+      throw new Error(errors.not_possible_create_claim_url())
+    }
+
+    this.claimUrl = claimUrl
+    this.deposited = true
+
+    return {
+      txHash,
+      transferId: this.transferId,
+      claimUrl
+    }
+  }
+
+  _depositERC1155: TDepositERC1155 = async ({
+    sendTransaction
+  }) => {
+    const iface = new ethers.Interface(LinkdropEscrowNFT.abi)
+    const data = iface.encodeFunctionData("depositERC1155", [
+      this.token,
+      this.transferId,
+      this.tokenId,
+      this.amount,
+      this.expiration,
+      this.feeAmount,
+      this.feeAuthorization
+    ])
+
+    const value = this._defineValue(
+      this.token,
+      this.feeToken,
+      this.totalAmount,
+      this.feeAmount
+    )
+
+    const txHash = await this.sendTransaction({
+      sendTransaction,
+      data,
+      value
+    })
+
+    await linkApi.depositERC1155(
+      this.apiUrl,
+      this.#apiKey,
+      this.token,
+      this.tokenType,
+      this.sender.toLowerCase(),
+      this.escrowAddress as string,
+      this.transferId,
+      this.expiration,
+      txHash,
+      this.feeAuthorization,
+      this.tokenId,
+      this.amount,
+      this.feeAmount,
+      this.totalAmount,
+      this.feeToken
+    )
+
+    const linkParams: TLink = {
+      linkKey: this.linkKey as string,
+      transferId: this.transferId,
+      chainId: this.chainId,
+      sender: this.sender.toLowerCase()
+    }
+
+    const claimUrl = encodeLink(
+      this.baseUrl,
+      linkParams
+    )
+
+    if (!claimUrl) {
+      throw new Error(errors.not_possible_create_claim_url())
+    }
+
+    this.claimUrl = claimUrl
+    this.deposited = true
+
+    return {
+      txHash,
+      transferId: this.transferId,
+      claimUrl
+    }
+  }
+
+  _depositERC721: TDepositERC721 = async ({
+    sendTransaction
+  }) => {
+    const iface = new ethers.Interface(LinkdropEscrowNFT.abi)
+    const data = iface.encodeFunctionData("depositERC721", [
+      this.token,
+      this.transferId,
+      this.tokenId,
+      this.expiration,
+      this.feeAmount,
+      this.feeAuthorization
+    ])
+
+    const value = this._defineValue(
+      this.token,
+      this.feeToken,
+      this.totalAmount,
+      this.feeAmount
+    )
+
+    const txHash = await this.sendTransaction({
+      sendTransaction,
+      data,
+      value
+    })
+
+    await linkApi.depositERC721(
+      this.apiUrl,
+      this.#apiKey,
+      this.token,
+      this.tokenType,
+      this.sender.toLowerCase(),
+      this.escrowAddress as string,
+      this.transferId,
+      this.expiration,
+      txHash,
+      this.feeAuthorization,
+      this.tokenId,
+      this.feeAmount,
+      this.totalAmount,
+      this.feeToken
+    )
+
+    const linkParams: TLink = {
+      linkKey: this.linkKey as string,
+      transferId: this.transferId,
+      chainId: this.chainId,
+      sender: this.sender.toLowerCase()
+    }
+
+    const claimUrl = encodeLink(
+      this.baseUrl,
+      linkParams
+    )
+
+    if (!claimUrl) {
+      throw new Error(errors.not_possible_create_claim_url())
+    }
+
+    this.claimUrl = claimUrl
+    this.deposited = true
+
+    return {
+      txHash,
+      transferId: this.transferId,
+      claimUrl
+    }
+  }
+
+  sendTransaction = async ({
+    sendTransaction,
+    data,
+    value
+  }) => {
+    const { hash: txHash } = await sendTransaction({
+      to: this.escrowAddress,
+      value,
+      data
+    })
+    return txHash
   }
 
   deposit: TDeposit = async ({
@@ -294,84 +583,24 @@ class ClaimLink implements IClaimLinkSDK {
       throw new ValidationError(errors.argument_not_provided('sendTransaction'))
     }
 
-    const iface = new ethers.Interface(LinkdropEscrowNetworkToken.abi)
-    let data
-    if (this.token === configs.nativeTokenAddress) {
-      data = iface.encodeFunctionData("depositETH", [
-        this.transferId,
-        this.totalAmount,
-        this.expiration,
-        this.feeAmount,
-        this.feeAuthorization
-      ])
+    if (this.tokenType === 'NATIVE') {
+      return this._depositNative({
+        sendTransaction
+      })
+    } else if (this.tokenType === 'ERC20') {
+      return this._depositERC20({
+        sendTransaction
+      })
+    } else if (this.tokenType === 'ERC721') {
+      return this._depositERC721({
+        sendTransaction
+      })
     } else {
-      data = iface.encodeFunctionData("deposit", [
-        this.token,
-        this.transferId,
-        this.totalAmount,
-        this.expiration,
-        this.feeToken,
-        this.feeAmount,
-        this.feeAuthorization
-      ])
+      return this._depositERC1155({
+        sendTransaction
+      })
     }
-    const value = this._defineValue(
-      this.token,
-      this.feeToken,
-      this.totalAmount,
-      this.feeAmount
-    )
-
-    const { hash: txHash } = await sendTransaction({
-      to: this.escrowAddress,
-      value,
-      // needs update
-      gasLimit: 150000, // Ensure you have enough gas
-      // needs update
-      data
-    })
-
-    await linkApi.deposit(
-      this.apiUrl,
-      this.#apiKey,
-      this.token,
-      this.tokenType,
-      this.sender.toLowerCase(),
-      this.escrowAddress,
-      this.transferId,
-      this.expiration,
-      txHash,
-      this.feeAuthorization,
-      this.amount,
-      this.feeAmount,
-      this.totalAmount,
-      this.feeToken
-    )
-
-    const linkParams: TLink = {
-      linkKey: this.linkKey,
-      transferId: this.transferId,
-      chainId: this.chainId,
-      sender: this.sender.toLowerCase()
-    }
-
-    const claimUrl = encodeLink(
-      this.baseUrl,
-      linkParams
-    )
-
-    if (!claimUrl) {
-      throw new Error(errors.not_possible_create_claim_url())
-    }
-
-    this.claimUrl = claimUrl
-    this.deposited = true
-
-    return {
-      txHash,
-      transferId: this.transferId,
-      claimUrl
-    }
+    
   }
 
   depositWithAuthorization: TDepositWithAuthorization = async ({
@@ -481,18 +710,22 @@ class ClaimLink implements IClaimLinkSDK {
     const result = await linkApi.getFee(
       this.apiUrl,
       this.#apiKey,
-      newAmount,
       this.token,
       this.sender.toLowerCase(),
       this.tokenType,
       this.transferId,
-      this.expiration
+      this.expiration,
+      newAmount,
+      this.tokenId
     )
 
     return result
   }
 
   updateAmount: TUpdateAmount = async (amount) => {
+    if (this.tokenType === 'ERC721') {
+      throw new ValidationError(errors.cannot_update_amount_for_erc721())
+    }
     const {
       fee_amount: feeAmount,
       total_amount: totalAmount,
@@ -500,7 +733,9 @@ class ClaimLink implements IClaimLinkSDK {
       max_transfer_amount: maxTransferAmount,
       fee_authorization: feeAuthorization,
       fee_token: feeToken
-    } = await this._getCurrentFee(amount)
+    } = await this._getCurrentFee(
+      amount as string
+    )
 
     if (toBigInt(amount) < toBigInt(minTransferAmount)) {
       throw new ValidationError(errors.amount_should_be_more_than_minlimit(minTransferAmount.toString()))

@@ -16,16 +16,17 @@ import {
   decodeLink,
   defineApiHost,
   updateOperations,
-  defineEscrowAddress,
-  parseQueryParams
+  getVersionFromClaimUrl
 } from '../../helpers'
 import { generateKeypair } from '../../utils'
 import { toBigInt } from 'ethers'
 import ClaimLink from '../claim-link'
 import { errors } from '../../texts'
-import { ETokenAddress, TGetRandomBytes, TTokenType } from '../../types'
+import { ETokenAddress, TGetRandomBytes, ETokenType } from '../../types'
 import escrows from '../../configs/escrows'
 import * as configs from '../../configs'
+import * as LinkdropP2P2 from 'linkdrop-p2p-sdk2'
+
 
 class LinkdropP2P implements ILinkdropP2P {
   #apiKey: string | null
@@ -55,15 +56,7 @@ class LinkdropP2P implements ILinkdropP2P {
   }
 
   getVersionFromClaimUrl: TGetVersionFromClaimUrl = (claimUrl) => {
-    const hashIndex = claimUrl.indexOf('#');
-    const paramsString = claimUrl.substring(hashIndex + 1).split('?')[1]
-    const parsedParams = parseQueryParams(paramsString)
-    const version = parsedParams["v"]
-    if (!version) {
-      throw new Error(errors.version_not_provided())
-    }
-
-    return version
+    return getVersionFromClaimUrl(claimUrl)
   }
 
   createClaimLink: TCreateClaimLink = async ({
@@ -72,7 +65,8 @@ class LinkdropP2P implements ILinkdropP2P {
     chainId,
     amount,
     from,
-    tokenType
+    tokenType,
+    tokenId
   }) => {
     if (!chainId) {
       throw new ValidationError(errors.argument_not_provided('chainId'))
@@ -85,7 +79,7 @@ class LinkdropP2P implements ILinkdropP2P {
       throw new ValidationError(errors.argument_not_provided('from'))
     }
 
-    if (!amount) {
+    if (tokenType !== 'ERC721' && !amount) {
       throw new ValidationError(errors.argument_not_provided('amount'))
     }
 
@@ -97,12 +91,13 @@ class LinkdropP2P implements ILinkdropP2P {
       token: token as ETokenAddress || configs.nativeTokenAddress,
       expiration: expiration ||  Math.floor(Date.now() / 1000 + 60 * 60 * 24 * 30),
       chainId,
-      amount,
+      amount: amount || '1',
       sender: from.toLowerCase(),
       apiUrl: apiHost,
       apiKey: this.#apiKey,
       tokenType,
-      baseUrl: this.baseUrl
+      baseUrl: this.baseUrl,
+      tokenId
     })
   }
 
@@ -181,14 +176,16 @@ class LinkdropP2P implements ILinkdropP2P {
       throw new ValidationError(errors.chain_not_supported())
     }
 
+    if (tokenType === 'ERC721' || tokenType === 'ERC1155') {
+      throw new ValidationError(errors.limits_disabled_for_erc721_or_erc1155())
+    }
+
     let tokenAddress = token
 
-    if (tokenType === 'ERC20') {
+    if (tokenAddress !== configs.nativeTokenAddress) {
       if (!tokenAddress) {
         throw new ValidationError(errors.argument_not_provided('token'))
       }
-    } else {
-      tokenAddress = configs.nativeTokenAddress
     }
   
     const limits = await linkApi.getLimits(
@@ -220,17 +217,30 @@ class LinkdropP2P implements ILinkdropP2P {
     if (!feeAmount || !totalAmount) {
       const feeData = await this._getCurrentFee(
         claimLinkData.apiUrl,
-        claimLinkData.amount,
         claimLinkData.token,
         claimLinkData.tokenType,
         claimLinkData.sender,
         transferId as string,
-        claimLinkData.expiration
+        claimLinkData.expiration,
+        claimLinkData.tokenType === 'ERC721' ? '1' : claimLinkData.amount,
+        claimLinkData.tokenId
       )
       feeAmount = feeData.fee_amount
       totalAmount = feeData.total_amount
       feeAuthorization = feeData.fee_authorization
       feeToken = feeData.fee_token
+
+      if (
+        claimLinkData.tokenType === 'NATIVE' || claimLinkData.tokenType === 'ERC20'
+      ) {
+        if (toBigInt(claimLinkData.amount) < toBigInt(feeData.min_transfer_amount)) {
+          throw new ValidationError(errors.amount_should_be_more_than_minlimit(feeData.min_transfer_amount.toString()))
+        }
+    
+        if (toBigInt(claimLinkData.amount) > toBigInt(feeData.max_transfer_amount)) {
+          throw new ValidationError(errors.amount_should_be_less_than_maxlimit(feeData.max_transfer_amount.toString()))
+        }
+      }
     }
 
     if (!transferId) {
@@ -281,22 +291,24 @@ class LinkdropP2P implements ILinkdropP2P {
 
   _getCurrentFee: TGetCurrentFee = async (
     apiUrl,
-    amount,
     token,
     tokenType,
     sender,
     transferId,
-    expiration
+    expiration,
+    amount,
+    tokenId
   ) => {
     const result = await linkApi.getFee(
       apiUrl,
       this.#apiKey,
-      amount,
       token,
       sender.toLowerCase(),
       tokenType,
       transferId,
-      expiration
+      expiration,
+      amount,
+      tokenId
     )
 
     return result
@@ -308,16 +320,21 @@ class LinkdropP2P implements ILinkdropP2P {
       chainId,
     } = decodeLink(claimUrl)
 
+    const version = this.getVersionFromClaimUrl(claimUrl)
+
+    if (version === '2') {
+      const linkdropP2P2 = new LinkdropP2P2.LinkdropP2P({
+        baseUrl: this.baseUrl,
+        apiKey: String(this.#apiKey)
+      })
+
+      return await linkdropP2P2.getClaimLink(claimUrl)
+    }
+
     const apiHost = defineApiHost(chainId, this.apiUrl)
 
     if (!apiHost) {
       throw new ValidationError(errors.chain_not_supported())
-    }
-
-    const escrowAddress = defineEscrowAddress(chainId)
-
-    if (!escrowAddress) {
-      throw new Error(errors.variable_cannot_be_defined('Escrow address'))
     }
 
     const { claim_link } = await linkApi.getTransferStatus(
@@ -336,7 +353,8 @@ class LinkdropP2P implements ILinkdropP2P {
       fee_token,
       fee_amount,
       total_amount,
-      escrow
+      escrow,
+      token_id
     } = claim_link
 
     const claimLinkData = {
@@ -352,13 +370,15 @@ class LinkdropP2P implements ILinkdropP2P {
       apiKey: this.#apiKey,
       transferId: transferId.toLowerCase(),
       claimUrl,
+      tokenId: token_id,
       operations: updateOperations(operations),
-      tokenType: (token_type as TTokenType),
+      tokenType: (token_type as ETokenType),
       baseUrl: this.baseUrl,
       escrowAddress: escrow
     }
     return this._initializeClaimLink(claimLinkData)
   }
+
 
   retrieveClaimLink: TRetrieveClaimLink = async ({
     chainId,
@@ -396,7 +416,7 @@ class LinkdropP2P implements ILinkdropP2P {
         sender: sender.toLowerCase(),
         apiUrl: apiHost,
         apiKey: this.#apiKey,
-        tokenType: (token_type as TTokenType),
+        tokenType: (token_type as ETokenType),
         transferId: transferId.toLowerCase(),
         baseUrl: this.baseUrl,
         operations: updateOperations(operations),
@@ -406,11 +426,13 @@ class LinkdropP2P implements ILinkdropP2P {
       }
       return this._initializeClaimLink(claimLinkData)
     } else if (txHash) {
+      
       const { claim_link } = await linkApi.getTransferStatusByTxHash(
         apiHost,
         this.#apiKey,
         txHash
       )
+  
       const {
         token,
         expiration,
@@ -421,7 +443,8 @@ class LinkdropP2P implements ILinkdropP2P {
         operations,
         fee_token,
         fee_amount,
-        total_amount
+        total_amount,
+        version
       } = claim_link
 
       const claimLinkData = {
@@ -433,12 +456,25 @@ class LinkdropP2P implements ILinkdropP2P {
         apiUrl: apiHost,
         apiKey: this.#apiKey,
         transferId: (transfer_id as string).toLowerCase(),
-        tokenType: (token_type as TTokenType),
+        tokenType: (token_type as ETokenType),
         operations: updateOperations(operations),
         baseUrl: this.baseUrl,
         feeAmount: fee_amount,
         feeToken: fee_token,
         totalAmount: total_amount as string
+      }
+
+      if (version.toString() === '2') {
+        const linkdropP2P2 = new LinkdropP2P2.LinkdropP2P({
+          baseUrl: this.baseUrl,
+          apiKey: String(this.#apiKey)
+        })
+  
+        return await linkdropP2P2._initializeClaimLink({
+          ...claimLinkData,
+          apiHost: linkdropP2P2.apiUrl,
+          tokenType: token_type as ('ERC20' | 'NATIVE')
+        })
       }
       return this._initializeClaimLink(claimLinkData)
     } else {

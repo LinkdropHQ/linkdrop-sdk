@@ -1,4 +1,4 @@
-import { EChains, TTokenType, ETokenAddress, TGetRandomBytes } from "../../../../types"
+import { EChains, ETokenType, ETokenAddress, TGetRandomBytes } from "../../../../types"
 import ClaimLink from "../../../claim-link"
 
 export type TInitializeClaimLinkArgs = {
@@ -16,7 +16,8 @@ export type TInitializeClaimLinkArgs = {
   totalAmount?: string
   feeToken?: string
   feeAuthorization?: string
-  tokenType: TTokenType
+  tokenType: ETokenType,
+  tokenId?: string
 }
 
 type TInitializeClaimLink = ({
@@ -34,7 +35,8 @@ type TInitializeClaimLink = ({
   feeAmount,
   totalAmount,
   feeAuthorization,
-  feeToken
+  feeToken,
+  tokenId
 }: TInitializeClaimLinkArgs) => Promise<(ClaimLink)>
 
 export default TInitializeClaimLink

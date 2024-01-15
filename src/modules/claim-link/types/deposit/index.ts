@@ -2,12 +2,10 @@ import { TSendTransaction, TGetRandomBytes, TDepositResult } from "../../../../t
 
 type TDepositArgs = {
   sendTransaction: TSendTransaction
-  getRandomBytes: TGetRandomBytes
 }
 
 type TDeposit = ({
-  sendTransaction,
-  getRandomBytes
+  sendTransaction
 }: TDepositArgs) => Promise<TDepositResult>
 
 export default TDeposit
