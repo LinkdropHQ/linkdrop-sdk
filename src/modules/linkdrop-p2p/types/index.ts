@@ -7,11 +7,13 @@ import TGetLimits from './get-limits'
 import TGetHistory from './get-history'
 import TGetVersionFromClaimUrl from './get-version-from-claim-url'
 import TGetVersionFromEscrowContract from './get-version-from-escrow-contract'
+import { TGetRandomBytes } from '../../../types'
 
 interface ILinkdropP2P {
   apiKey: string | null
   baseUrl: string
   apiUrl?: string
+  getRandomBytes?: TGetRandomBytes
 
   createClaimLink: TCreateClaimLink
   retrieveClaimLink: TRetrieveClaimLink

@@ -19,10 +19,9 @@ import {
   defineEscrowAddressByTokenSymbol,
   parseQueryParams
 } from '../../helpers'
-import { toBigInt } from 'ethers'
 import ClaimLink from '../claim-link'
 import { errors } from '../../texts'
-import { ETokenAddress, TTokenType } from '../../types'
+import { ETokenAddress, TGetRandomBytes, TTokenType } from '../../types'
 import escrows from '../../configs/escrows'
 import * as configs from '../../configs'
 
@@ -30,15 +29,20 @@ class LinkdropP2P implements ILinkdropP2P {
   apiKey: string | null
   baseUrl: string
   apiUrl: string
+  getRandomBytes: TGetRandomBytes
 
   constructor({
     apiKey,
     baseUrl,
-    apiUrl
+    apiUrl,
+    getRandomBytes
   }: TConstructorArgs) {
     this.apiKey = apiKey || null
     if (apiUrl) {
       this.apiUrl = apiUrl
+    }
+    if (getRandomBytes) {
+      this.getRandomBytes = getRandomBytes
     }
     if (!baseUrl) {
       throw new ValidationError(errors.argument_not_provided('baseUrl'))
@@ -344,7 +348,8 @@ class LinkdropP2P implements ILinkdropP2P {
         tokenType: (token_type as TTokenType),
         transferId: transferId.toLowerCase(),
         baseUrl: this.baseUrl,
-        operations: updateOperations(operations)
+        operations: updateOperations(operations),
+        getRandomBytes: this.getRandomBytes
       }
       return this._initializeClaimLink(claimLinkData)
     } else {
@@ -377,7 +382,8 @@ class LinkdropP2P implements ILinkdropP2P {
         transferId: (transfer_id as string).toLowerCase(),
         tokenType: (token_type as TTokenType),
         operations: updateOperations(operations),
-        baseUrl: this.baseUrl
+        baseUrl: this.baseUrl,
+        getRandomBytes: this.getRandomBytes
       }
       return this._initializeClaimLink(claimLinkData)
     }

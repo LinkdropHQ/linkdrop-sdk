@@ -17,7 +17,8 @@ import {
   TLink,
   TTokenType,
   ETokenAddress,
-  TClaimLinkItemOperation
+  TClaimLinkItemOperation,
+  TGetRandomBytes
 } from '../../types'
 import { ValidationError } from '../../errors'
 import { LinkdropEscrowNetworkToken } from '../../abi'
@@ -54,6 +55,7 @@ class ClaimLink implements IClaimLinkSDK {
   amount: string
   totalAmount: string
   fee: string
+  getRandomBytes: TGetRandomBytes
   tokenType: TTokenType
   operations: TClaimLinkItemOperation[]
 
@@ -70,7 +72,8 @@ class ClaimLink implements IClaimLinkSDK {
     claimUrl,
     tokenType,
     escrowAddress,
-    operations
+    operations,
+    getRandomBytes
   }: TConstructorArgs) {
     if (!sender) {
       throw new ValidationError(errors.argument_not_provided('sender'))
@@ -79,6 +82,11 @@ class ClaimLink implements IClaimLinkSDK {
     if (!amount) {
       throw new ValidationError(errors.argument_not_provided('amount'))
     }
+
+    if (getRandomBytes) {
+      this.getRandomBytes = getRandomBytes
+    }
+
     this.operations = operations || []
     this.amount = amount
     this.expiration = expiration || Math.floor(Date.now() / 1000 + 60 * 60 * 24 * 30)
@@ -273,7 +281,6 @@ class ClaimLink implements IClaimLinkSDK {
     getRandomBytes
   }) => {
 
-
     if (!this.escrowAddress) {
       throw new Error(errors.property_not_provided('escrowAddress'))
     }
@@ -288,10 +295,6 @@ class ClaimLink implements IClaimLinkSDK {
 
     if (!sendTransaction) {
       throw new ValidationError(errors.argument_not_provided('sendTransaction'))
-    }
-
-    if (!getRandomBytes) {
-      throw new ValidationError(errors.argument_not_provided('getRandomBytes'))
     }
 
     const keypair = await generateKeypair(getRandomBytes)
@@ -361,9 +364,6 @@ class ClaimLink implements IClaimLinkSDK {
 
     if (!signTypedData) {
       throw new ValidationError(errors.argument_not_provided('signTypedData'))
-    }
-    if (!getRandomBytes) {
-      throw new ValidationError(errors.argument_not_provided('getRandomBytes'))
     }
 
     if (this.tokenType === 'NATIVE') {
@@ -535,8 +535,12 @@ class ClaimLink implements IClaimLinkSDK {
     signTypedData
   }) => {
     if (!getRandomBytes) {
-      throw new ValidationError(errors.argument_not_provided('getRandomBytes'))
+      if (!this.getRandomBytes) {
+        throw new ValidationError(errors.argument_not_provided('getRandomBytes'))
+      }
     }
+
+    const actualGetRandomBytesMethod = this.getRandomBytes || getRandomBytes
 
     if (!signTypedData) {
       throw new ValidationError(errors.argument_not_provided('signTypedData'))
@@ -550,7 +554,7 @@ class ClaimLink implements IClaimLinkSDK {
 
     const result = await generateLinkKeyandSignature(
       signTypedData,
-      getRandomBytes,
+      actualGetRandomBytesMethod,
       this.transferId,
       escrowPaymentDomain
     )

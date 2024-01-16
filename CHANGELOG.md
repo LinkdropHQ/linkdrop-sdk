@@ -1,5 +1,8 @@
 # Linkdrop P2P SDK
 
+## 2.0.0-beta.6
+- added optional param to LinkdropP2P constructor (getRandomBytes)
+
 ## 2.0.0-beta.5
 - removed extra request to get limits
 
