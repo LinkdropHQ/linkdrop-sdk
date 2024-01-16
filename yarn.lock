@@ -1814,10 +1814,10 @@ kind-of@^6.0.2:
   resolved "https://registry.yarnpkg.com/kind-of/-/kind-of-6.0.3.tgz#07c05034a6c349fa06e24fa35aa76db4580ce4dd"
   integrity sha512-dcS1ul+9tmeD95T+x28/ehLgd9mENa3LsvDTtzm3vyBEO7RPptvAD+t44WVXaUjTBRcrpFeFlC8WCruUR456hw==
 
-"linkdrop-p2p-sdk2@npm:linkdrop-p2p-sdk@2.0.0-beta.6-rc.1":
-  version "2.0.0-beta.6-rc.1"
-  resolved "https://registry.yarnpkg.com/linkdrop-p2p-sdk/-/linkdrop-p2p-sdk-2.0.0-beta.6-rc.1.tgz#2fa5eee972dc8d1ec152bf753a599ac54a4b99c4"
-  integrity sha512-X9mWeOiEYNsyiO2G3Ee6DjwHxPbK3F/GtL4zDLqkfcsG8wIsJh+uRQquK8bAPcNDhqiFw+MMT+7Jxh6YDKD0Mg==
+"linkdrop-p2p-sdk2@npm:linkdrop-p2p-sdk@2.0.0-beta.6-rc.2":
+  version "2.0.0-beta.6-rc.2"
+  resolved "https://registry.yarnpkg.com/linkdrop-p2p-sdk/-/linkdrop-p2p-sdk-2.0.0-beta.6-rc.2.tgz#508d54cd841b1860afef81eeb7b422d8f88c03ed"
+  integrity sha512-iC6TSinbgnOwrwUjHtNyPJXVvQkgQJyjG+N4wfrIBMN2+E36/gYqB3I5BdrBVmNEuNuKOsU+67EcptiyZlvoNA==
   dependencies:
     babel-loader "8.1.0"
     ethers "^6.8.0"
