@@ -212,6 +212,17 @@ class LinkdropP2P implements ILinkdropP2P {
     let feeToken = claimLinkData.feeToken
 
     let keyPair
+
+    let apiUrl = claimLinkData.apiUrl
+
+    if (!apiUrl) {
+      const apiHost = defineApiHost(claimLinkData.chainId, this.apiUrl)
+      if (!apiHost) {
+        throw new ValidationError(errors.chain_not_supported())
+      }
+      apiUrl = apiHost
+    }
+
     if (!transferId) {
       keyPair = await generateKeypair(this.getRandomBytes)
       transferId = keyPair.address
@@ -219,7 +230,7 @@ class LinkdropP2P implements ILinkdropP2P {
 
     if (!feeAmount || !totalAmount) {
       const feeData = await this._getCurrentFee(
-        claimLinkData.apiUrl,
+        apiUrl,
         claimLinkData.amount,
         claimLinkData.token,
         claimLinkData.tokenType,
@@ -267,6 +278,7 @@ class LinkdropP2P implements ILinkdropP2P {
 
     const claimLink = new ClaimLink({
       ...claimLinkData,
+      apiUrl,
       transferId,
       getRandomBytes: this.getRandomBytes,
       linkKey: keyPair ? keyPair.privateKey : null,

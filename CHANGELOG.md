@@ -13,6 +13,9 @@
 - updated handling of errors
 - added all fee data to endpoints
 
+## 2.0.0-beta.6
+- updates for apiUrl in _initializeClaimLink method
+
 ## 2.0.0-beta.5
 - removed extra request to get limits
 
