@@ -2,7 +2,7 @@ import { TSignTypedData, TGetRandomBytes } from "../../../../types"
 
 type TGenerateClaimUrlArgs = {
   signTypedData: TSignTypedData
-  getRandomBytes: TGetRandomBytes
+  getRandomBytes?: TGetRandomBytes
 }
 
 type TGenerateClaimUrl = ({
