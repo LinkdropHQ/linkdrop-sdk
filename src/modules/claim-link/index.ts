@@ -165,7 +165,7 @@ class ClaimLink implements IClaimLinkSDK {
         this.apiHost,
         this.#apiKey,
         dest,
-        sender.toLowerCase(),
+        this.sender.toLowerCase(),
         this.escrowAddress,
         transferId,
         receiverSig,
@@ -178,7 +178,7 @@ class ClaimLink implements IClaimLinkSDK {
         this.apiHost,
         this.#apiKey,
         dest,
-        sender.toLowerCase(),
+        this.sender.toLowerCase(),
         this.escrowAddress,
         transferId,
         receiverSig
