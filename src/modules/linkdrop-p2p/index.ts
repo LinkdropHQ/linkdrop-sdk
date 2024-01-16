@@ -467,7 +467,8 @@ class LinkdropP2P implements ILinkdropP2P {
       if (version.toString() === '2') {
         const linkdropP2P2 = new LinkdropP2P2.LinkdropP2P({
           baseUrl: this.baseUrl,
-          apiKey: String(this.#apiKey)
+          apiKey: String(this.#apiKey),
+          getRandomBytes: this.getRandomBytes
         })
   
         return await linkdropP2P2.retrieveClaimLink({
