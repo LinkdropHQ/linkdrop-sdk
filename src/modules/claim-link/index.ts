@@ -594,7 +594,7 @@ class ClaimLink implements IClaimLinkSDK {
       escrowPaymentDomain
     )
 
-    if (senderAddress.toLowerCase() !== this.sender) {
+    if (senderAddress.toLowerCase() !== this.sender.toLowerCase()) {
       throw new Error(errors.only_original_sender_can_generate_url())
     }
 
