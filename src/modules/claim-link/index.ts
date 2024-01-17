@@ -27,7 +27,8 @@ import {
   getDepositAuthorization,
   getValidAfterAndValidBefore,
   generateLinkKeyandSignature,
-  generateKeypair
+  generateKeypair,
+  decodeSenderAddress
 } from "../../utils"
 import { linkApi } from '../../api'
 import {
@@ -58,6 +59,7 @@ class ClaimLink implements IClaimLinkSDK {
   getRandomBytes: TGetRandomBytes
   tokenType: TTokenType
   operations: TClaimLinkItemOperation[]
+  forReciever: boolean
 
   constructor({
     sender,
@@ -73,7 +75,8 @@ class ClaimLink implements IClaimLinkSDK {
     tokenType,
     escrowAddress,
     operations,
-    getRandomBytes
+    getRandomBytes,
+    forReciever
   }: TConstructorArgs) {
     if (!sender) {
       throw new ValidationError(errors.argument_not_provided('sender'))
@@ -86,6 +89,8 @@ class ClaimLink implements IClaimLinkSDK {
     if (getRandomBytes) {
       this.getRandomBytes = getRandomBytes
     }
+
+    this.forReciever = Boolean(forReciever)
 
     this.operations = operations || []
     this.amount = amount
@@ -165,7 +170,7 @@ class ClaimLink implements IClaimLinkSDK {
         this.apiHost,
         this.#apiKey,
         dest,
-        this.sender.toLowerCase(),
+        sender.toLowerCase(),
         this.escrowAddress,
         transferId,
         receiverSig,
@@ -178,7 +183,7 @@ class ClaimLink implements IClaimLinkSDK {
         this.apiHost,
         this.#apiKey,
         dest,
-        this.sender.toLowerCase(),
+        sender.toLowerCase(),
         this.escrowAddress,
         transferId,
         receiverSig
@@ -257,6 +262,11 @@ class ClaimLink implements IClaimLinkSDK {
   }
 
   initialize: TInitialize = async () => {
+    if (this.forReciever) {
+      return
+
+      // should not call for limits
+    }
     const {
       total_amount: totalAmount,
       fee,
@@ -280,6 +290,10 @@ class ClaimLink implements IClaimLinkSDK {
     sendTransaction,
     getRandomBytes
   }) => {
+
+    if (this.forReciever) {
+      throw new Error(errors.link_only_for_claim())
+    }
 
     if (!this.escrowAddress) {
       throw new Error(errors.property_not_provided('escrowAddress'))
@@ -361,6 +375,10 @@ class ClaimLink implements IClaimLinkSDK {
     signTypedData,
     getRandomBytes
   }) => {
+
+    if (this.forReciever) {
+      throw new Error(errors.link_only_for_claim())
+    }
 
     if (!signTypedData) {
       throw new ValidationError(errors.argument_not_provided('signTypedData'))
@@ -461,6 +479,10 @@ class ClaimLink implements IClaimLinkSDK {
   }
 
   updateAmount: TUpdateAmount = async (amount) => {
+    if (this.forReciever) {
+      throw new Error(errors.link_only_for_claim())
+    }
+
     const {
       fee,
       total_amount: totalAmount,
@@ -534,6 +556,10 @@ class ClaimLink implements IClaimLinkSDK {
     getRandomBytes,
     signTypedData
   }) => {
+    if (this.forReciever) {
+      throw new Error(errors.link_only_for_claim())
+    }
+
     if (!getRandomBytes) {
       if (!this.getRandomBytes) {
         throw new ValidationError(errors.argument_not_provided('getRandomBytes'))
@@ -559,7 +585,18 @@ class ClaimLink implements IClaimLinkSDK {
       escrowPaymentDomain
     )
 
-    const { linkKey, senderSig } = result
+    const { linkKey, senderSig, linkKeyId } = result
+
+    const senderAddress = decodeSenderAddress(
+      linkKeyId,
+      this.transferId,
+      senderSig,
+      escrowPaymentDomain
+    )
+
+    if (senderAddress.toLowerCase() !== this.sender) {
+      throw new Error(errors.only_original_sender_can_generate_url())
+    }
 
     const linkParams: TLink = {
       linkKey,

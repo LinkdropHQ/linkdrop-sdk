@@ -16,5 +16,7 @@ export default {
   'escrow_not_available': (tokenAddress: string, chainId: number) => `Escrow contract is not available for token ${tokenAddress} (chain id: ${chainId})`,
   'escrow_is_not_correct': () => `Escrow contract address is not correct. Please check chainId and token address`,
   'version_not_found': () => 'Version not found for the provided escrow contract address',
-  'version_not_provided': () => 'Version parameter "v" not found in URL'
+  'version_not_provided': () => 'Version parameter "v" not found in URL',
+  'link_only_for_claim': () => 'This link can only be redeemed',
+  'only_original_sender_can_generate_url': () => 'Only original sender can generate new url'
 }

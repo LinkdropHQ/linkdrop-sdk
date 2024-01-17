@@ -208,13 +208,15 @@ class LinkdropP2P implements ILinkdropP2P {
   }
 
   getClaimLink: TGetClaimLink = async (claimUrl) => {
+    const decodedLink = decodeLink(claimUrl)
+    
     const {
       transferId,
       chainId,
       tokenType,
       sender,
       tokenSymbol
-    } = decodeLink(claimUrl)
+    } = decodedLink
 
     const apiHost = defineApiHost(chainId, this.apiUrl)
 
@@ -236,7 +238,8 @@ class LinkdropP2P implements ILinkdropP2P {
       const linkParsed = await parseLink(
         chainId,
         escrowAddress,
-        claimUrl
+        claimUrl,
+        decodedLink
       )
       if (linkParsed) {
         const { claim_link } = await linkApi.getTransferStatus(
@@ -267,13 +270,13 @@ class LinkdropP2P implements ILinkdropP2P {
           claimUrl,
           operations: updateOperations(operations),
           tokenType: (token_type as TTokenType),
-          baseUrl: this.baseUrl
+          baseUrl: this.baseUrl,
+          forReciever: true
         }
         return this._initializeClaimLink(claimLinkData)
       } else {
         throw new Error(errors.link_parse_failed())
       }
-      
     } else {
       const { claim_link } = await linkApi.getTransferStatus(
         apiHost,
@@ -302,7 +305,8 @@ class LinkdropP2P implements ILinkdropP2P {
         transferId: transferId.toLowerCase(),
         claimUrl,
         tokenType: (token_type as TTokenType),
-        baseUrl: this.baseUrl
+        baseUrl: this.baseUrl,
+        forReciever: true
       }
       return this._initializeClaimLink(claimLinkData)
     } 
