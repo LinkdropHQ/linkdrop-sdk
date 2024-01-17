@@ -28,7 +28,8 @@ import {
   generateReceiverSig,
   getDepositAuthorization,
   getValidAfterAndValidBefore,
-  generateLinkKeyandSignature
+  generateLinkKeyandSignature,
+  decodeSenderAddress
 } from "../../utils"
 import { linkApi } from '../../api'
 import {
@@ -68,6 +69,9 @@ class ClaimLink implements IClaimLinkSDK {
   feeAmount: string
   feeToken: string
 
+  forReciever: boolean
+
+
   constructor({
     sender,
     token,
@@ -88,7 +92,8 @@ class ClaimLink implements IClaimLinkSDK {
     feeAuthorization,
     feeToken,
     claimUrl,
-    tokenId
+    tokenId,
+    forReciever
   }: TConstructorArgs) {
 
     this.getRandomBytes = getRandomBytes
@@ -96,6 +101,8 @@ class ClaimLink implements IClaimLinkSDK {
     if (!sender) {
       throw new ValidationError(errors.argument_not_provided('sender'))
     }
+
+    this.forReciever = Boolean(forReciever)
 
     if (tokenType === 'ERC721' || tokenType === 'ERC1155') {
       if (!tokenId) {
@@ -267,6 +274,9 @@ class ClaimLink implements IClaimLinkSDK {
   _depositERC20: TDepositERC20 = async ({
     sendTransaction
   }) => {
+    if (this.forReciever) {
+      throw new Error(errors.link_only_for_claim())
+    }
     const iface = new ethers.Interface(LinkdropEscrowToken.abi)
     const data = iface.encodeFunctionData("deposit", [
       this.token,
@@ -337,6 +347,9 @@ class ClaimLink implements IClaimLinkSDK {
   _depositNative: TDepositNative = async ({
     sendTransaction
   }) => {
+    if (this.forReciever) {
+      throw new Error(errors.link_only_for_claim())
+    }
     const iface = new ethers.Interface(LinkdropEscrowToken.abi)
     const data = iface.encodeFunctionData("depositETH", [
       this.transferId,
@@ -405,6 +418,9 @@ class ClaimLink implements IClaimLinkSDK {
   _depositERC1155: TDepositERC1155 = async ({
     sendTransaction
   }) => {
+    if (this.forReciever) {
+      throw new Error(errors.link_only_for_claim())
+    }
     const iface = new ethers.Interface(LinkdropEscrowNFT.abi)
     const data = iface.encodeFunctionData("depositERC1155", [
       this.token,
@@ -476,6 +492,9 @@ class ClaimLink implements IClaimLinkSDK {
   _depositERC721: TDepositERC721 = async ({
     sendTransaction
   }) => {
+    if (this.forReciever) {
+      throw new Error(errors.link_only_for_claim())
+    }
     const iface = new ethers.Interface(LinkdropEscrowNFT.abi)
     const data = iface.encodeFunctionData("depositERC721", [
       this.token,
@@ -558,6 +577,9 @@ class ClaimLink implements IClaimLinkSDK {
   deposit: TDeposit = async ({
     sendTransaction
   }) => {
+    if (this.forReciever) {
+      throw new Error(errors.link_only_for_claim())
+    }
 
     if (!this.linkKey) {
       throw new Error(errors.cannot_deposit_after_retrieve())
@@ -606,7 +628,9 @@ class ClaimLink implements IClaimLinkSDK {
   depositWithAuthorization: TDepositWithAuthorization = async ({
     signTypedData
   }) => {
-
+    if (this.forReciever) {
+      throw new Error(errors.link_only_for_claim())
+    }
     const authSelector = configs.supportedStableCoins[this.token]
 
     if (!authSelector) {
@@ -723,6 +747,9 @@ class ClaimLink implements IClaimLinkSDK {
   }
 
   updateAmount: TUpdateAmount = async (amount) => {
+    if (this.forReciever) {
+      throw new Error(errors.link_only_for_claim())
+    }
     if (this.tokenType === 'ERC721') {
       throw new ValidationError(errors.cannot_update_amount_for_erc721())
     }
@@ -803,6 +830,9 @@ class ClaimLink implements IClaimLinkSDK {
   generateClaimUrl: TGenerateClaimUrl = async ({
     signTypedData
   }) => {
+    if (this.forReciever) {
+      throw new Error(errors.link_only_for_claim())
+    }
     if (!this.getRandomBytes) {
       throw new Error(errors.property_not_provided('getRandomBytes'))
     }
@@ -823,6 +853,17 @@ class ClaimLink implements IClaimLinkSDK {
       this.transferId,
       escrowPaymentDomain
     )
+
+    const senderAddress = decodeSenderAddress(
+      result.linkKeyId,
+      this.transferId,
+      result.senderSig,
+      escrowPaymentDomain
+    )
+
+    if (senderAddress.toLowerCase() !== this.sender.toLowerCase()) {
+      throw new Error(errors.only_original_sender_can_generate_url())
+    }
 
     const { linkKey, senderSig } = result
 

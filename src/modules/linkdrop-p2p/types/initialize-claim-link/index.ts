@@ -18,6 +18,7 @@ export type TInitializeClaimLinkArgs = {
   feeAuthorization?: string
   tokenType: ETokenType,
   tokenId?: string
+  forReciever?: boolean
 }
 
 type TInitializeClaimLink = ({
