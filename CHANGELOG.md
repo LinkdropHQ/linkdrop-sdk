@@ -1,9 +1,10 @@
 # Linkdrop P2P SDK
 
-## 2.0.0-beta.6
+## 2.0.1
 - added optional param to LinkdropP2P constructor (getRandomBytes)
 - deleted extra parseLink method call
 - added error handling if reciever calls deposit/depositWithAuthorization/generateClaimUrl/updateAmount methods
+- added status to ClaimLink instance
 
 ## 2.0.0-beta.5
 - removed extra request to get limits

@@ -256,7 +256,8 @@ class LinkdropP2P implements ILinkdropP2P {
           token_type,
           operations,
           fee,
-          total_amount
+          total_amount,
+          status
         } = claim_link
 
 
@@ -275,7 +276,8 @@ class LinkdropP2P implements ILinkdropP2P {
           baseUrl: this.baseUrl,
           forRecipient: true,
           fee,
-          totalAmount: total_amount
+          totalAmount: total_amount,
+          status
         }
         return this._initializeClaimLink(claimLinkData)
       } else {
@@ -296,7 +298,8 @@ class LinkdropP2P implements ILinkdropP2P {
         token_type,
         operations,
         fee,
-        total_amount
+        total_amount,
+        status
       } = claim_link
 
       const claimLinkData = {
@@ -314,7 +317,8 @@ class LinkdropP2P implements ILinkdropP2P {
         baseUrl: this.baseUrl,
         forRecipient: true,
         fee,
-        totalAmount: total_amount
+        totalAmount: total_amount,
+        status
       }
       return this._initializeClaimLink(claimLinkData)
     } 
@@ -348,7 +352,8 @@ class LinkdropP2P implements ILinkdropP2P {
         token_type,
         operations,
         fee,
-        total_amount
+        total_amount,
+        status
       } = claim_link
 
       const claimLinkData = {
@@ -365,7 +370,8 @@ class LinkdropP2P implements ILinkdropP2P {
         operations: updateOperations(operations),
         getRandomBytes: this.getRandomBytes,
         fee,
-        totalAmount: total_amount
+        totalAmount: total_amount,
+        status
       }
       return this._initializeClaimLink(claimLinkData)
     } else {
@@ -386,7 +392,8 @@ class LinkdropP2P implements ILinkdropP2P {
         token_type,
         operations,
         fee,
-        total_amount
+        total_amount,
+        status
       } = claim_link
 
       const claimLinkData = {
@@ -403,6 +410,7 @@ class LinkdropP2P implements ILinkdropP2P {
         baseUrl: this.baseUrl,
         getRandomBytes: this.getRandomBytes,
         fee,
+        status,
         totalAmount: total_amount
       }
       return this._initializeClaimLink(claimLinkData)
