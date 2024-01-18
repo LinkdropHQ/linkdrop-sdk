@@ -13,7 +13,7 @@ export type TInitializeClaimLinkArgs = {
   transferId?: string
   claimUrl?: string
   tokenType: TTokenType
-  forReciever?: boolean
+  forRecipient?: boolean
 }
 
 type TInitializeClaimLink = ({
@@ -28,7 +28,7 @@ type TInitializeClaimLink = ({
   transferId,
   claimUrl,
   tokenType,
-  forReciever
+  forRecipient
 }: TInitializeClaimLinkArgs) => Promise<(ClaimLink)>
 
 export default TInitializeClaimLink

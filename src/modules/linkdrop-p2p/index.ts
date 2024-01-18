@@ -271,7 +271,7 @@ class LinkdropP2P implements ILinkdropP2P {
           operations: updateOperations(operations),
           tokenType: (token_type as TTokenType),
           baseUrl: this.baseUrl,
-          forReciever: true
+          forRecipient: true
         }
         return this._initializeClaimLink(claimLinkData)
       } else {
@@ -306,7 +306,7 @@ class LinkdropP2P implements ILinkdropP2P {
         claimUrl,
         tokenType: (token_type as TTokenType),
         baseUrl: this.baseUrl,
-        forReciever: true
+        forRecipient: true
       }
       return this._initializeClaimLink(claimLinkData)
     } 

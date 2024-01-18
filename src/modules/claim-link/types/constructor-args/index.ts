@@ -20,7 +20,7 @@ type TConstructorArgs = {
   escrowAddress?: string
   operations?: TClaimLinkItemOperation[]
   getRandomBytes?: TGetRandomBytes
-  forReciever?: boolean
+  forRecipient?: boolean
 }
 
 

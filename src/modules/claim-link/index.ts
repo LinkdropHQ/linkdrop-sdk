@@ -59,7 +59,7 @@ class ClaimLink implements IClaimLinkSDK {
   getRandomBytes: TGetRandomBytes
   tokenType: TTokenType
   operations: TClaimLinkItemOperation[]
-  forReciever: boolean
+  forRecipient: boolean
 
   constructor({
     sender,
@@ -76,7 +76,7 @@ class ClaimLink implements IClaimLinkSDK {
     escrowAddress,
     operations,
     getRandomBytes,
-    forReciever
+    forRecipient
   }: TConstructorArgs) {
     if (!sender) {
       throw new ValidationError(errors.argument_not_provided('sender'))
@@ -90,7 +90,7 @@ class ClaimLink implements IClaimLinkSDK {
       this.getRandomBytes = getRandomBytes
     }
 
-    this.forReciever = Boolean(forReciever)
+    this.forRecipient = Boolean(forRecipient)
 
     this.operations = operations || []
     this.amount = amount
@@ -262,7 +262,7 @@ class ClaimLink implements IClaimLinkSDK {
   }
 
   initialize: TInitialize = async () => {
-    if (this.forReciever) {
+    if (this.forRecipient) {
       return
 
       // should not call for limits
@@ -291,7 +291,7 @@ class ClaimLink implements IClaimLinkSDK {
     getRandomBytes
   }) => {
 
-    if (this.forReciever) {
+    if (this.forRecipient) {
       throw new Error(errors.link_only_for_claim())
     }
 
@@ -376,7 +376,7 @@ class ClaimLink implements IClaimLinkSDK {
     getRandomBytes
   }) => {
 
-    if (this.forReciever) {
+    if (this.forRecipient) {
       throw new Error(errors.link_only_for_claim())
     }
 
@@ -479,7 +479,7 @@ class ClaimLink implements IClaimLinkSDK {
   }
 
   updateAmount: TUpdateAmount = async (amount) => {
-    if (this.forReciever) {
+    if (this.forRecipient) {
       throw new Error(errors.link_only_for_claim())
     }
 
@@ -556,7 +556,7 @@ class ClaimLink implements IClaimLinkSDK {
     getRandomBytes,
     signTypedData
   }) => {
-    if (this.forReciever) {
+    if (this.forRecipient) {
       throw new Error(errors.link_only_for_claim())
     }
 
