@@ -18,7 +18,7 @@ export type TInitializeClaimLinkArgs = {
   feeAuthorization?: string
   tokenType: ETokenType,
   tokenId?: string
-  forReciever?: boolean
+  forRecipient?: boolean
 }
 
 type TInitializeClaimLink = ({
@@ -37,7 +37,8 @@ type TInitializeClaimLink = ({
   totalAmount,
   feeAuthorization,
   feeToken,
-  tokenId
+  tokenId,
+  forRecipient
 }: TInitializeClaimLinkArgs) => Promise<(ClaimLink)>
 
 export default TInitializeClaimLink

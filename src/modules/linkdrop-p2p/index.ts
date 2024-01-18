@@ -375,7 +375,7 @@ class LinkdropP2P implements ILinkdropP2P {
       tokenType: (token_type as ETokenType),
       baseUrl: this.baseUrl,
       escrowAddress: escrow,
-      forReciever: true
+      forRecipient: true
     }
     return this._initializeClaimLink(claimLinkData)
   }

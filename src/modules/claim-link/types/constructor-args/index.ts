@@ -21,7 +21,7 @@ type TConstructorArgs = {
   getRandomBytes: TGetRandomBytes
   linkKey: string | null
   tokenId?: string
-  forReciever?: boolean
+  forRecipient?: boolean
   amount: string
   feeAmount: string
   feeAuthorization?: string
