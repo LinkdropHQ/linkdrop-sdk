@@ -53,9 +53,11 @@ class ClaimLink implements IClaimLinkSDK {
   escrowAddress: string | null
   transferId: string
   claimUrl: string
+
   amount: string
   totalAmount: string
   fee: string
+  
   getRandomBytes: TGetRandomBytes
   tokenType: TTokenType
   operations: TClaimLinkItemOperation[]
@@ -76,7 +78,9 @@ class ClaimLink implements IClaimLinkSDK {
     escrowAddress,
     operations,
     getRandomBytes,
-    forRecipient
+    forRecipient,
+    totalAmount,
+    fee
   }: TConstructorArgs) {
     if (!sender) {
       throw new ValidationError(errors.argument_not_provided('sender'))
@@ -94,6 +98,13 @@ class ClaimLink implements IClaimLinkSDK {
 
     this.operations = operations || []
     this.amount = amount
+    if (fee) {
+      this.fee = fee
+    }
+
+    if (totalAmount) {
+      this.totalAmount = totalAmount
+    }
     this.expiration = expiration || Math.floor(Date.now() / 1000 + 60 * 60 * 24 * 30)
     if (!chainId) {
       throw new ValidationError(errors.argument_not_provided('chainId'))
@@ -264,8 +275,9 @@ class ClaimLink implements IClaimLinkSDK {
   initialize: TInitialize = async () => {
     if (this.forRecipient) {
       return
-
-      // should not call for limits
+    }
+    if (this.fee !== undefined && this.totalAmount !== undefined) {
+      return
     }
     const {
       total_amount: totalAmount,

@@ -254,7 +254,9 @@ class LinkdropP2P implements ILinkdropP2P {
           expiration,
           amount,
           token_type,
-          operations
+          operations,
+          fee,
+          total_amount
         } = claim_link
 
 
@@ -271,7 +273,9 @@ class LinkdropP2P implements ILinkdropP2P {
           operations: updateOperations(operations),
           tokenType: (token_type as TTokenType),
           baseUrl: this.baseUrl,
-          forRecipient: true
+          forRecipient: true,
+          fee,
+          totalAmount: total_amount
         }
         return this._initializeClaimLink(claimLinkData)
       } else {
@@ -290,7 +294,9 @@ class LinkdropP2P implements ILinkdropP2P {
         expiration,
         amount,
         token_type,
-        operations
+        operations,
+        fee,
+        total_amount
       } = claim_link
 
       const claimLinkData = {
@@ -306,7 +312,9 @@ class LinkdropP2P implements ILinkdropP2P {
         claimUrl,
         tokenType: (token_type as TTokenType),
         baseUrl: this.baseUrl,
-        forRecipient: true
+        forRecipient: true,
+        fee,
+        totalAmount: total_amount
       }
       return this._initializeClaimLink(claimLinkData)
     } 
@@ -338,7 +346,9 @@ class LinkdropP2P implements ILinkdropP2P {
         expiration,
         amount,
         token_type,
-        operations
+        operations,
+        fee,
+        total_amount
       } = claim_link
 
       const claimLinkData = {
@@ -353,7 +363,9 @@ class LinkdropP2P implements ILinkdropP2P {
         transferId: transferId.toLowerCase(),
         baseUrl: this.baseUrl,
         operations: updateOperations(operations),
-        getRandomBytes: this.getRandomBytes
+        getRandomBytes: this.getRandomBytes,
+        fee,
+        totalAmount: total_amount
       }
       return this._initializeClaimLink(claimLinkData)
     } else {
@@ -372,7 +384,9 @@ class LinkdropP2P implements ILinkdropP2P {
         sender,
         transfer_id,
         token_type,
-        operations
+        operations,
+        fee,
+        total_amount
       } = claim_link
 
       const claimLinkData = {
@@ -387,7 +401,9 @@ class LinkdropP2P implements ILinkdropP2P {
         tokenType: (token_type as TTokenType),
         operations: updateOperations(operations),
         baseUrl: this.baseUrl,
-        getRandomBytes: this.getRandomBytes
+        getRandomBytes: this.getRandomBytes,
+        fee,
+        totalAmount: total_amount
       }
       return this._initializeClaimLink(claimLinkData)
     }

@@ -21,6 +21,8 @@ type TConstructorArgs = {
   operations?: TClaimLinkItemOperation[]
   getRandomBytes?: TGetRandomBytes
   forRecipient?: boolean
+  fee?: string
+  totalAmount?: string
 }
 
 
