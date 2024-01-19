@@ -2,7 +2,8 @@ import {
   ETokenType,
   ETokenAddress,
   TClaimLinkItemOperation,
-  TGetRandomBytes
+  TGetRandomBytes,
+  TClaimLinkItemStatus
 } from "../../../../types"
 
 type TConstructorArgs = {
@@ -27,6 +28,7 @@ type TConstructorArgs = {
   feeAuthorization?: string
   feeToken: string
   totalAmount: string
+  status?: TClaimLinkItemStatus
 }
 
 

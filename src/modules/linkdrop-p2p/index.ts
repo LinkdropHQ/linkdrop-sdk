@@ -354,7 +354,8 @@ class LinkdropP2P implements ILinkdropP2P {
       fee_amount,
       total_amount,
       escrow,
-      token_id
+      token_id,
+      status
     } = claim_link
 
     const claimLinkData = {
@@ -375,7 +376,8 @@ class LinkdropP2P implements ILinkdropP2P {
       tokenType: (token_type as ETokenType),
       baseUrl: this.baseUrl,
       escrowAddress: escrow,
-      forRecipient: true
+      forRecipient: true,
+      status
     }
     return this._initializeClaimLink(claimLinkData)
   }
@@ -406,7 +408,8 @@ class LinkdropP2P implements ILinkdropP2P {
         fee_token,
         fee_amount,
         total_amount,
-        sender
+        sender,
+        status
       } = claim_link
 
       const claimLinkData = {
@@ -423,7 +426,8 @@ class LinkdropP2P implements ILinkdropP2P {
         operations: updateOperations(operations),
         feeAmount: fee_amount,
         feeToken: fee_token,
-        totalAmount: total_amount as string
+        totalAmount: total_amount as string,
+        status
       }
       return this._initializeClaimLink(claimLinkData)
     } else if (txHash) {
@@ -445,7 +449,8 @@ class LinkdropP2P implements ILinkdropP2P {
         fee_token,
         fee_amount,
         total_amount,
-        version
+        version,
+        status
       } = claim_link
 
       const claimLinkData = {
@@ -462,7 +467,8 @@ class LinkdropP2P implements ILinkdropP2P {
         baseUrl: this.baseUrl,
         feeAmount: fee_amount,
         feeToken: fee_token,
-        totalAmount: total_amount as string
+        totalAmount: total_amount as string,
+        status
       }
 
       if (version.toString() === '2') {

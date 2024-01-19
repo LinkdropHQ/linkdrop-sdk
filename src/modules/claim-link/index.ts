@@ -20,7 +20,8 @@ import {
   TLink,
   ETokenType,
   TClaimLinkItemOperation,
-  TGetRandomBytes
+  TGetRandomBytes,
+  TClaimLinkItemStatus
 } from '../../types'
 import { ValidationError } from '../../errors'
 import { LinkdropEscrowToken, LinkdropEscrowNFT } from '../../abi'
@@ -71,6 +72,7 @@ class ClaimLink implements IClaimLinkSDK {
 
   forRecipient: boolean
 
+  status: TClaimLinkItemStatus
 
   constructor({
     sender,
@@ -93,7 +95,8 @@ class ClaimLink implements IClaimLinkSDK {
     feeToken,
     claimUrl,
     tokenId,
-    forRecipient
+    forRecipient,
+    status
   }: TConstructorArgs) {
 
     this.getRandomBytes = getRandomBytes
@@ -109,6 +112,10 @@ class ClaimLink implements IClaimLinkSDK {
         throw new ValidationError(errors.argument_not_provided('tokenId'))
       }
       this.tokenId = tokenId
+    }
+
+    if (status) {
+      this.status = status
     }
 
     this.sender = sender.toLowerCase()
@@ -242,9 +249,16 @@ class ClaimLink implements IClaimLinkSDK {
       this.transferId
     )
 
+    const operations = updateOperations(claim_link.operations)
+
+    if (claim_link.status !== this.status) {
+      this.status = claim_link.status
+      this.operations = operations
+    }
+
     return {
       status: claim_link.status,
-      operations: updateOperations(claim_link.operations),
+      operations
     }
   }
 
