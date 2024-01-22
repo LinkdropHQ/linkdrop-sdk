@@ -1,6 +1,6 @@
 # Linkdrop P2P SDK
 
-## 3.1.0-beta.0
+## 3.1.0-beta
 - backward compatibility (v2 => v3)
 - ERC721 and ERC1155 tokens support
 
