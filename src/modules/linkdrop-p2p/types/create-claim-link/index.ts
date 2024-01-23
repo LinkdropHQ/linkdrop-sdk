@@ -1,10 +1,10 @@
-import { ETokenType } from "../../../../types"
+import { TTokenType } from "../../../../types"
 import ClaimLink from "../../../claim-link"
 
 export type TCreateClaimLinkArgs = {
   from: string
   chainId: number
-  tokenType: ETokenType
+  tokenType: TTokenType
   token?: string
   amount?: string
   expiration?: number

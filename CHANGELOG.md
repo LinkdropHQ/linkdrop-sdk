@@ -1,5 +1,8 @@
 # Linkdrop P2P SDK
 
+## 3.1.1-beta
+- enum ETokenType => type TTokenType
+
 ## 3.1.0-beta
 - backward compatibility (v2 => v3)
 - ERC721 and ERC1155 tokens support

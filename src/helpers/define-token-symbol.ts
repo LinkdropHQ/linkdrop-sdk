@@ -1,7 +1,7 @@
-import { ETokenSymbol, ETokenType, ETokenAddress } from '../types'
+import { ETokenSymbol, TTokenType, ETokenAddress } from '../types'
 
 type TDefineTokenSymbol = (
-  tokenType: ETokenType,
+  tokenType: TTokenType,
   chainId: number,
   tokenAddress: string
 ) => ETokenSymbol | null

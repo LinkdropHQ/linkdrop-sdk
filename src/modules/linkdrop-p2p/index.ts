@@ -22,7 +22,7 @@ import { generateKeypair } from '../../utils'
 import { toBigInt } from 'ethers'
 import ClaimLink from '../claim-link'
 import { errors } from '../../texts'
-import { ETokenAddress, TGetRandomBytes, ETokenType } from '../../types'
+import { ETokenAddress, TGetRandomBytes, TTokenType } from '../../types'
 import escrows from '../../configs/escrows'
 import * as configs from '../../configs'
 import * as LinkdropP2P2 from 'linkdrop-p2p-sdk2'
@@ -373,7 +373,7 @@ class LinkdropP2P implements ILinkdropP2P {
       claimUrl,
       tokenId: token_id,
       operations: updateOperations(operations),
-      tokenType: (token_type as ETokenType),
+      tokenType: (token_type as TTokenType),
       baseUrl: this.baseUrl,
       escrowAddress: escrow,
       forRecipient: true,
@@ -420,7 +420,7 @@ class LinkdropP2P implements ILinkdropP2P {
         sender: sender.toLowerCase(),
         apiUrl: apiHost,
         apiKey: this.#apiKey,
-        tokenType: (token_type as ETokenType),
+        tokenType: (token_type as TTokenType),
         transferId: transferId.toLowerCase(),
         baseUrl: this.baseUrl,
         operations: updateOperations(operations),
@@ -462,7 +462,7 @@ class LinkdropP2P implements ILinkdropP2P {
         apiUrl: apiHost,
         apiKey: this.#apiKey,
         transferId: (transfer_id as string).toLowerCase(),
-        tokenType: (token_type as ETokenType),
+        tokenType: (token_type as TTokenType),
         operations: updateOperations(operations),
         baseUrl: this.baseUrl,
         feeAmount: fee_amount,

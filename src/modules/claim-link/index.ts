@@ -18,7 +18,7 @@ import { toBigInt } from 'ethers'
 import {
   TEscrowPaymentDomain,
   TLink,
-  ETokenType,
+  TTokenType,
   TClaimLinkItemOperation,
   TGetRandomBytes,
   TClaimLinkItemStatus
@@ -57,7 +57,7 @@ class ClaimLink implements IClaimLinkSDK {
   getRandomBytes: TGetRandomBytes
   transferId: string
   claimUrl: string
-  tokenType: ETokenType
+  tokenType: TTokenType
   operations: TClaimLinkItemOperation[]
   linkKey: string | null
   deposited: boolean = false

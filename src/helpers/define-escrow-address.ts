@@ -1,9 +1,9 @@
 import * as configs from '../configs'
-import { ETokenType } from '../types'
+import { TTokenType } from '../types'
 
 type TDefineEscrowAddress = (
   chainId: number | null,
-  tokenType: ETokenType
+  tokenType: TTokenType
 ) => string | null
 
 const defineEscrowAddress: TDefineEscrowAddress = (

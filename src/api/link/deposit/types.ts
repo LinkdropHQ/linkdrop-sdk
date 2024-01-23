@@ -1,4 +1,4 @@
-import { ETokenType } from '../../../types'
+import { TTokenType } from '../../../types'
 
 type TDepositResponse = {
   success: boolean,
@@ -9,7 +9,7 @@ export type TDeposit = (
   apiHost: string,
   apiKey: string | null,
   token: string,
-  token_type: ETokenType,
+  token_type: TTokenType,
   sender: string,
   escrow: string,
   transfer_id: string,

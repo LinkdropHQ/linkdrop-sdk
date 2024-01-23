@@ -2,8 +2,7 @@ import {
   EEscrowAddress,
   EChains,
   ETokenAddress,
-  ESelectors,
-  ETokenType
+  ESelectors 
 } from '../types'
 
 export const polygonJSONRPCUrl = 'https://polygon-mainnet.infura.io/v3/f5f8608d75874e5fbcdd4ee9657b8ab5'
@@ -17,25 +16,25 @@ export const apiUrl = 'https://escrow-api.linkdrop.io/v3'
 export const nativeTokenAddress = '0x0000000000000000000000000000000000000000'
 
 export const escrowContracts = {
-  [`${EChains.base}_${ETokenType.NATIVE}`]: EEscrowAddress.baseNative,
-  [`${EChains.base}_${ETokenType.ERC20}`]: EEscrowAddress.baseERC20,
-  [`${EChains.base}_${ETokenType.ERC721}`]: EEscrowAddress.baseERC721,
-  [`${EChains.base}_${ETokenType.ERC1155}`]: EEscrowAddress.baseERC1155,
+  [`${EChains.base}_NATIVE`]: EEscrowAddress.baseNative,
+  [`${EChains.base}_ERC20`]: EEscrowAddress.baseERC20,
+  [`${EChains.base}_ERC721`]: EEscrowAddress.baseERC721,
+  [`${EChains.base}_ERC1155`]: EEscrowAddress.baseERC1155,
 
-  [`${EChains.baseGoerli}_${ETokenType.NATIVE}`]: EEscrowAddress.baseGoerliNative,
-  [`${EChains.baseGoerli}_${ETokenType.ERC20}`]: EEscrowAddress.baseGoerliERC20,
-  [`${EChains.baseGoerli}_${ETokenType.ERC721}`]: EEscrowAddress.baseGoerliERC721,
-  [`${EChains.baseGoerli}_${ETokenType.ERC1155}`]: EEscrowAddress.baseGoerliERC1155,
+  [`${EChains.baseGoerli}_NATIVE`]: EEscrowAddress.baseGoerliNative,
+  [`${EChains.baseGoerli}_ERC20`]: EEscrowAddress.baseGoerliERC20,
+  [`${EChains.baseGoerli}_ERC721`]: EEscrowAddress.baseGoerliERC721,
+  [`${EChains.baseGoerli}_ERC1155`]: EEscrowAddress.baseGoerliERC1155,
 
-  [`${EChains.polygon}_${ETokenType.NATIVE}`]: EEscrowAddress.polygonNative,
-  [`${EChains.polygon}_${ETokenType.ERC20}`]: EEscrowAddress.polygonERC20,
-  [`${EChains.polygon}_${ETokenType.ERC721}`]: EEscrowAddress.polygonERC721,
-  [`${EChains.polygon}_${ETokenType.ERC1155}`]: EEscrowAddress.polygonERC1155,
+  [`${EChains.polygon}_NATIVE`]: EEscrowAddress.polygonNative,
+  [`${EChains.polygon}_ERC20`]: EEscrowAddress.polygonERC20,
+  [`${EChains.polygon}_ERC721`]: EEscrowAddress.polygonERC721,
+  [`${EChains.polygon}_ERC1155`]: EEscrowAddress.polygonERC1155,
 
-  [`${EChains.mumbai}_${ETokenType.NATIVE}`]: EEscrowAddress.mumbaiNative,
-  [`${EChains.mumbai}_${ETokenType.ERC20}`]: EEscrowAddress.mumbaiERC20,
-  [`${EChains.mumbai}_${ETokenType.ERC721}`]: EEscrowAddress.mumbaiERC721,
-  [`${EChains.mumbai}_${ETokenType.ERC1155}`]: EEscrowAddress.mumbaiERC1155,
+  [`${EChains.mumbai}_NATIVE`]: EEscrowAddress.mumbaiNative,
+  [`${EChains.mumbai}_ERC20`]: EEscrowAddress.mumbaiERC20,
+  [`${EChains.mumbai}_ERC721`]: EEscrowAddress.mumbaiERC721,
+  [`${EChains.mumbai}_ERC1155`]: EEscrowAddress.mumbaiERC1155,
 }
 
 export const supportedStableCoins = {
