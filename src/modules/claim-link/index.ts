@@ -21,7 +21,11 @@ import {
   TTokenType,
   TClaimLinkItemOperation,
   TGetRandomBytes,
+<<<<<<< HEAD
   TClaimLinkItemStatus
+=======
+  TClaimLinkSource
+>>>>>>> 8d318df (updates for dashboard-links)
 } from '../../types'
 import { ValidationError } from '../../errors'
 import { LinkdropEscrowToken, LinkdropEscrowNFT } from '../../abi'
@@ -69,6 +73,7 @@ class ClaimLink implements IClaimLinkSDK {
   totalAmount: string
   feeAmount: string
   feeToken: string
+  source: TClaimLinkSource
 
   forRecipient: boolean
 
@@ -96,7 +101,8 @@ class ClaimLink implements IClaimLinkSDK {
     claimUrl,
     tokenId,
     forRecipient,
-    status
+    status,
+    source
   }: TConstructorArgs) {
 
     this.getRandomBytes = getRandomBytes
@@ -117,6 +123,7 @@ class ClaimLink implements IClaimLinkSDK {
     if (status) {
       this.status = status
     }
+    this.source = source || 'p2p'
 
     this.sender = sender.toLowerCase()
     this.feeAmount = feeAmount

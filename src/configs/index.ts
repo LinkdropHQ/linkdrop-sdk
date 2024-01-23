@@ -8,6 +8,9 @@ import {
 export const baseUrl = 'http://localhost:3000'
 export const apiUrl = 'https://escrow-api.linkdrop.io/v3'
 
+export const dashboardApiUrl = 'https://dashboard-api.linkdrop.io'
+export const dashboardTestnetsApiUrl = 'https://testnets.dashboard-api.linkdrop.io'
+
 export const nativeTokenAddress = '0x0000000000000000000000000000000000000000'
 
 export const escrowContracts = {

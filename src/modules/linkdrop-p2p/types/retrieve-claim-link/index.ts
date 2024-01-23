@@ -6,13 +6,15 @@ export type TRetrieveClaimLinkArgs = {
   txHash?: string
   sender?: string
   transferId?: string
+  customApiHost?: string
 }
 
 type TRetrieveClaimLink = ({
   chainId,
   txHash,
   sender,
-  transferId
+  transferId,
+  customApiHost
 }: TRetrieveClaimLinkArgs) => Promise<ClaimLink | ClaimLinkV2>
 
 export default TRetrieveClaimLink

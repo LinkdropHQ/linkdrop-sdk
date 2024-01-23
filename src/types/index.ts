@@ -12,6 +12,7 @@ import { ETokenSymbol } from './token-symbol'
 import { EEscrowAddress } from './escrow-address'
 import { ESelectors } from './selectors'
 import type { TTokenType } from './token-type'
+import TClaimLinkSource from './claim-link-source'
 
 import type {
   TClaimLinkItem,
@@ -34,6 +35,7 @@ export {
   TClaimLinkItemStatus,
   TSendTransaction,
   TDomain,
+  TClaimLinkSource,
   TEscrowPaymentDomain,
   TLink,
   TTransferStatus,
