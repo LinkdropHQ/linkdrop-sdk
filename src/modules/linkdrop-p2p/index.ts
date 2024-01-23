@@ -8,7 +8,8 @@ import ILinkdropP2P, {
   TGetHistory,
   TGetVersionFromClaimUrl,
   TGetVersionFromEscrowContract,
-  TGetCurrentFee
+  TGetCurrentFee,
+  TGetLinkSourceFromClaimUrl
 } from './types'
 import { linkApi } from '../../api'
 import { ValidationError } from '../../errors'
@@ -16,13 +17,17 @@ import {
   decodeLink,
   defineApiHost,
   updateOperations,
-  getVersionFromClaimUrl
+  getVersionFromClaimUrl,
+  getLinkSourceFromClaimUrl,
+  getClaimCodeFromDashboardLink,
+  getChainIdFromDashboardLink,
+  defineDashboardApiHost
 } from '../../helpers'
 import { generateKeypair } from '../../utils'
-import { toBigInt } from 'ethers'
+import { toBigInt, ethers } from 'ethers'
 import ClaimLink from '../claim-link'
 import { errors } from '../../texts'
-import { ETokenAddress, TGetRandomBytes, TTokenType } from '../../types'
+import { ETokenAddress, TGetRandomBytes, TTokenType, TClaimLinkSource } from '../../types'
 import escrows from '../../configs/escrows'
 import * as configs from '../../configs'
 import * as LinkdropP2P2 from 'linkdrop-p2p-sdk2'
@@ -97,7 +102,8 @@ class LinkdropP2P implements ILinkdropP2P {
       apiKey: this.#apiKey,
       tokenType,
       baseUrl: this.baseUrl,
-      tokenId
+      tokenId,
+      source: 'p2p'
     })
   }
 
@@ -166,6 +172,10 @@ class LinkdropP2P implements ILinkdropP2P {
     }
 
     return result
+  }
+
+  getLinkSourceFromClaimUrl: TGetLinkSourceFromClaimUrl = (claimUrl) => {
+    return getLinkSourceFromClaimUrl(claimUrl)
   }
 
   getLimits: TGetLimits = async ({
@@ -283,7 +293,8 @@ class LinkdropP2P implements ILinkdropP2P {
       feeAmount: feeAmount,
       feeToken: feeToken as string,
       feeAuthorization,
-      totalAmount
+      totalAmount,
+      source: claimLinkData.source
     })
 
     return claimLink
@@ -315,6 +326,26 @@ class LinkdropP2P implements ILinkdropP2P {
   }
 
   getClaimLink: TGetClaimLink = async (claimUrl) => {
+    const linkSource = this.getLinkSourceFromClaimUrl(claimUrl)
+    if (linkSource === 'dashboard') {
+      alert('HERE REQUEST TO DASHBOARD API')
+      const claimCode = getClaimCodeFromDashboardLink(claimUrl)
+      const chainId = getChainIdFromDashboardLink(claimUrl)
+      const linkKey = ethers.id(claimCode)
+      const transferId = new ethers.Wallet(linkKey).address
+
+      const customApiHost = defineDashboardApiHost(chainId)
+      const dashboardClaimLink = this.retrieveClaimLink({
+        chainId,
+        transferId,
+        customApiHost
+      })
+
+      console.log({ dashboardClaimLink })
+
+      // const receiverSignature = await signReceiverAddress(wallet, receiverAddress)
+    }
+
     const {
       transferId,
       chainId,
@@ -377,7 +408,8 @@ class LinkdropP2P implements ILinkdropP2P {
       baseUrl: this.baseUrl,
       escrowAddress: escrow,
       forRecipient: true,
-      status
+      status,
+      source: linkSource
     }
     return this._initializeClaimLink(claimLinkData)
   }
@@ -386,9 +418,10 @@ class LinkdropP2P implements ILinkdropP2P {
   retrieveClaimLink: TRetrieveClaimLink = async ({
     chainId,
     txHash,
-    transferId
+    transferId,
+    customApiHost
   }) => {
-    const apiHost = defineApiHost(chainId, this.apiUrl)
+    const apiHost = customApiHost || defineApiHost(chainId, this.apiUrl)
     if (!apiHost) {
       throw new ValidationError(errors.chain_not_supported())
     }
@@ -427,7 +460,8 @@ class LinkdropP2P implements ILinkdropP2P {
         feeAmount: fee_amount,
         feeToken: fee_token,
         totalAmount: total_amount as string,
-        status
+        status,
+        source: (customApiHost ? 'dashboard' : 'p2p') as TClaimLinkSource
       }
       return this._initializeClaimLink(claimLinkData)
     } else if (txHash) {
@@ -468,7 +502,8 @@ class LinkdropP2P implements ILinkdropP2P {
         feeAmount: fee_amount,
         feeToken: fee_token,
         totalAmount: total_amount as string,
-        status
+        status,
+        source: 'p2p' as TClaimLinkSource
       }
 
       if (version.toString() === '2') {

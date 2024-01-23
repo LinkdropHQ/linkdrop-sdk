@@ -1,4 +1,5 @@
 import { TTokenType } from "../token-type"
+import TClaimLinkSource from '../claim-link-source'
 
 export type TClaimLinkItemStatus = 'created' | 'depositing' | 'deposited' | 'redeemed'| 'redeeming' | 'error' | 'refunded' | 'refunding' | 'cancelled'
 
@@ -32,4 +33,5 @@ export type TClaimLinkItem = {
   token_id?: string
   status: TClaimLinkItemStatus
   operations:  TClaimLinkItemOperation[]
+  source: TClaimLinkSource
 }
