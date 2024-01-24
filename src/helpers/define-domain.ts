@@ -1,5 +1,5 @@
 import {
-  ETokenAddress, TDomain
+  ETokenAddress, TDomain, EChains
 } from '../types'
 
 type TDefineDomain = (
@@ -11,7 +11,7 @@ const defineDomain: TDefineDomain = (
   chainId,
   tokenAddress
 ) => {
-  if (chainId === 137) {
+  if (chainId === EChains.polygon) {
     if (tokenAddress === ETokenAddress.usdcBridgedPolygon) {
       return {
         name: 'USD Coin (PoS)',  // Polygon Mainnet
@@ -24,10 +24,38 @@ const defineDomain: TDefineDomain = (
     return {
       "name": "USD Coin",
       "version": "2",
-      "chainId": 137,
+      "chainId": EChains.polygon,
       "verifyingContract": ETokenAddress.usdcPolygon
     }
     
+  }
+
+
+  if (chainId === EChains.avalanche) { // avalanche
+    return {
+      "name": "USD Coin",
+      "version": "2",
+      "chainId": EChains.avalanche,
+      "verifyingContract": ETokenAddress.usdcAvalanche
+    }
+  }
+
+  if (chainId === EChains.optimism) { // optimism
+    return {
+      "name": "USD Coin",
+      "version": "2",
+      "chainId": EChains.optimism,
+      "verifyingContract": ETokenAddress.usdcOptimism
+    }
+  }
+
+  if (chainId === EChains.arbitrum) { // arbitrum
+    return {
+      "name": "USD Coin",
+      "version": "2",
+      "chainId": EChains.arbitrum,
+      "verifyingContract": ETokenAddress.usdcArbitrum
+    }
   }
 
   if (chainId === 84531) {// Base Goerli

@@ -1,5 +1,8 @@
 # Linkdrop P2P SDK
 
+## 3.2.0-beta
+- Arbitrum, Optimism, Avalanche networks support
+
 ## 3.1.1-beta
 - enum ETokenType => type TTokenType
 

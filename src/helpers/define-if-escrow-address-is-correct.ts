@@ -95,6 +95,7 @@ const defineIfEscrowAddressIsCorrect: TDefineIfEscrowAddressIsCorrect = (
   ) {
     return false
   }
+  
 
   if (
     escrowAddress !== EEscrowAddress.mumbaiERC1155.toLowerCase()
@@ -140,6 +141,54 @@ const defineIfEscrowAddressIsCorrect: TDefineIfEscrowAddressIsCorrect = (
     escrowAddress !== EEscrowAddress.baseGoerliNative.toLowerCase()
     && chainId === EChains.baseGoerli
     && tokenType === 'NATIVE'
+  ) {
+    return false
+  }
+
+  if (
+    escrowAddress !== EEscrowAddress.avalancheNative.toLowerCase()
+    && chainId === EChains.avalanche
+    && tokenType === 'NATIVE'
+  ) {
+    return false
+  }
+
+  if (
+    escrowAddress !== EEscrowAddress.avalancheERC20.toLowerCase()
+    && chainId === EChains.avalanche
+    && tokenType === 'NATIVE'
+  ) {
+    return false
+  }
+
+  if (
+    escrowAddress !== EEscrowAddress.arbitrumNative.toLowerCase()
+    && chainId === EChains.arbitrum
+    && tokenType === 'ERC20'
+  ) {
+    return false
+  }
+
+  if (
+    escrowAddress !== EEscrowAddress.arbitrumERC20.toLowerCase()
+    && chainId === EChains.arbitrum
+    && tokenType === 'ERC20'
+  ) {
+    return false
+  }
+
+  if (
+    escrowAddress !== EEscrowAddress.optimismNative.toLowerCase()
+    && chainId === EChains.optimism
+    && tokenType === 'NATIVE'
+  ) {
+    return false
+  }
+
+  if (
+    escrowAddress !== EEscrowAddress.optimismERC20.toLowerCase()
+    && chainId === EChains.optimism
+    && tokenType === 'ERC20'
   ) {
     return false
   }

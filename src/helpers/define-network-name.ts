@@ -10,6 +10,9 @@ const defineNetworkName: TDefineNetworkName = (chainId) => {
     case EChains.base: return 'base'
     case EChains.mumbai: return 'mumbai'
     case EChains.baseGoerli: return 'goerli'
+    case EChains.avalanche: return 'avalanche'
+    case EChains.optimism: return 'optimism'
+    case EChains.arbitrum: return 'arbitrum'
 
     default:
       return null

@@ -5,11 +5,6 @@ import {
   ESelectors 
 } from '../types'
 
-export const polygonJSONRPCUrl = 'https://polygon-mainnet.infura.io/v3/f5f8608d75874e5fbcdd4ee9657b8ab5'
-export const mumbaiJSONRPCUrl = 'https://polygon-mumbai.infura.io/v3/f5f8608d75874e5fbcdd4ee9657b8ab5'
-export const baseJSONRPCUrl = 'https://developer-access-mainnet.base.org'
-export const baseGoerliJSONRPCUrl = 'https://base-goerli.publicnode.com'
-
 export const baseUrl = 'http://localhost:3000'
 export const apiUrl = 'https://escrow-api.linkdrop.io/v3'
 
@@ -35,6 +30,16 @@ export const escrowContracts = {
   [`${EChains.mumbai}_ERC20`]: EEscrowAddress.mumbaiERC20,
   [`${EChains.mumbai}_ERC721`]: EEscrowAddress.mumbaiERC721,
   [`${EChains.mumbai}_ERC1155`]: EEscrowAddress.mumbaiERC1155,
+
+  [`${EChains.avalanche}_NATIVE`]: EEscrowAddress.avalancheNative,
+  [`${EChains.avalanche}_ERC20`]: EEscrowAddress.avalancheERC20,
+
+  [`${EChains.optimism}_NATIVE`]: EEscrowAddress.optimismNative,
+  [`${EChains.optimism}_ERC20`]: EEscrowAddress.optimismERC20,
+
+  [`${EChains.arbitrum}_NATIVE`]: EEscrowAddress.arbitrumNative,
+  [`${EChains.arbitrum}_ERC20`]: EEscrowAddress.arbitrumERC20,
+
 }
 
 export const supportedStableCoins = {
@@ -42,5 +47,8 @@ export const supportedStableCoins = {
   [ETokenAddress.usdcBaseGoerli]: ESelectors.receiveWithAuthorization,
   [ETokenAddress.usdcBridgedPolygon]: ESelectors.approveWithAuthorization,
   [ETokenAddress.usdcMumbai]:  ESelectors.approveWithAuthorization,
-  [ETokenAddress.usdcPolygon]:  ESelectors.receiveWithAuthorization
+  [ETokenAddress.usdcPolygon]:  ESelectors.receiveWithAuthorization,
+  [ETokenAddress.usdcArbitrum]:  ESelectors.receiveWithAuthorization,
+  [ETokenAddress.usdcOptimism]:  ESelectors.receiveWithAuthorization,
+  [ETokenAddress.usdcAvalanche]:  ESelectors.receiveWithAuthorization
 }
