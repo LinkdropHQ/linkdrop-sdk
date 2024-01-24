@@ -1,4 +1,4 @@
-# Linkdrop P2P SDK (V2)
+# Linkdrop P2P SDK (V3)
 ## Import and initialize SDK
 ```js
 import { LinkdropP2P } from 'linkdrop-p2p-sdk'
