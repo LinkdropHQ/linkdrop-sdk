@@ -21,11 +21,8 @@ import {
   TTokenType,
   TClaimLinkItemOperation,
   TGetRandomBytes,
-<<<<<<< HEAD
-  TClaimLinkItemStatus
-=======
+  TClaimLinkItemStatus,
   TClaimLinkSource
->>>>>>> 8d318df (updates for dashboard-links)
 } from '../../types'
 import { ValidationError } from '../../errors'
 import { LinkdropEscrowToken, LinkdropEscrowNFT } from '../../abi'

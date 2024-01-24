@@ -334,7 +334,7 @@ class LinkdropP2P implements ILinkdropP2P {
       const linkKey = ethers.id(claimCode)
       const transferId = new ethers.Wallet(linkKey).address
 
-      const customApiHost = defineDashboardApiHost(chainId)
+      const customApiHost = defineDashboardApiHost()
       const dashboardClaimLink = this.retrieveClaimLink({
         chainId,
         transferId,

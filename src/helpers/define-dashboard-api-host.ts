@@ -1,23 +1,9 @@
-import { EChains } from '../types'
-import { dashboardApiUrl, dashboardTestnetsApiUrl } from '../configs'
+import { dashboardApiUrl } from '../configs'
 
-type TDefineDashboardApiHost = (
-  chainId: EChains
-) => string
+type TDefineDashboardApiHost = () => string
 
-const defineDashboardApiHost: TDefineDashboardApiHost = (
-  chainId
-) => {
-  switch (chainId) {
-    case EChains.polygon:
-    case EChains.base:
-      return dashboardApiUrl
-    case EChains.baseGoerli:
-    case EChains.mumbai:
-      return dashboardTestnetsApiUrl
-    default:
-      return dashboardApiUrl
-  }
+const defineDashboardApiHost: TDefineDashboardApiHost = () => {
+  return dashboardApiUrl
 }
 
 export default defineDashboardApiHost
