@@ -36,11 +36,11 @@ const requests: TRequests = {
     apiHost,
     apiKey,
     receiver,
-    sender,
-    escrow,
     transfer_id,
     receiver_sig,
-    token
+    token,
+    sender,
+    escrow,
   ) => {
     return request(`${apiHost}/redeem`, {
       headers: defineHeaders(apiKey),

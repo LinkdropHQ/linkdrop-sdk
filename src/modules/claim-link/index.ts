@@ -40,7 +40,8 @@ import {
   encodeLink,
   parseLink,
   updateOperations,
-  defineDomain
+  defineDomain,
+  getClaimCodeFromDashboardLink
 } from '../../helpers'
 import { errors } from '../../texts'
 import * as configs from '../../configs'
@@ -164,20 +165,26 @@ class ClaimLink implements IClaimLinkSDK {
     )
 
     if (!this.escrowAddress) {
-      throw new Error(errors.escrow_not_available(
-        this.token,
-        this.chainId
-      ))
+      if (this.source !== 'dashboard') {
+        throw new Error(errors.escrow_not_available(
+          this.token,
+          this.chainId
+        ))
+      }
+
     }
 
-    if (!defineIfEscrowAddressIsCorrect(
-      this.chainId,
-      this.escrowAddress,
-      this.tokenType 
-    )) {
-      throw new Error(errors.escrow_is_not_correct())
+    if (this.source !== 'dashboard') {
+      if (!defineIfEscrowAddressIsCorrect(
+        this.chainId,
+        this.escrowAddress as string,
+        this.tokenType 
+      )) {
+        throw new Error(errors.escrow_is_not_correct())
+      }  
     }
 
+    
     if (!transferId) {
       throw new Error(errors.argument_not_provided('transferId'))
     }
@@ -201,10 +208,27 @@ class ClaimLink implements IClaimLinkSDK {
     }
 
     if (!this.escrowAddress) {
-      throw new Error(errors.escrow_not_available(
-        this.token,
-        this.chainId
-      ))
+      if (this.source !== 'dashboard') {
+        throw new Error(errors.escrow_not_available(
+          this.token,
+          this.chainId
+        ))
+      }
+    }
+  
+    if (this.source === 'dashboard') {
+      const claimCode = getClaimCodeFromDashboardLink(this.claimUrl)
+      const linkKey = ethers.id(claimCode)
+      const receiverSignature = await generateReceiverSig(linkKey, dest)
+      const redeem = await linkApi.redeemLink(
+        this.apiUrl,
+        this.#apiKey,
+        dest,
+        this.transferId,
+        receiverSignature
+      )
+      const { tx_hash: txHash } = redeem
+      return txHash
     }
     const decodedLinkParams = parseLink(this.claimUrl)
     if (!decodedLinkParams) {
@@ -218,7 +242,7 @@ class ClaimLink implements IClaimLinkSDK {
         this.#apiKey,
         dest,
         this.sender.toLowerCase(),
-        this.escrowAddress,
+        this.escrowAddress as string,
         this.transferId,
         receiverSig,
         senderSig,
@@ -231,11 +255,11 @@ class ClaimLink implements IClaimLinkSDK {
         this.apiUrl,
         this.#apiKey,
         dest,
-        this.sender.toLowerCase(),
-        this.escrowAddress,
         this.transferId,
         receiverSig,
-        this.token
+        this.token,
+        this.sender.toLowerCase(),
+        this.escrowAddress as string,
       )
       const { tx_hash: txHash } = redeem
       return txHash

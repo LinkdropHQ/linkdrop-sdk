@@ -13,11 +13,11 @@ type TRedeemLink = (
   apiHost: string,
   apiKey: string | null,
   receiver: string,
-  sender: string,
-  escrow: string,
   transfer_id: string,
   receiver_sig: string,
-  token: string
+  token?: string,
+  sender?: string,
+  escrow?: string
 ) => Promise<TRedeemLinkResponse>
 
 type TRedeemRecoveredLinkResponse = {

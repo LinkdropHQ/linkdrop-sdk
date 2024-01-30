@@ -335,15 +335,56 @@ class LinkdropP2P implements ILinkdropP2P {
       const transferId = new ethers.Wallet(linkKey).address
 
       const customApiHost = defineDashboardApiHost()
-      const dashboardClaimLink = this.retrieveClaimLink({
+      const { claim_link } = await linkApi.getTransferStatus(
+        customApiHost,
+        this.#apiKey,
+        transferId
+      )
+
+      const {
+        token,
+        expiration,
+        amount,
+        token_type,
+        operations,
+        sender,
+        fee_token,
+        fee_amount,
+        total_amount,
+        escrow,
+        token_id,
+        status
+      } = claim_link
+
+      const apiHost = defineApiHost(chainId, this.apiUrl)
+
+      if (!apiHost) {
+        throw new ValidationError(errors.chain_not_supported())
+      }
+  
+      const claimLinkData = {
+        token: token as ETokenAddress,
+        expiration,
         chainId,
-        transferId,
-        customApiHost
-      })
-
-      console.log({ dashboardClaimLink })
-
-      // const receiverSignature = await signReceiverAddress(wallet, receiverAddress)
+        feeAmount: fee_amount,
+        feeToken: fee_token,
+        totalAmount: total_amount as string,
+        amount,
+        sender,
+        apiUrl: customApiHost,
+        apiKey: this.#apiKey,
+        transferId: transferId.toLowerCase(),
+        claimUrl,
+        tokenId: token_id,
+        operations: updateOperations(operations),
+        tokenType: (token_type as TTokenType),
+        baseUrl: this.baseUrl,
+        escrowAddress: escrow,
+        forRecipient: true,
+        status,
+        source: linkSource
+      }
+      return this._initializeClaimLink(claimLinkData)
     }
 
     const {
