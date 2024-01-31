@@ -16,9 +16,9 @@ const encodeLink: TEncodeLink = (
 
   if (link.senderSig) {
     const sig = encodeBase58(link.senderSig)
-    return `${claimHost}/#/code?k=${linkKey}&sg=${sig}&i=${transferId}&c=${link.chainId}&v=3`
+    return `${claimHost}/#/code?k=${linkKey}&sg=${sig}&i=${transferId}&c=${link.chainId}&v=3&src=p2p`
   } else {
-    return `${claimHost}/#/code?k=${linkKey}&c=${link.chainId}&v=3`
+    return `${claimHost}/#/code?k=${linkKey}&c=${link.chainId}&v=3&src=p2p`
   }
 }
 

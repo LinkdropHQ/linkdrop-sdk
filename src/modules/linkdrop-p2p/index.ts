@@ -327,8 +327,7 @@ class LinkdropP2P implements ILinkdropP2P {
 
   getClaimLink: TGetClaimLink = async (claimUrl) => {
     const linkSource = this.getLinkSourceFromClaimUrl(claimUrl)
-    if (linkSource === 'dashboard') {
-      alert('HERE REQUEST TO DASHBOARD API')
+    if (linkSource === 'd') {
       const claimCode = getClaimCodeFromDashboardLink(claimUrl)
       const chainId = getChainIdFromDashboardLink(claimUrl)
       const linkKey = ethers.id(claimCode)
@@ -502,7 +501,7 @@ class LinkdropP2P implements ILinkdropP2P {
         feeToken: fee_token,
         totalAmount: total_amount as string,
         status,
-        source: (customApiHost ? 'dashboard' : 'p2p') as TClaimLinkSource
+        source: (customApiHost ? 'd' : 'p2p') as TClaimLinkSource
       }
       return this._initializeClaimLink(claimLinkData)
     } else if (txHash) {

@@ -165,7 +165,7 @@ class ClaimLink implements IClaimLinkSDK {
     )
 
     if (!this.escrowAddress) {
-      if (this.source !== 'dashboard') {
+      if (this.source !== 'd') {
         throw new Error(errors.escrow_not_available(
           this.token,
           this.chainId
@@ -174,7 +174,7 @@ class ClaimLink implements IClaimLinkSDK {
 
     }
 
-    if (this.source !== 'dashboard') {
+    if (this.source !== 'd') {
       if (!defineIfEscrowAddressIsCorrect(
         this.chainId,
         this.escrowAddress as string,
@@ -208,7 +208,7 @@ class ClaimLink implements IClaimLinkSDK {
     }
 
     if (!this.escrowAddress) {
-      if (this.source !== 'dashboard') {
+      if (this.source !== 'd') {
         throw new Error(errors.escrow_not_available(
           this.token,
           this.chainId
@@ -216,7 +216,7 @@ class ClaimLink implements IClaimLinkSDK {
       }
     }
   
-    if (this.source === 'dashboard') {
+    if (this.source === 'd') {
       const claimCode = getClaimCodeFromDashboardLink(this.claimUrl)
       const linkKey = ethers.id(claimCode)
       const receiverSignature = await generateReceiverSig(linkKey, dest)

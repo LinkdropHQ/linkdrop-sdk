@@ -1,3 +1,3 @@
-type TClaimLinkSource = 'dashboard' | 'p2p'
+type TClaimLinkSource = 'd' | 'p2p'
 
 export default TClaimLinkSource
