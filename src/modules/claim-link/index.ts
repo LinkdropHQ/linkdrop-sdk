@@ -12,7 +12,8 @@ import IClaimLinkSDK, {
   TDepositERC20,
   TDepositNative,
   TDepositERC721,
-  TDepositERC1155
+  TDepositERC1155,
+  TIsDepositWithAuthorizationAvailable
 } from './types'
 import { toBigInt } from 'ethers'
 import {
@@ -663,8 +664,14 @@ class ClaimLink implements IClaimLinkSDK {
       return this._depositERC1155({
         sendTransaction
       })
-    }
-    
+    } 
+  }
+
+  isDepositWithAuthorizationAvailable: TIsDepositWithAuthorizationAvailable = (
+    tokenAddress
+  ) => {
+    const authSelector = configs.supportedStableCoins[tokenAddress.toLowerCase()]
+    return Boolean(authSelector)
   }
 
   depositWithAuthorization: TDepositWithAuthorization = async ({
@@ -784,7 +791,7 @@ class ClaimLink implements IClaimLinkSDK {
       newAmount,
       this.tokenId
     )
-
+  
     return result
   }
 

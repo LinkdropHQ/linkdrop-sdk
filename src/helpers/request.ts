@@ -1,15 +1,17 @@
-function request<TResponse>(
+async function request<TResponse>(
   url: string,
   config: RequestInit = {}
-): Promise<TResponse> {
-  return fetch(url, config)
-    .then((res) => {
-      if (res.ok) {
-        return res.json()
-      }
-      throw new Error(String(res.status))
-    })
-    .then((data) => data as TResponse)
+) {
+  try {
+    const res = await fetch(url, config)
+    if (res.ok) {
+      return res.json()
+    }
+    const responseData = await res.json()
+    throw new Error(responseData.message || 'Some error occured. Please check server response for more info')
+  } catch (err) {
+    throw err
+  }
 }
 
 export default request

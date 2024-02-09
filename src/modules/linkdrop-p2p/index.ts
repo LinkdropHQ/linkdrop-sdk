@@ -454,7 +454,6 @@ class LinkdropP2P implements ILinkdropP2P {
     return this._initializeClaimLink(claimLinkData)
   }
 
-
   retrieveClaimLink: TRetrieveClaimLink = async ({
     chainId,
     txHash,

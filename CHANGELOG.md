@@ -2,6 +2,8 @@
 
 ## 3.3.0-beta
 - Dashboard links retrieve and redeem
+- Added isDepositWithAuthorizationAvailable method to ClaimLink
+- Added error handling for api requests
 
 ## 3.2.0-beta
 - Arbitrum, Optimism, Avalanche networks support

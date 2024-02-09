@@ -12,6 +12,7 @@ import TDepositERC20 from './deposit-erc20'
 import TDepositNative from './deposit-native'
 import TDepositERC721 from './deposit-erc721'
 import TDepositERC1155 from './deposit-erc1155'
+import TIsDepositWithAuthorizationAvailable from './is-deposit-with-authorization-available' 
 
 interface IClaimLink {
   _getCurrentFee: TGetCurrentFee
@@ -27,6 +28,7 @@ interface IClaimLink {
   _depositNative: TDepositNative
   _depositERC721: TDepositERC721
   _depositERC1155: TDepositERC1155
+  isDepositWithAuthorizationAvailable: TIsDepositWithAuthorizationAvailable
 }
 
 export {
@@ -34,6 +36,7 @@ export {
   TRedeem,
   TDepositERC1155,
   TDepositWithAuthorization,
+  TIsDepositWithAuthorizationAvailable,
   TDepositERC721,
   TConstructorArgs,
   TUpdateAmount,
