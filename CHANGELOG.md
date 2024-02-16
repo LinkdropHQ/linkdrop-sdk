@@ -4,6 +4,7 @@
 - Dashboard links retrieve and redeem
 - Added isDepositWithAuthorizationAvailable method to ClaimLink
 - Added error handling for api requests
+- operations format changed (snake_case to camelCase)
 
 ## 3.2.0-beta
 - Arbitrum, Optimism, Avalanche networks support
