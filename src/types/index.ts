@@ -13,25 +13,27 @@ import { EEscrowAddress } from './escrow-address'
 import { ESelectors } from './selectors'
 import type { TTokenType } from './token-type'
 import type TClaimLinkSource from './claim-link-source'
-
+import type { THistoryItem } from './history-item'
 import type {
   TClaimLinkItem,
   TClaimLinkItemOperation,
-  TClaimLinkItemOperationStatus,
   TClaimLinkItemStatus
 } from './claim-link-item'
-
+import type { TOperationStatus } from './operation-status'
+import type { TClaimLinkOperation } from './claim-link-operation'
 export {
   TTokenType,
   ESelectors,
+  TClaimLinkOperation,
+  TOperationStatus,
   TDepositResult,
+  THistoryItem,
   EEscrowAddress,
   ETokenAddress,
   EChains,
   TClaimLinkItem,
   ETokenSymbol,
   TClaimLinkItemOperation,
-  TClaimLinkItemOperationStatus,
   TClaimLinkItemStatus,
   TSendTransaction,
   TDomain,

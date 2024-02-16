@@ -1,25 +1,21 @@
-import { TTokenType } from "../token-type"
-import TClaimLinkSource from '../claim-link-source'
+import { TTokenType, TClaimLinkSource, TOperationStatus } from ".."
+
 
 export type TClaimLinkItemStatus = 'created' | 'depositing' | 'deposited' | 'redeemed'| 'redeeming' | 'error' | 'refunded' | 'refunding' | 'cancelled'
-
-export type TClaimLinkItemOperationStatus = 'pending' | 'completed' | 'error'
-
 
 export type TClaimLinkItemOperation = {
   type: string
   timestamp: string
   tx_hash?: string
-
-  status: TClaimLinkItemOperationStatus
+  status: TOperationStatus
   receiver: string
 }
 
 export type TClaimLinkItem = {
   transfer_id?: string
   amount: string
-  fee_amount: string
-  fee_token: string
+  fee_amount?: string
+  fee_token?: string
   total_amount?: string
   token: string
   chain_id?: number

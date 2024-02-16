@@ -1,7 +1,7 @@
 import {
   TTokenType,
   ETokenAddress,
-  TClaimLinkItemOperation,
+  TClaimLinkOperation,
   TGetRandomBytes,
   TClaimLinkItemStatus,
   TClaimLinkSource
@@ -19,7 +19,7 @@ type TConstructorArgs = {
   claimUrl?: string
   tokenType: TTokenType
   escrowAddress?: string
-  operations?: TClaimLinkItemOperation[]
+  operations?: TClaimLinkOperation[]
   getRandomBytes: TGetRandomBytes
   linkKey: string | null
   tokenId?: string

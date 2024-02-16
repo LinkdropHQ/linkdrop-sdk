@@ -20,7 +20,7 @@ import {
   TEscrowPaymentDomain,
   TLink,
   TTokenType,
-  TClaimLinkItemOperation,
+  TClaimLinkOperation,
   TGetRandomBytes,
   TClaimLinkItemStatus,
   TClaimLinkSource
@@ -61,7 +61,7 @@ class ClaimLink implements IClaimLinkSDK {
   transferId: string
   claimUrl: string
   tokenType: TTokenType
-  operations: TClaimLinkItemOperation[]
+  operations: TClaimLinkOperation[]
   linkKey: string | null
   deposited: boolean = false
 

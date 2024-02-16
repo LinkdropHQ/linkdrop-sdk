@@ -27,7 +27,13 @@ import { generateKeypair } from '../../utils'
 import { toBigInt, ethers } from 'ethers'
 import ClaimLink from '../claim-link'
 import { errors } from '../../texts'
-import { ETokenAddress, TGetRandomBytes, TTokenType, TClaimLinkSource } from '../../types'
+import {
+  ETokenAddress,
+  TGetRandomBytes,
+  TTokenType,
+  TClaimLinkSource,
+  THistoryItem
+} from '../../types'
 import escrows from '../../configs/escrows'
 import * as configs from '../../configs'
 import * as LinkdropP2P2 from 'linkdrop-p2p-sdk2'
@@ -132,14 +138,19 @@ class LinkdropP2P implements ILinkdropP2P {
       token
     )
 
-    const claimLinks = claim_links.map(claimLink => {
+    const claimLinks: THistoryItem[] = claim_links.map(claimLink => {
       const claimLinkUpdated = {
         ...claimLink,
         transferId: claimLink.transfer_id,
         tokenType: claimLink.token_type,
         chainId: claimLink.chain_id,
         totalAmount: claimLink.total_amount,
-        operations: updateOperations(claimLink.operations)
+        operations: updateOperations(claimLink.operations),
+        tokenId: claimLink.token_id,
+        feeToken: claimLink.fee_token,
+        feeAmount: claimLink.fee_amount,
+        createdAt: claimLink.created_at,
+        updatedAt: claimLink.updated_at
       }
 
       delete claimLinkUpdated.transfer_id
@@ -148,6 +159,9 @@ class LinkdropP2P implements ILinkdropP2P {
       delete claimLinkUpdated.total_amount
       delete claimLinkUpdated.chain_id
       delete claimLinkUpdated.token_type
+      delete claimLinkUpdated.token_id
+      delete claimLinkUpdated.fee_token
+      delete claimLinkUpdated.fee_amount
 
       return claimLinkUpdated
     })
