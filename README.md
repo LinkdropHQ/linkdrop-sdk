@@ -190,5 +190,5 @@ const {
   value,
   data,
   to,
-} = await claimLink.getDepositParams()
+} = claimLink.getDepositParams()
 ```
