@@ -41,6 +41,9 @@ export const escrowContracts = {
   [`${EChains.arbitrum}_NATIVE`]: EEscrowAddress.arbitrumNative,
   [`${EChains.arbitrum}_ERC20`]: EEscrowAddress.arbitrumERC20,
 
+  [`${EChains.gnosis}_NATIVE`]: EEscrowAddress.gnosisNative,
+  [`${EChains.gnosis}_ERC20`]: EEscrowAddress.gnosisERC20,
+
 }
 
 export const supportedStableCoins = {

@@ -26,5 +26,8 @@ export enum EEscrowAddress {
   avalancheERC20 = '0x2d5dfe0e4582c905233df527242616017f36e192',
 
   optimismNative = '0x2d5dfe0e4582c905233df527242616017f36e192',
-  optimismERC20 = '0x2d5dfe0e4582c905233df527242616017f36e192'
+  optimismERC20 = '0x2d5dfe0e4582c905233df527242616017f36e192',
+
+  gnosisNative = '0x88d51990a3b962f975846f3688e36d2a1fc611f1',
+  gnosisERC20 = '0x88d51990a3b962f975846f3688e36d2a1fc611f1',
 }

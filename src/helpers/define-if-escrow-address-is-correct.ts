@@ -192,6 +192,23 @@ const defineIfEscrowAddressIsCorrect: TDefineIfEscrowAddressIsCorrect = (
   ) {
     return false
   }
+
+
+  if (
+    escrowAddress !== EEscrowAddress.gnosisNative.toLowerCase()
+    && chainId === EChains.gnosis
+    && tokenType === 'NATIVE'
+  ) {
+    return false
+  }
+
+  if (
+    escrowAddress !== EEscrowAddress.gnosisERC20.toLowerCase()
+    && chainId === EChains.gnosis
+    && tokenType === 'ERC20'
+  ) {
+    return false
+  }
   
   return true
 }
