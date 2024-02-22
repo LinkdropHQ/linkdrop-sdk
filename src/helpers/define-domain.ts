@@ -58,16 +58,16 @@ const defineDomain: TDefineDomain = (
     }
   }
 
-  if (chainId === 84531) {// Base Goerli
+  if (chainId === EChains.baseGoerli) {// Base Goerli
     return {
       name: 'USD Coin',  
       version: '2',
-      chainId: 84531,
+      chainId: EChains.baseGoerli,
       verifyingContract: ETokenAddress.usdcBaseGoerli
     }
   }
 
-  if (chainId === 80001) { // Mumbai
+  if (chainId === EChains.mumbai) { // Mumbai
     return {
       name: 'USD Coin (PoS)',
       version: '1',
@@ -76,11 +76,11 @@ const defineDomain: TDefineDomain = (
     }
   } 
 
-  if (chainId === 8453) { // Base
+  if (chainId === EChains.base) { // Base
     return {
       name: 'USD Coin',
       version: '2',
-      chainId: 8453,
+      chainId: EChains.base,
       verifyingContract: ETokenAddress.usdcBase
     }
   }
