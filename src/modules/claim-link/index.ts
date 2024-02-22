@@ -257,7 +257,6 @@ class ClaimLink implements IClaimLinkSDK {
     )
 
     return {
-      gasLimit: null,
       value,
       data,
       to: this.escrowAddress,
@@ -382,13 +381,12 @@ class ClaimLink implements IClaimLinkSDK {
       throw new Error(errors.link_only_for_claim())
     }
 
-    const { data, value, to, gasLimit } = this.getDepositParams()
+    const { data, value, to } = this.getDepositParams()
     
     const { hash: txHash } = await sendTransaction({
       data,
       value,
-      to,
-      gasLimit
+      to
     })
 
     await linkApi.deposit(
@@ -441,13 +439,12 @@ class ClaimLink implements IClaimLinkSDK {
       throw new Error(errors.link_only_for_claim())
     }
 
-    const { data, value, to, gasLimit } = this.getDepositParams()
+    const { data, value, to } = this.getDepositParams()
     
     const { hash: txHash } = await sendTransaction({
       data,
       value,
-      to,
-      gasLimit
+      to
     })
 
     await linkApi.deposit(
@@ -500,13 +497,12 @@ class ClaimLink implements IClaimLinkSDK {
       throw new Error(errors.link_only_for_claim())
     }
 
-    const { data, value, to, gasLimit } = this.getDepositParams()
+    const { data, value, to } = this.getDepositParams()
     
     const { hash: txHash } = await sendTransaction({
       data,
       value,
-      to,
-      gasLimit
+      to
     })
 
     await linkApi.depositERC1155(
@@ -560,13 +556,12 @@ class ClaimLink implements IClaimLinkSDK {
       throw new Error(errors.link_only_for_claim())
     }
 
-    const { data, value, to, gasLimit } = this.getDepositParams()
+    const { data, value, to } = this.getDepositParams()
     
     const { hash: txHash } = await sendTransaction({
       data,
       value,
-      to,
-      gasLimit
+      to
     })
 
     await linkApi.depositERC721(

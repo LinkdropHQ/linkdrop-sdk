@@ -187,7 +187,6 @@ const { status, operations } = await claimLink.getStatus()
 In order to get params that will be passed to the sendTransaction method when making a deposit, you can use the public method getDepositParams
 ```js
 const {
-  gasLimit,
   value,
   data,
   to,
