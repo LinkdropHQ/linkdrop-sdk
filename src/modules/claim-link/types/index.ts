@@ -13,6 +13,7 @@ import TDepositNative from './deposit-native'
 import TDepositERC721 from './deposit-erc721'
 import TDepositERC1155 from './deposit-erc1155'
 import TIsDepositWithAuthorizationAvailable from './is-deposit-with-authorization-available' 
+import TGetDepositParams from './get-deposit-params'
 
 interface IClaimLink {
   _getCurrentFee: TGetCurrentFee
@@ -25,6 +26,7 @@ interface IClaimLink {
   deposit: TDeposit
   _defineValue: TDefineValue
   _depositERC20: TDepositERC20
+  getDepositParams: TGetDepositParams
   _depositNative: TDepositNative
   _depositERC721: TDepositERC721
   _depositERC1155: TDepositERC1155
@@ -40,6 +42,7 @@ export {
   TDepositERC721,
   TConstructorArgs,
   TUpdateAmount,
+  TGetDepositParams,
   TGenerateClaimUrl,
   TDefineDomain,
   TGetStatus,

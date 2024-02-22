@@ -1,7 +1,7 @@
 type TSendTransactionArgs = {
   to: string,
   value: string,
-  gasLimit: number,
+  gasLimit: number | null,
   data: string
 }
 

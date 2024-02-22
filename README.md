@@ -75,8 +75,8 @@ const { claimUrl, transferId, txHash } = await claimLink.depositWithAuthorizatio
 **2b. Deposit native tokens (ETH/MATIC), ERC721, ERC1155 or ERC20 tokens to escrow contract via direct call :**  
 To avoid asking for sender private key directly, we ask to pass a function that signs and sends Ethereum transaction. The function should be similar to ethers `signer.sendTransaction` - https://docs.ethers.org/v6/api/providers/#Signer-signTypedData
 ```js
-const sendTransaction = async ({ to, value, gasLimit, data }) => { 
-  const tx = await signer.sendTransaction({ to, value, gasLimit, data })
+const sendTransaction = async ({ to, value, data }) => { 
+  const tx = await signer.sendTransaction({ to, value, data })
   return { hash: tx.hash }
 }
 const { claimUrl, transferId, txHash } = await claimLink.deposit({ sendTransaction }) 
@@ -180,4 +180,16 @@ _operation_:
 In order to get the latest status of the claim link, use the following method: 
 ```js
 const { status, operations } = await claimLink.getStatus()
+```
+
+
+#### Get Claim Link deposit params
+In order to get params that will be passed to the sendTransaction method when making a deposit, you can use the public method getDepositParams
+```js
+const {
+  gasLimit,
+  value,
+  data,
+  to,
+} = await claimLink.getDepositParams()
 ```

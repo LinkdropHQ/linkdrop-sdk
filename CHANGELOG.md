@@ -1,5 +1,9 @@
 # Linkdrop P2P SDK
 
+## 3.4.0-beta
+- Added getDepositParams method
+- Removed sender address check in generateClaimUrl method
+
 ## 3.3.0-beta
 - Dashboard links retrieve and redeem
 - Added isDepositWithAuthorizationAvailable method to ClaimLink
