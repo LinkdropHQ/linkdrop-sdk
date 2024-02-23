@@ -32,8 +32,7 @@ import {
   generateReceiverSig,
   getDepositAuthorization,
   getValidAfterAndValidBefore,
-  generateLinkKeyandSignature,
-  decodeSenderAddress
+  generateLinkKeyandSignature
 } from "../../utils"
 import { linkApi } from '../../api'
 import {
@@ -43,6 +42,7 @@ import {
   parseLink,
   updateOperations,
   defineDomain,
+  defineVersionByEscrow,
   getClaimCodeFromDashboardLink
 } from '../../helpers'
 import { errors } from '../../texts'
@@ -856,9 +856,15 @@ class ClaimLink implements IClaimLinkSDK {
         this.chainId
       ))
     }
+
+    const version = defineVersionByEscrow(this.escrowAddress)
+    if (!version) {
+      throw new Error(errors.version_not_found())
+    }
+
     const escrowPaymentDomain: TEscrowPaymentDomain = {
       name: "LinkdropEscrow",
-      version: "3",
+      version,
       chainId: this.chainId,
       verifyingContract: this.escrowAddress,
     }

@@ -17,6 +17,7 @@ import getLinkSourceFromClaimUrl from './get-link-source-from-claim-url'
 import getClaimCodeFromDashboardLink from './get-claim-code-from-dashboard-link'
 import getChainIdFromDashboardLink from './get-chain-id-from-dashboard-link'
 import defineDashboardApiHost from './define-dashboard-api-host'
+import defineVersionByEscrow from './define-version-by-escrow'
 
 export {
   defineDomain,
@@ -24,6 +25,7 @@ export {
   getChainIdFromDashboardLink,
   defineDashboardApiHost,
   getLinkSourceFromClaimUrl,
+  defineVersionByEscrow,
   getVersionFromClaimUrl,
   defineHeaders,
   request,

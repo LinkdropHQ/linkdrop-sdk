@@ -21,7 +21,8 @@ import {
   getLinkSourceFromClaimUrl,
   getClaimCodeFromDashboardLink,
   getChainIdFromDashboardLink,
-  defineDashboardApiHost
+  defineDashboardApiHost,
+  defineVersionByEscrow
 } from '../../helpers'
 import { generateKeypair } from '../../utils'
 import { toBigInt, ethers } from 'ethers'
@@ -34,7 +35,6 @@ import {
   TClaimLinkSource,
   THistoryItem
 } from '../../types'
-import escrows from '../../configs/escrows'
 import * as configs from '../../configs'
 import * as LinkdropP2P2 from 'linkdrop-p2p-sdk2'
 
@@ -173,13 +173,7 @@ class LinkdropP2P implements ILinkdropP2P {
   }
 
   getVersionFromEscrowContract: TGetVersionFromEscrowContract = (escrowAddress) => {
-    const escrowVersions = Object.keys(escrows)
-    const result = escrowVersions.find(version => {
-      const escrowsForVersion = escrows[version]
-      if (escrowsForVersion && escrowsForVersion.length > 0) {
-        return escrowsForVersion.find(item => item.toLowerCase() === escrowAddress.toLowerCase())
-      }
-    })
+    const result = defineVersionByEscrow(escrowAddress)
 
     if (!result) {
       throw new Error(errors.version_not_found())
