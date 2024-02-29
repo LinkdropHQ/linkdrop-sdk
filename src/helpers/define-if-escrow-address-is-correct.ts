@@ -1,20 +1,31 @@
 import { EEscrowAddress, EChains, TTokenType } from "../types"
+import * as configs from '../configs'
 
 type TDefineIfEscrowAddressIsCorrect = (
   chainId: number | null,
   escrowAddress: string,
-  tokenType: TTokenType
+  tokenType: TTokenType,
+  apiKey: string
 ) => boolean
 
 const defineIfEscrowAddressIsCorrect: TDefineIfEscrowAddressIsCorrect = (
   chainId,
   escrowAddress,
-  tokenType
+  tokenType,
+  apiKey
 ) => {
 
   if (!chainId || !escrowAddress || !tokenType) {
     return false
   }
+
+  if (!apiKey.includes('CBW-')) {
+    if (escrowAddress !== configs.mainEscrowContract) {
+      return false
+    }
+    return true
+  }
+
 
   if (
     escrowAddress !== EEscrowAddress.baseERC20.toLowerCase()

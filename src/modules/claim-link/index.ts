@@ -163,7 +163,8 @@ class ClaimLink implements IClaimLinkSDK {
 
     this.escrowAddress = escrowAddress?.toLowerCase() || defineEscrowAddress(
       this.chainId,
-      this.tokenType 
+      this.tokenType,
+      this.#apiKey as string
     )
 
     if (!this.escrowAddress) {
@@ -180,7 +181,8 @@ class ClaimLink implements IClaimLinkSDK {
       if (!defineIfEscrowAddressIsCorrect(
         this.chainId,
         this.escrowAddress as string,
-        this.tokenType 
+        this.tokenType,
+        this.#apiKey as string
       )) {
         throw new Error(errors.escrow_is_not_correct())
       }  

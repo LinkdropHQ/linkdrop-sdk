@@ -11,7 +11,7 @@ export const dashboardApiUrl = 'https://escrow-api.linkdrop.io/dashboard'
 
 export const nativeTokenAddress = '0x0000000000000000000000000000000000000000'
 
-export const escrowContracts = {
+export const escrowContractsCBW = {
   [`${EChains.base}_NATIVE`]: EEscrowAddress.baseNative,
   [`${EChains.base}_ERC20`]: EEscrowAddress.baseERC20,
   [`${EChains.base}_ERC721`]: EEscrowAddress.baseERC721,
@@ -43,8 +43,9 @@ export const escrowContracts = {
 
   [`${EChains.gnosis}_NATIVE`]: EEscrowAddress.gnosisNative,
   [`${EChains.gnosis}_ERC20`]: EEscrowAddress.gnosisERC20,
-
 }
+
+export const mainEscrowContract = '0x88d51990a3b962f975846f3688e36d2a1fc611f1'
 
 export const supportedStableCoins = {
   [ETokenAddress.usdcBase]: ESelectors.receiveWithAuthorization,
