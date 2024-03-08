@@ -24,7 +24,8 @@ import {
   TClaimLinkOperation,
   TGetRandomBytes,
   TClaimLinkItemStatus,
-  TClaimLinkSource
+  TClaimLinkSource,
+  TDeploymentType
 } from '../../types'
 import { ValidationError } from '../../errors'
 import { LinkdropEscrowToken, LinkdropEscrowNFT } from '../../abi'
@@ -77,6 +78,8 @@ class ClaimLink implements IClaimLinkSDK {
 
   forRecipient: boolean
 
+  deployment: TDeploymentType
+
   status: TClaimLinkItemStatus
 
   constructor({
@@ -102,7 +105,8 @@ class ClaimLink implements IClaimLinkSDK {
     tokenId,
     forRecipient,
     status,
-    source
+    source,
+    deployment
   }: TConstructorArgs) {
 
     this.getRandomBytes = getRandomBytes
@@ -110,6 +114,8 @@ class ClaimLink implements IClaimLinkSDK {
     if (!sender) {
       throw new ValidationError(errors.argument_not_provided('sender'))
     }
+
+    this.deployment = deployment
 
     this.forRecipient = Boolean(forRecipient)
 
@@ -164,7 +170,7 @@ class ClaimLink implements IClaimLinkSDK {
     this.escrowAddress = escrowAddress?.toLowerCase() || defineEscrowAddress(
       this.chainId,
       this.tokenType,
-      this.#apiKey as string
+      this.deployment
     )
 
     if (!this.escrowAddress) {
@@ -179,10 +185,8 @@ class ClaimLink implements IClaimLinkSDK {
 
     if (this.source !== 'd') {
       if (!defineIfEscrowAddressIsCorrect(
-        this.chainId,
         this.escrowAddress as string,
-        this.tokenType,
-        this.#apiKey as string
+        this.deployment
       )) {
         throw new Error(errors.escrow_is_not_correct())
       }  

@@ -18,12 +18,14 @@ import getClaimCodeFromDashboardLink from './get-claim-code-from-dashboard-link'
 import getChainIdFromDashboardLink from './get-chain-id-from-dashboard-link'
 import defineDashboardApiHost from './define-dashboard-api-host'
 import defineVersionByEscrow from './define-version-by-escrow'
+import checkApiKeyFormatValidity from './check-api-key-format-validity'
 
 export {
   defineDomain,
   getClaimCodeFromDashboardLink,
   getChainIdFromDashboardLink,
   defineDashboardApiHost,
+  checkApiKeyFormatValidity,
   getLinkSourceFromClaimUrl,
   defineVersionByEscrow,
   getVersionFromClaimUrl,

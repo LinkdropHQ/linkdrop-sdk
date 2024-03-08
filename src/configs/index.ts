@@ -1,6 +1,4 @@
 import {
-  EEscrowAddress,
-  EChains,
   ETokenAddress,
   ESelectors 
 } from '../types'
@@ -11,40 +9,7 @@ export const dashboardApiUrl = 'https://escrow-api.linkdrop.io/dashboard'
 
 export const nativeTokenAddress = '0x0000000000000000000000000000000000000000'
 
-export const escrowContractsCBW = {
-  [`${EChains.base}_NATIVE`]: EEscrowAddress.baseNative,
-  [`${EChains.base}_ERC20`]: EEscrowAddress.baseERC20,
-  [`${EChains.base}_ERC721`]: EEscrowAddress.baseERC721,
-  [`${EChains.base}_ERC1155`]: EEscrowAddress.baseERC1155,
-
-  [`${EChains.baseGoerli}_NATIVE`]: EEscrowAddress.baseGoerliNative,
-  [`${EChains.baseGoerli}_ERC20`]: EEscrowAddress.baseGoerliERC20,
-  [`${EChains.baseGoerli}_ERC721`]: EEscrowAddress.baseGoerliERC721,
-  [`${EChains.baseGoerli}_ERC1155`]: EEscrowAddress.baseGoerliERC1155,
-
-  [`${EChains.polygon}_NATIVE`]: EEscrowAddress.polygonNative,
-  [`${EChains.polygon}_ERC20`]: EEscrowAddress.polygonERC20,
-  [`${EChains.polygon}_ERC721`]: EEscrowAddress.polygonERC721,
-  [`${EChains.polygon}_ERC1155`]: EEscrowAddress.polygonERC1155,
-
-  [`${EChains.mumbai}_NATIVE`]: EEscrowAddress.mumbaiNative,
-  [`${EChains.mumbai}_ERC20`]: EEscrowAddress.mumbaiERC20,
-  [`${EChains.mumbai}_ERC721`]: EEscrowAddress.mumbaiERC721,
-  [`${EChains.mumbai}_ERC1155`]: EEscrowAddress.mumbaiERC1155,
-
-  [`${EChains.avalanche}_NATIVE`]: EEscrowAddress.avalancheNative,
-  [`${EChains.avalanche}_ERC20`]: EEscrowAddress.avalancheERC20,
-
-  [`${EChains.optimism}_NATIVE`]: EEscrowAddress.optimismNative,
-  [`${EChains.optimism}_ERC20`]: EEscrowAddress.optimismERC20,
-
-  [`${EChains.arbitrum}_NATIVE`]: EEscrowAddress.arbitrumNative,
-  [`${EChains.arbitrum}_ERC20`]: EEscrowAddress.arbitrumERC20,
-
-  [`${EChains.gnosis}_NATIVE`]: EEscrowAddress.gnosisNative,
-  [`${EChains.gnosis}_ERC20`]: EEscrowAddress.gnosisERC20,
-}
-
+export const cbwEscrowContract = '0x2d5dfe0e4582c905233df527242616017f36e192'
 export const mainEscrowContract = '0x88d51990a3b962f975846f3688e36d2a1fc611f1'
 
 export const supportedStableCoins = {

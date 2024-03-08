@@ -4,7 +4,7 @@ const defineHeaders = (apiKey: string | null) => {
   }
 
   if (apiKey) {
-    headers['authorization'] = `Bearer ${apiKey.replace('CBW-', '')}`
+    headers['authorization'] = `Bearer ${apiKey}`
   }
 
   return headers

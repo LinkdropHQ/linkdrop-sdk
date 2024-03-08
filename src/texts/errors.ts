@@ -32,5 +32,6 @@ export default {
   'limits_disabled_for_erc721_or_erc1155': () => `Cannot fetch limits for ERC1155 or ERC721 tokens`,
   'link_only_for_claim': () => 'This link can only be redeemed',
   'only_original_sender_can_generate_url': () => 'Only original sender can generate new url',
-  'api_validation_error': () => 'Check the data sent to the server. The server returned an error related to data validation'
+  'api_validation_error': () => 'Check the data sent to the server. The server returned an error related to data validation',
+  'invalid_deployment_property': () => 'Deployment is not valid. Use LD instead or remove it'
 }

@@ -4,13 +4,15 @@ import {
   TClaimLinkOperation,
   TGetRandomBytes,
   TClaimLinkItemStatus,
-  TClaimLinkSource
+  TClaimLinkSource,
+  TDeploymentType
 } from "../../../../types"
 
 type TConstructorArgs = {
   sender: string
   token?: ETokenAddress
   expiration: number
+  deployment: TDeploymentType
   chainId: number
   apiUrl: string
   apiKey: string | null

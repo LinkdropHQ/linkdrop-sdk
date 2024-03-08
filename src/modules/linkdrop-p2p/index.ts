@@ -32,6 +32,7 @@ import {
   ETokenAddress,
   TGetRandomBytes,
   TTokenType,
+  TDeploymentType,
   TClaimLinkSource,
   THistoryItem
 } from '../../types'
@@ -43,15 +44,26 @@ class LinkdropP2P implements ILinkdropP2P {
   #apiKey: string | null
   baseUrl: string
   apiUrl: string
+  deployment: TDeploymentType = 'LD'
   getRandomBytes: TGetRandomBytes
 
   constructor({
     apiKey,
     baseUrl,
     apiUrl,
+    deployment,
     getRandomBytes
   }: TConstructorArgs) {
+
     this.#apiKey = apiKey || null
+
+    if (deployment) {
+      if (deployment !== 'CBW' && deployment !== 'LD') {
+        throw new ValidationError(errors.invalid_deployment_property())
+      }
+      this.deployment = deployment
+    }
+
     if (apiUrl) {
       this.apiUrl = apiUrl
     }
@@ -109,7 +121,8 @@ class LinkdropP2P implements ILinkdropP2P {
       tokenType,
       baseUrl: this.baseUrl,
       tokenId,
-      source: 'p2p'
+      source: 'p2p',
+      deployment: this.deployment
     })
   }
 
@@ -389,7 +402,8 @@ class LinkdropP2P implements ILinkdropP2P {
         escrowAddress: escrow,
         forRecipient: true,
         status,
-        source: linkSource
+        source: linkSource,
+        deployment: this.deployment
       }
       return this._initializeClaimLink(claimLinkData)
     }
@@ -457,7 +471,8 @@ class LinkdropP2P implements ILinkdropP2P {
       escrowAddress: escrow,
       forRecipient: true,
       status,
-      source: linkSource
+      source: linkSource,
+      deployment: this.deployment
     }
     return this._initializeClaimLink(claimLinkData)
   }
@@ -508,7 +523,8 @@ class LinkdropP2P implements ILinkdropP2P {
         feeToken: fee_token,
         totalAmount: total_amount as string,
         status,
-        source: (customApiHost ? 'd' : 'p2p') as TClaimLinkSource
+        source: (customApiHost ? 'd' : 'p2p') as TClaimLinkSource,
+        deployment: this.deployment
       }
       return this._initializeClaimLink(claimLinkData)
     } else if (txHash) {
@@ -550,7 +566,8 @@ class LinkdropP2P implements ILinkdropP2P {
         feeToken: fee_token,
         totalAmount: total_amount as string,
         status,
-        source: 'p2p' as TClaimLinkSource
+        source: 'p2p' as TClaimLinkSource,
+        deployment: this.deployment
       }
 
       if (version.toString() === '2') {

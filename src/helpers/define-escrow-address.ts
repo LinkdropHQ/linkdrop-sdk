@@ -1,23 +1,23 @@
 import * as configs from '../configs'
-import { TTokenType } from '../types'
+import { TDeploymentType, TTokenType } from '../types'
 
 type TDefineEscrowAddress = (
   chainId: number | null,
   tokenType: TTokenType,
-  apiKey: string
+  deployment: TDeploymentType
 ) => string | null
 
 const defineEscrowAddress: TDefineEscrowAddress = (
   chainId,
   tokenType,
-  apiKey
+  deployment
 ) => {
   if (!chainId || !tokenType) {
     return null
   }
 
-  if (apiKey.includes('CBW-')) {
-    const escrow = configs.escrowContractsCBW[`${chainId}_${tokenType}`]
+  if (deployment === 'CBW') {
+    const escrow = configs.cbwEscrowContract
     if (!escrow) {
       return null
     }

@@ -9,7 +9,6 @@ import type { TDepositResult } from './deposit-result'
 import { EChains } from './chains'
 import { ETokenAddress } from './token-address'
 import { ETokenSymbol } from './token-symbol'
-import { EEscrowAddress } from './escrow-address'
 import { ESelectors } from './selectors'
 import type { TTokenType } from './token-type'
 import type TClaimLinkSource from './claim-link-source'
@@ -21,14 +20,16 @@ import type {
 } from './claim-link-item'
 import type { TOperationStatus } from './operation-status'
 import type { TClaimLinkOperation } from './claim-link-operation'
+import type { TDeploymentType } from './deployment-type'
+
 export {
   TTokenType,
   ESelectors,
+  TDeploymentType,
   TClaimLinkOperation,
   TOperationStatus,
   TDepositResult,
   THistoryItem,
-  EEscrowAddress,
   ETokenAddress,
   EChains,
   TClaimLinkItem,
