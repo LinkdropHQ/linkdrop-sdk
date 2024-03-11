@@ -1,5 +1,10 @@
 # Linkdrop P2P SDK
 
+
+## 3.5.0-beta
+- Escrow contracts update
+- added optional "deployment" param to LinkdropP2P constructor
+
 ## 3.4.0-beta
 - Added getDepositParams method
 - Removed sender address check in generateClaimUrl method
