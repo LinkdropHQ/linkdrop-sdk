@@ -1,60 +1,25 @@
 import decodeLink from "./decode-link"
-import { decodeSenderAddress } from "../utils"
-import { ethers } from "ethers"
-import { TEscrowPaymentDomain } from "../types"
+import { TLink } from "../types"
 
-// ok for now, should be changed
 type TParseLink = (
-  chainId: number,
-  escrowAddress: string,
-  link: string
-) => Promise<{
-  senderSig?: string,
-  linkKey: string,
-  transferId: string,
-  sender: string
-} | void>
-
-const parseLink: TParseLink = async (
-  chainId,
-  escrowAddress,
-  link
+  link: string,
+  decodedLink?: TLink
 ) => {
-  const decodedLink = decodeLink(link)
-  const linkKeyId = (new ethers.Wallet(decodedLink.linkKey)).address.toLowerCase()
+  senderSig?: string,
+  linkKey: string
+}
 
-  const escrowPaymentDomain: TEscrowPaymentDomain = {
-    name: "LinkdropEscrow",
-    version: "2",
-    chainId: chainId,
-    verifyingContract: escrowAddress,
+const parseLink: TParseLink = (
+  link,
+  decodedLink
+) => {
+  if (!decodedLink) {
+    decodedLink = decodeLink(link)
   }
 
-
-  if (decodedLink.sender) {
-
-    return {
-      senderSig: decodedLink.senderSig,
-      linkKey: decodedLink.linkKey,
-      transferId: linkKeyId,
-      sender: decodedLink.sender,
-      chainId
-    }
-  } else if (decodedLink.senderSig) {
-    const sender = decodeSenderAddress(
-      linkKeyId,
-      decodedLink.transferId,
-      decodedLink.senderSig,
-      escrowPaymentDomain
-    )
-
-    return {
-      senderSig: decodedLink.senderSig,
-      linkKey: decodedLink.linkKey,
-      transferId: decodedLink.transferId,
-      sender,
-      chainId
-    }
+  return {
+    senderSig: decodedLink.senderSig,
+    linkKey: decodedLink.linkKey
   }
 }
 

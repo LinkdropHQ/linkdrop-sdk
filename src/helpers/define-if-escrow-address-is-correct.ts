@@ -1,53 +1,29 @@
-import { EEscrowAddress, EChains } from "../types"
+import * as configs from '../configs'
+import { TDeploymentType } from '../types'
 
 type TDefineIfEscrowAddressIsCorrect = (
-  chainId: number | null,
-  escrowAddress: string
+  escrowAddress: string,
+  deployment: TDeploymentType
 ) => boolean
 
 const defineIfEscrowAddressIsCorrect: TDefineIfEscrowAddressIsCorrect = (
-  chainId,
-  escrowAddress
+  escrowAddress,
+  deployment
 ) => {
 
-  if (!chainId || !escrowAddress) {
+  if (!escrowAddress) {
     return false
   }
 
-  if (
-    (
-      escrowAddress !== EEscrowAddress.nativeBase &&
-      escrowAddress !== EEscrowAddress.usdcBase
-    ) && chainId === EChains.base
-  ) {
-    return false
+  if (deployment === 'CBW') {
+    if (escrowAddress !== configs.cbwEscrowContract) {
+      return false
+    }
+    return true
   }
 
-  if (
-    (
-      escrowAddress !== EEscrowAddress.nativePolygon &&
-      escrowAddress !== EEscrowAddress.usdcPolygon &&
-      escrowAddress !== EEscrowAddress.usdcBridgedPolygon
-    ) && chainId === EChains.polygon
-  ) {
-    return false
-  }
 
-  if (
-    (
-      escrowAddress !== EEscrowAddress.nativeMumbai &&
-      escrowAddress !== EEscrowAddress.usdcMumbai
-    ) && chainId === EChains.mumbai
-  ) {
-    return false
-  }
-
-  if (
-    (
-      escrowAddress !== EEscrowAddress.nativeBaseGoerli &&
-      escrowAddress !== EEscrowAddress.usdcBaseGoerli
-    ) && chainId === EChains.baseGoerli
-  ) {
+  if (escrowAddress !== configs.mainEscrowContract) {
     return false
   }
   

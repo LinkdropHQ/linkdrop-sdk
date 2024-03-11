@@ -2,12 +2,10 @@ import { TSignTypedData, TGetRandomBytes, TDepositResult } from "../../../../typ
 
 type TDepositWithAuthorizationArgs = {
   signTypedData: TSignTypedData
-  getRandomBytes: TGetRandomBytes
 }
 
 type TDepositWithAuthorization = ({
-  signTypedData,
-  getRandomBytes
+  signTypedData
 }: TDepositWithAuthorizationArgs) => Promise<TDepositResult>
 
 export default TDepositWithAuthorization

@@ -23,6 +23,7 @@ const generateLinkKeyandSignature = async (
   }
 
   const senderSig = await signTypedData(domain, types, message)
+  
   return {
     linkKey: linkKey.privateKey,
     linkKeyId: linkKey.address,

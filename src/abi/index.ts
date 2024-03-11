@@ -1,5 +1,7 @@
-import LinkdropEscrowNetworkToken from "./LinkdropEscrowNetworkToken.json"
+import LinkdropEscrowToken from "./LinkdropEscrowToken.json"
+import LinkdropEscrowNFT from "./LinkdropEscrowNFT.json"
 
 export {
-  LinkdropEscrowNetworkToken
+  LinkdropEscrowToken,
+  LinkdropEscrowNFT
 }

@@ -1,5 +1,48 @@
 # Linkdrop P2P SDK
 
+## 3.5.0-beta
+- Escrow contracts update
+- added optional "deployment" param to LinkdropP2P constructor
+
+## 3.4.0-beta
+- Added getDepositParams method
+- Removed sender address check in generateClaimUrl method
+
+## 3.3.0-beta
+- Dashboard links retrieve and redeem
+- Added isDepositWithAuthorizationAvailable method to ClaimLink
+- Added error handling for api requests
+- operations format changed (snake_case to camelCase)
+
+## 3.2.0-beta
+- Arbitrum, Optimism, Avalanche networks support
+
+## 3.1.1-beta
+- enum ETokenType => type TTokenType
+
+## 3.1.0-beta
+- backward compatibility (v2 => v3)
+- ERC721 and ERC1155 tokens support
+
+## 3.0.0-beta.2
+- updates for limits (moved from createClaimLink to _initializeClaimLink)
+
+## 3.0.0-beta.1
+- added new escrow address contracts
+- updates for README.md
+
+## 3.0.0-alpha.0
+- added ERC20 token support
+- updated LinkdropP2P constructor
+- updated methods for ClaimLink (deposit, depositWithAuthorization)
+- removed token symbol from claim url
+- transfer status can be retrieved with transferId (sender not needed)
+- updated handling of errors
+- added all fee data to endpoints
+
+## 2.0.0-beta.5
+- removed extra request to get limits
+
 ## 2.0.0-beta.4
 - added error handling to method getVersionFromEscrowContract
 - updated README

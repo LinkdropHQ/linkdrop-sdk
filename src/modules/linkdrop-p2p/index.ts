@@ -7,36 +7,63 @@ import ILinkdropP2P, {
   TGetLimits,
   TGetHistory,
   TGetVersionFromClaimUrl,
-  TGetVersionFromEscrowContract
+  TGetVersionFromEscrowContract,
+  TGetCurrentFee,
+  TGetLinkSourceFromClaimUrl
 } from './types'
 import { linkApi } from '../../api'
 import { ValidationError } from '../../errors'
 import {
   decodeLink,
   defineApiHost,
-  parseLink,
   updateOperations,
-  defineEscrowAddressByTokenSymbol,
-  parseQueryParams
+  getVersionFromClaimUrl,
+  getLinkSourceFromClaimUrl,
+  getClaimCodeFromDashboardLink,
+  getChainIdFromDashboardLink,
+  defineDashboardApiHost,
+  defineVersionByEscrow
 } from '../../helpers'
-import { toBigInt } from 'ethers'
+import { generateKeypair } from '../../utils'
+import { toBigInt, ethers } from 'ethers'
 import ClaimLink from '../claim-link'
 import { errors } from '../../texts'
-import { ETokenAddress, TTokenType } from '../../types'
-import escrows from '../../configs/escrows'
+import {
+  ETokenAddress,
+  TGetRandomBytes,
+  TTokenType,
+  TDeploymentType,
+  TClaimLinkSource,
+  THistoryItem
+} from '../../types'
 import * as configs from '../../configs'
+import * as LinkdropP2P2 from 'linkdrop-p2p-sdk2'
+
 
 class LinkdropP2P implements ILinkdropP2P {
-  apiKey: string | null
+  #apiKey: string | null
   baseUrl: string
   apiUrl: string
+  deployment: TDeploymentType = 'LD'
+  getRandomBytes: TGetRandomBytes
 
   constructor({
     apiKey,
     baseUrl,
-    apiUrl
+    apiUrl,
+    deployment,
+    getRandomBytes
   }: TConstructorArgs) {
-    this.apiKey = apiKey || null
+
+    this.#apiKey = apiKey || null
+
+    if (deployment) {
+      if (deployment !== 'CBW' && deployment !== 'LD') {
+        throw new ValidationError(errors.invalid_deployment_property())
+      }
+      this.deployment = deployment
+    }
+
     if (apiUrl) {
       this.apiUrl = apiUrl
     }
@@ -44,18 +71,15 @@ class LinkdropP2P implements ILinkdropP2P {
       throw new ValidationError(errors.argument_not_provided('baseUrl'))
     }
     this.baseUrl = baseUrl
+
+    if (!getRandomBytes) {
+      throw new ValidationError(errors.argument_not_provided('getRandomBytes'))
+    }
+    this.getRandomBytes = getRandomBytes
   }
 
   getVersionFromClaimUrl: TGetVersionFromClaimUrl = (claimUrl) => {
-    const hashIndex = claimUrl.indexOf('#');
-    const paramsString = claimUrl.substring(hashIndex + 1).split('?')[1]
-    const parsedParams = parseQueryParams(paramsString)
-    const version = parsedParams["v"]
-    if (!version) {
-      throw new Error(errors.version_not_provided())
-    }
-
-    return version
+    return getVersionFromClaimUrl(claimUrl)
   }
 
   createClaimLink: TCreateClaimLink = async ({
@@ -64,7 +88,8 @@ class LinkdropP2P implements ILinkdropP2P {
     chainId,
     amount,
     from,
-    tokenType
+    tokenType,
+    tokenId
   }) => {
     if (!chainId) {
       throw new ValidationError(errors.argument_not_provided('chainId'))
@@ -77,7 +102,7 @@ class LinkdropP2P implements ILinkdropP2P {
       throw new ValidationError(errors.argument_not_provided('from'))
     }
 
-    if (!amount) {
+    if (tokenType !== 'ERC721' && !amount) {
       throw new ValidationError(errors.argument_not_provided('amount'))
     }
 
@@ -85,39 +110,19 @@ class LinkdropP2P implements ILinkdropP2P {
       throw new ValidationError(errors.argument_not_provided('token'))
     }
 
-    const limitsResult = await this.getLimits({
-      token: token || configs.nativeTokenAddress,
-      chainId,
-      tokenType
-    })
-
-    if (!limitsResult) {
-      throw new Error(errors.limits_not_defined())
-    }
-
-    const {
-      minTransferAmount,
-      maxTransferAmount
-    } = limitsResult
-
-    if (toBigInt(amount) < toBigInt(minTransferAmount)) {
-      throw new ValidationError(errors.amount_should_be_more_than_minlimit(minTransferAmount.toString()))
-    }
-
-    if (toBigInt(amount) > toBigInt(maxTransferAmount)) {
-      throw new ValidationError(errors.amount_should_be_less_than_maxlimit(maxTransferAmount.toString()))
-    }
-
     return this._initializeClaimLink({
-      token: token as ETokenAddress,
-      expiration,
+      token: token as ETokenAddress || configs.nativeTokenAddress,
+      expiration: expiration ||  Math.floor(Date.now() / 1000 + 60 * 60 * 24 * 30),
       chainId,
-      amount,
+      amount: amount || '1',
       sender: from.toLowerCase(),
-      apiHost,
-      apiKey: this.apiKey,
+      apiUrl: apiHost,
+      apiKey: this.#apiKey,
       tokenType,
-      baseUrl: this.baseUrl
+      baseUrl: this.baseUrl,
+      tokenId,
+      source: 'p2p',
+      deployment: this.deployment
     })
   }
 
@@ -138,7 +143,7 @@ class LinkdropP2P implements ILinkdropP2P {
       result_set
     } = await linkApi.getHistory(
       apiHost,
-      this.apiKey,
+      this.#apiKey,
       sender,
       onlyActive,
       offset,
@@ -146,14 +151,19 @@ class LinkdropP2P implements ILinkdropP2P {
       token
     )
 
-    const claimLinks = claim_links.map(claimLink => {
+    const claimLinks: THistoryItem[] = claim_links.map(claimLink => {
       const claimLinkUpdated = {
         ...claimLink,
         transferId: claimLink.transfer_id,
         tokenType: claimLink.token_type,
         chainId: claimLink.chain_id,
         totalAmount: claimLink.total_amount,
-        operations: updateOperations(claimLink.operations)
+        operations: updateOperations(claimLink.operations),
+        tokenId: claimLink.token_id,
+        feeToken: claimLink.fee_token,
+        feeAmount: claimLink.fee_amount,
+        createdAt: claimLink.created_at,
+        updatedAt: claimLink.updated_at
       }
 
       delete claimLinkUpdated.transfer_id
@@ -162,6 +172,9 @@ class LinkdropP2P implements ILinkdropP2P {
       delete claimLinkUpdated.total_amount
       delete claimLinkUpdated.chain_id
       delete claimLinkUpdated.token_type
+      delete claimLinkUpdated.token_id
+      delete claimLinkUpdated.fee_token
+      delete claimLinkUpdated.fee_amount
 
       return claimLinkUpdated
     })
@@ -172,21 +185,18 @@ class LinkdropP2P implements ILinkdropP2P {
     }
   }
 
-
   getVersionFromEscrowContract: TGetVersionFromEscrowContract = (escrowAddress) => {
-    const escrowVersions = Object.keys(escrows)
-    const result = escrowVersions.find(version => {
-      const escrowsForVersion = escrows[version]
-      if (escrowsForVersion && escrowsForVersion.length > 0) {
-        return escrowsForVersion.find(item => item.toLowerCase() === escrowAddress.toLowerCase())
-      }
-    })
+    const result = defineVersionByEscrow(escrowAddress)
 
     if (!result) {
       throw new Error(errors.version_not_found())
     }
 
     return result
+  }
+
+  getLinkSourceFromClaimUrl: TGetLinkSourceFromClaimUrl = (claimUrl) => {
+    return getLinkSourceFromClaimUrl(claimUrl)
   }
 
   getLimits: TGetLimits = async ({
@@ -197,19 +207,21 @@ class LinkdropP2P implements ILinkdropP2P {
       throw new ValidationError(errors.chain_not_supported())
     }
 
+    if (tokenType === 'ERC721' || tokenType === 'ERC1155') {
+      throw new ValidationError(errors.limits_disabled_for_erc721_or_erc1155())
+    }
+
     let tokenAddress = token
 
-    if (tokenType === 'ERC20') {
+    if (tokenAddress !== configs.nativeTokenAddress) {
       if (!tokenAddress) {
         throw new ValidationError(errors.argument_not_provided('token'))
       }
-    } else {
-      tokenAddress = configs.nativeTokenAddress
     }
   
     const limits = await linkApi.getLimits(
       apiHost,
-      this.apiKey,
+      this.#apiKey,
       tokenAddress,
       tokenType
     )
@@ -221,83 +233,131 @@ class LinkdropP2P implements ILinkdropP2P {
   }
 
   _initializeClaimLink: TInitializeClaimLink = async (claimLinkData) => {
-    const claimLink = new ClaimLink(claimLinkData)
-    await claimLink.initialize()
+    let transferId = claimLinkData.transferId
+    let feeAmount = claimLinkData.feeAmount
+    let totalAmount = claimLinkData.totalAmount
+    let feeAuthorization = claimLinkData.feeAuthorization
+    let feeToken = claimLinkData.feeToken
+
+    let keyPair
+    if (!transferId) {
+      keyPair = await generateKeypair(this.getRandomBytes)
+      transferId = keyPair.address
+    }
+
+    if (!feeAmount || !totalAmount) {
+      const feeData = await this._getCurrentFee(
+        claimLinkData.apiUrl,
+        claimLinkData.token,
+        claimLinkData.tokenType,
+        claimLinkData.sender,
+        transferId as string,
+        claimLinkData.expiration,
+        claimLinkData.tokenType === 'ERC721' ? '1' : claimLinkData.amount,
+        claimLinkData.tokenId
+      )
+      feeAmount = feeData.fee_amount
+      totalAmount = feeData.total_amount
+      feeAuthorization = feeData.fee_authorization
+      feeToken = feeData.fee_token
+
+      if (
+        claimLinkData.tokenType === 'NATIVE' || claimLinkData.tokenType === 'ERC20'
+      ) {
+        if (toBigInt(claimLinkData.amount) < toBigInt(feeData.min_transfer_amount)) {
+          throw new ValidationError(errors.amount_should_be_more_than_minlimit(feeData.min_transfer_amount.toString()))
+        }
+    
+        if (toBigInt(claimLinkData.amount) > toBigInt(feeData.max_transfer_amount)) {
+          throw new ValidationError(errors.amount_should_be_less_than_maxlimit(feeData.max_transfer_amount.toString()))
+        }
+      }
+    }
+
+    if (!transferId) {
+      throw new Error(errors.variable_is_not_valid(
+        'transferId',
+        'string',
+        transferId
+      ))
+    }
+
+    if (!feeToken) {
+      throw new Error(errors.variable_is_not_valid(
+        'feeToken',
+        'string',
+        feeToken
+      ))
+    }
+
+    if (!totalAmount) {
+      throw new Error(errors.variable_is_not_valid(
+        'totalAmount',
+        'string',
+        totalAmount
+      ))
+    }
+
+    if (!feeAmount) {
+      throw new Error(errors.variable_is_not_valid(
+        'feeAmount',
+        'string',
+        feeAmount
+      ))
+    }
+
+    const claimLink = new ClaimLink({
+      ...claimLinkData,
+      transferId,
+      getRandomBytes: this.getRandomBytes,
+      linkKey: keyPair ? keyPair.privateKey : null,
+      feeAmount: feeAmount,
+      feeToken: feeToken as string,
+      feeAuthorization,
+      totalAmount,
+      source: claimLinkData.source
+    })
+
     return claimLink
   }
 
-  getClaimLink: TGetClaimLink = async (claimUrl) => {
-    const {
-      transferId,
-      chainId,
+  _getCurrentFee: TGetCurrentFee = async (
+    apiUrl,
+    token,
+    tokenType,
+    sender,
+    transferId,
+    expiration,
+    amount,
+    tokenId
+  ) => {
+    const result = await linkApi.getFee(
+      apiUrl,
+      this.#apiKey,
+      token,
+      sender.toLowerCase(),
       tokenType,
-      sender,
-      tokenSymbol
-    } = decodeLink(claimUrl)
+      transferId,
+      expiration,
+      amount,
+      tokenId
+    )
 
-    const apiHost = defineApiHost(chainId, this.apiUrl)
+    return result
+  }
 
-    if (!apiHost) {
-      throw new ValidationError(errors.chain_not_supported())
-    }
+  getClaimLink: TGetClaimLink = async (claimUrl) => {
+    const linkSource = this.getLinkSourceFromClaimUrl(claimUrl)
+    if (linkSource === 'd') {
+      const claimCode = getClaimCodeFromDashboardLink(claimUrl)
+      const chainId = getChainIdFromDashboardLink(claimUrl)
+      const linkKey = ethers.id(claimCode)
+      const transferId = new ethers.Wallet(linkKey).address
 
-    if (!tokenType) {
-      throw new Error(errors.variable_cannot_be_defined('Token Type'))
-    }
-
-    const escrowAddress = defineEscrowAddressByTokenSymbol(chainId, tokenSymbol)
-
-    if (!escrowAddress) {
-      throw new Error(errors.variable_cannot_be_defined('Escrow address'))
-    }
-
-    if (!sender) {
-      const linkParsed = await parseLink(
-        chainId,
-        escrowAddress,
-        claimUrl
-      )
-      if (linkParsed) {
-        const { claim_link } = await linkApi.getTransferStatus(
-          apiHost,
-          this.apiKey,
-          linkParsed.sender.toLowerCase(),
-          transferId
-        )
-
-        const {
-          token,
-          expiration,
-          amount,
-          token_type,
-          operations
-        } = claim_link
-
-
-        const claimLinkData = {
-          token: token as ETokenAddress,
-          expiration,
-          chainId,
-          amount,
-          sender: linkParsed.sender.toLowerCase(),
-          apiHost,
-          apiKey: this.apiKey,
-          transferId: transferId.toLowerCase(),
-          claimUrl,
-          operations: updateOperations(operations),
-          tokenType: (token_type as TTokenType),
-          baseUrl: this.baseUrl
-        }
-        return this._initializeClaimLink(claimLinkData)
-      } else {
-        throw new Error(errors.link_parse_failed())
-      }
-      
-    } else {
+      const customApiHost = defineDashboardApiHost()
       const { claim_link } = await linkApi.getTransferStatus(
-        apiHost,
-        this.apiKey,
-        sender.toLowerCase(),
+        customApiHost,
+        this.#apiKey,
         transferId
       )
 
@@ -306,45 +366,131 @@ class LinkdropP2P implements ILinkdropP2P {
         expiration,
         amount,
         token_type,
-        operations
+        operations,
+        sender,
+        fee_token,
+        fee_amount,
+        total_amount,
+        escrow,
+        token_id,
+        status
       } = claim_link
 
+      const apiHost = defineApiHost(chainId, this.apiUrl)
+
+      if (!apiHost) {
+        throw new ValidationError(errors.chain_not_supported())
+      }
+  
       const claimLinkData = {
         token: token as ETokenAddress,
         expiration,
         chainId,
+        feeAmount: fee_amount,
+        feeToken: fee_token,
+        totalAmount: total_amount as string,
         amount,
-        sender: sender.toLowerCase(),
-        apiHost,
-        operations: updateOperations(operations),
-        apiKey: this.apiKey,
+        sender,
+        apiUrl: customApiHost,
+        apiKey: this.#apiKey,
         transferId: transferId.toLowerCase(),
         claimUrl,
+        tokenId: token_id,
+        operations: updateOperations(operations),
         tokenType: (token_type as TTokenType),
-        baseUrl: this.baseUrl
+        baseUrl: this.baseUrl,
+        escrowAddress: escrow,
+        forRecipient: true,
+        status,
+        source: linkSource,
+        deployment: this.deployment
       }
       return this._initializeClaimLink(claimLinkData)
-    } 
+    }
+
+    const {
+      transferId,
+      chainId,
+    } = decodeLink(claimUrl)
+
+    const version = this.getVersionFromClaimUrl(claimUrl)
+
+    if (version === '2') {
+      const linkdropP2P2 = new LinkdropP2P2.LinkdropP2P({
+        baseUrl: this.baseUrl,
+        apiKey: String(this.#apiKey)
+      })
+
+      return await linkdropP2P2.getClaimLink(claimUrl)
+    }
+
+    const apiHost = defineApiHost(chainId, this.apiUrl)
+
+    if (!apiHost) {
+      throw new ValidationError(errors.chain_not_supported())
+    }
+
+    const { claim_link } = await linkApi.getTransferStatus(
+      apiHost,
+      this.#apiKey,
+      transferId
+    )
+
+    const {
+      token,
+      expiration,
+      amount,
+      token_type,
+      operations,
+      sender,
+      fee_token,
+      fee_amount,
+      total_amount,
+      escrow,
+      token_id,
+      status
+    } = claim_link
+
+    const claimLinkData = {
+      token: token as ETokenAddress,
+      expiration,
+      chainId,
+      feeAmount: fee_amount,
+      feeToken: fee_token,
+      totalAmount: total_amount as string,
+      amount,
+      sender,
+      apiUrl: apiHost,
+      apiKey: this.#apiKey,
+      transferId: transferId.toLowerCase(),
+      claimUrl,
+      tokenId: token_id,
+      operations: updateOperations(operations),
+      tokenType: (token_type as TTokenType),
+      baseUrl: this.baseUrl,
+      escrowAddress: escrow,
+      forRecipient: true,
+      status,
+      source: linkSource,
+      deployment: this.deployment
+    }
+    return this._initializeClaimLink(claimLinkData)
   }
 
   retrieveClaimLink: TRetrieveClaimLink = async ({
     chainId,
     txHash,
-    sender,
-    transferId
+    transferId,
+    customApiHost
   }) => {
-    const apiHost = defineApiHost(chainId, this.apiUrl)
+    const apiHost = customApiHost || defineApiHost(chainId, this.apiUrl)
     if (!apiHost) {
       throw new ValidationError(errors.chain_not_supported())
     }
-    if (sender) {
-      if (!transferId) {
-        throw new ValidationError(errors.argument_not_provided('transferId'))
-      }
+    if (transferId) {
       const { claim_link } = await linkApi.getTransferStatus(
         apiHost,
-        this.apiKey,
-        sender.toLowerCase(),
+        this.#apiKey,
         transferId
       )
 
@@ -353,7 +499,12 @@ class LinkdropP2P implements ILinkdropP2P {
         expiration,
         amount,
         token_type,
-        operations
+        operations,
+        fee_token,
+        fee_amount,
+        total_amount,
+        sender,
+        status
       } = claim_link
 
       const claimLinkData = {
@@ -362,23 +513,28 @@ class LinkdropP2P implements ILinkdropP2P {
         chainId,
         amount,
         sender: sender.toLowerCase(),
-        apiHost,
-        apiKey: this.apiKey,
+        apiUrl: apiHost,
+        apiKey: this.#apiKey,
         tokenType: (token_type as TTokenType),
         transferId: transferId.toLowerCase(),
         baseUrl: this.baseUrl,
-        operations: updateOperations(operations)
+        operations: updateOperations(operations),
+        feeAmount: fee_amount,
+        feeToken: fee_token,
+        totalAmount: total_amount as string,
+        status,
+        source: (customApiHost ? 'd' : 'p2p') as TClaimLinkSource,
+        deployment: this.deployment
       }
       return this._initializeClaimLink(claimLinkData)
-    } else {
-      if (!txHash) {
-        throw new ValidationError(errors.argument_not_provided('txHash'))
-      }
+    } else if (txHash) {
+      
       const { claim_link } = await linkApi.getTransferStatusByTxHash(
         apiHost,
-        this.apiKey,
+        this.#apiKey,
         txHash
       )
+  
       const {
         token,
         expiration,
@@ -386,7 +542,12 @@ class LinkdropP2P implements ILinkdropP2P {
         sender,
         transfer_id,
         token_type,
-        operations
+        operations,
+        fee_token,
+        fee_amount,
+        total_amount,
+        version,
+        status
       } = claim_link
 
       const claimLinkData = {
@@ -395,14 +556,35 @@ class LinkdropP2P implements ILinkdropP2P {
         chainId,
         amount,
         sender: sender.toLowerCase(),
-        apiHost,
-        apiKey: this.apiKey,
+        apiUrl: apiHost,
+        apiKey: this.#apiKey,
         transferId: (transfer_id as string).toLowerCase(),
         tokenType: (token_type as TTokenType),
         operations: updateOperations(operations),
-        baseUrl: this.baseUrl
+        baseUrl: this.baseUrl,
+        feeAmount: fee_amount,
+        feeToken: fee_token,
+        totalAmount: total_amount as string,
+        status,
+        source: 'p2p' as TClaimLinkSource,
+        deployment: this.deployment
+      }
+
+      if (version.toString() === '2') {
+        const linkdropP2P2 = new LinkdropP2P2.LinkdropP2P({
+          baseUrl: this.baseUrl,
+          apiKey: String(this.#apiKey),
+          getRandomBytes: this.getRandomBytes
+        })
+  
+        return await linkdropP2P2.retrieveClaimLink({
+          txHash,
+          chainId
+        })
       }
       return this._initializeClaimLink(claimLinkData)
+    } else {
+      throw new ValidationError(errors.at_least_one_argument_not_provided(['txHash', 'transferId']))
     }
   }
 }

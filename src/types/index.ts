@@ -1,4 +1,3 @@
-import type { TTokenType } from './token-type'
 import type { TDomain } from './domain'
 import type { TEscrowPaymentDomain } from './escrow-payment-domain'
 import type { TLink } from './link'
@@ -10,28 +9,36 @@ import type { TDepositResult } from './deposit-result'
 import { EChains } from './chains'
 import { ETokenAddress } from './token-address'
 import { ETokenSymbol } from './token-symbol'
-import { EEscrowAddress } from './escrow-address'
-
+import { ESelectors } from './selectors'
+import type { TTokenType } from './token-type'
+import type TClaimLinkSource from './claim-link-source'
+import type { THistoryItem } from './history-item'
 import type {
   TClaimLinkItem,
   TClaimLinkItemOperation,
-  TClaimLinkItemOperationStatus,
   TClaimLinkItemStatus
 } from './claim-link-item'
+import type { TOperationStatus } from './operation-status'
+import type { TClaimLinkOperation } from './claim-link-operation'
+import type { TDeploymentType } from './deployment-type'
 
 export {
   TTokenType,
+  ESelectors,
+  TDeploymentType,
+  TClaimLinkOperation,
+  TOperationStatus,
   TDepositResult,
-  EEscrowAddress,
+  THistoryItem,
   ETokenAddress,
   EChains,
   TClaimLinkItem,
   ETokenSymbol,
   TClaimLinkItemOperation,
-  TClaimLinkItemOperationStatus,
   TClaimLinkItemStatus,
   TSendTransaction,
   TDomain,
+  TClaimLinkSource,
   TEscrowPaymentDomain,
   TLink,
   TTransferStatus,

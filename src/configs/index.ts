@@ -1,27 +1,24 @@
 import {
   ETokenAddress,
-  EEscrowAddress,
-  EChains
+  ESelectors 
 } from '../types'
 
-export const polygonJSONRPCUrl = 'https://polygon-mainnet.infura.io/v3/f5f8608d75874e5fbcdd4ee9657b8ab5'
-export const mumbaiJSONRPCUrl = 'https://polygon-mumbai.infura.io/v3/f5f8608d75874e5fbcdd4ee9657b8ab5'
-export const baseJSONRPCUrl = 'https://developer-access-mainnet.base.org'
-export const baseGoerliJSONRPCUrl = 'https://base-goerli.publicnode.com'
-
 export const baseUrl = 'http://localhost:3000'
-export const apiUrl = 'https://escrow-api.linkdrop.io/v2'
+export const apiUrl = 'https://escrow-api.linkdrop.io/v3'
+export const dashboardApiUrl = 'https://escrow-api.linkdrop.io/dashboard'
 
 export const nativeTokenAddress = '0x0000000000000000000000000000000000000000'
 
-export const escrowContracts = {
-  [`${EChains.base}_${ETokenAddress.nativeBase}`]: EEscrowAddress.nativeBase,
-  [`${EChains.polygon}_${ETokenAddress.nativePolygon}`]: EEscrowAddress.nativePolygon,
-  [`${EChains.baseGoerli}_${ETokenAddress.nativeBaseGoerli}`]: EEscrowAddress.nativeBaseGoerli,
-  [`${EChains.mumbai}_${ETokenAddress.nativeMumbai}`]: EEscrowAddress.nativeMumbai,
-  [`${EChains.base}_${ETokenAddress.usdcBase}`]: EEscrowAddress.usdcBase,
-  [`${EChains.polygon}_${ETokenAddress.usdcPolygon}`]: EEscrowAddress.usdcPolygon,
-  [`${EChains.polygon}_${ETokenAddress.usdcBridgedPolygon}`]: EEscrowAddress.usdcBridgedPolygon,
-  [`${EChains.mumbai}_${ETokenAddress.usdcMumbai}`]: EEscrowAddress.usdcMumbai,
-  [`${EChains.baseGoerli}_${ETokenAddress.usdcBaseGoerli}`]: EEscrowAddress.usdcBaseGoerli,
+export const cbwEscrowContract = '0x2d5dfe0e4582c905233df527242616017f36e192'
+export const mainEscrowContract = '0x88d51990a3b962f975846f3688e36d2a1fc611f1'
+
+export const supportedStableCoins = {
+  [ETokenAddress.usdcBase]: ESelectors.receiveWithAuthorization,
+  [ETokenAddress.usdcBaseGoerli]: ESelectors.receiveWithAuthorization,
+  [ETokenAddress.usdcBridgedPolygon]: ESelectors.approveWithAuthorization,
+  [ETokenAddress.usdcMumbai]:  ESelectors.approveWithAuthorization,
+  [ETokenAddress.usdcPolygon]:  ESelectors.receiveWithAuthorization,
+  [ETokenAddress.usdcArbitrum]:  ESelectors.receiveWithAuthorization,
+  [ETokenAddress.usdcOptimism]:  ESelectors.receiveWithAuthorization,
+  [ETokenAddress.usdcAvalanche]:  ESelectors.receiveWithAuthorization
 }

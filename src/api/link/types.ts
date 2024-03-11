@@ -1,40 +1,8 @@
 import { TClaimLinkItem, TTokenType } from '../../types'
-
-type TDepositWithAuthResponse = {
-  success: boolean,
-  tx_hash: string
-}
-
-type TDepositWithAuth = (
-  apiHost: string,
-  apiKey: string | null,
-  token: string,
-  token_type: TTokenType,
-  sender: string,
-  escrow: string,
-  transfer_id: string,
-  expiration: number,
-  amount: string,
-  authorization: string
-) => Promise<TDepositWithAuthResponse>
-
-type TDepositWithResponse = {
-  success: boolean,
-  tx_hash: string
-}
-
-type TDeposit = (
-  apiHost: string,
-  apiKey: string | null,
-  token: string,
-  token_type: TTokenType,
-  sender: string,
-  escrow: string,
-  transfer_id: string,
-  expiration: number,
-  amount: string,
-  tx_hash: string
-) => Promise<TDepositWithResponse>
+import { TDeposit } from './deposit/types'
+import { TDepositWithAuth } from './deposit-with-authorization/types'
+import { TDepositERC721 } from './deposit-erc721/types'
+import { TDepositERC1155 } from './deposit-erc1155/types'
 
 type TRedeemLinkResponse = {
   success: boolean,
@@ -45,10 +13,11 @@ type TRedeemLink = (
   apiHost: string,
   apiKey: string | null,
   receiver: string,
-  sender: string,
-  escrow: string,
   transfer_id: string,
   receiver_sig: string,
+  token?: string,
+  sender?: string,
+  escrow?: string
 ) => Promise<TRedeemLinkResponse>
 
 type TRedeemRecoveredLinkResponse = {
@@ -64,7 +33,8 @@ type TRedeemRecoveredLink = (
   escrow: string,
   transfer_id: string,
   receiver_sig: string,
-  sender_sig: string
+  sender_sig: string,
+  token: string
 ) => Promise<TRedeemRecoveredLinkResponse>
 
 type TGetTransferDataResponse = {
@@ -75,7 +45,6 @@ type TGetTransferDataResponse = {
 type TGetTransferData = (
   apiHost: string,
   apiKey: string | null,
-  sender: string,
   transfer_id: string,
 ) => Promise<TGetTransferDataResponse>
 
@@ -91,21 +60,26 @@ type TGetTransferDataByTxHash = (
 ) => Promise<TGetTransferDataByTxHashResponse>
 
 type TGetFeeResponse = {
-  fee: string
   amount: string
   total_amount: string
   max_transfer_amount: string
   min_transfer_amount: string
+  fee_token: string
+  fee_amount: string
+  fee_authorization: string
   success: boolean
 }
 
 type TGetFee = (
   apiHost: string,
   apiKey: string | null,
-  amount: string,
   tokenAddress: string,
   sender: string,
-  tokenType: TTokenType
+  tokenType: TTokenType,
+  transferId: string,
+  expiration: number,
+  amount: string,
+  tokenId?: string
 ) => Promise<TGetFeeResponse>
 
 type TGetLimitsResponse = {
@@ -149,6 +123,8 @@ export type TRequests = {
   getTransferStatusByTxHash: TGetTransferDataByTxHash
   getFee: TGetFee,
   deposit: TDeposit,
+  depositERC721: TDepositERC721,
+  depositERC1155: TDepositERC1155,
   getLimits: TGetLimits,
   getHistory: TGetHistory
 }

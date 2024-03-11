@@ -1,31 +1,9 @@
 import { TRequests } from './types'
-import { createQueryString } from '../../helpers'
-
-function request<TResponse>(
-  url: string,
-  config: RequestInit = {}
-): Promise<TResponse> {
-  return fetch(url, config)
-    .then((res) => {
-      if (res.ok) {
-        return res.json()
-      }
-      throw new Error(String(res.status))
-    })
-    .then((data) => data as TResponse)
-}
-
-const defineHeaders = (apiKey: string | null) => {
-  const headers = {
-    'content-type': 'application/json'
-  }
-
-  if (apiKey) {
-    headers['authorization'] = `Bearer ${apiKey}`
-  }
-
-  return headers
-}
+import { createQueryString, request, defineHeaders } from '../../helpers'
+import deposit from './deposit'
+import depositWithAuth from './deposit-with-authorization'
+import depositERC721 from './deposit-erc721'
+import depositERC1155 from './deposit-erc1155'
 
 const requests: TRequests = {
   redeemRecoveredLink: (
@@ -36,7 +14,8 @@ const requests: TRequests = {
     escrow,
     transfer_id,
     receiver_sig,
-    sender_sig
+    sender_sig,
+    token
   ) => {
     return request(`${apiHost}/redeem-recovered`, {
       headers: defineHeaders(apiKey),
@@ -47,18 +26,21 @@ const requests: TRequests = {
         escrow,
         transfer_id,
         receiver_sig,
-        sender_sig
+        sender_sig,
+        token
       })
     })
   },
+
   redeemLink: (
     apiHost,
     apiKey,
     receiver,
+    transfer_id,
+    receiver_sig,
+    token,
     sender,
     escrow,
-    transfer_id,
-    receiver_sig
   ) => {
     return request(`${apiHost}/redeem`, {
       headers: defineHeaders(apiKey),
@@ -68,74 +50,26 @@ const requests: TRequests = {
         sender,
         escrow,
         transfer_id,
-        receiver_sig
+        receiver_sig,
+        token
       })
     })
   },
-  depositWithAuthorization: (
-    apiHost,
-    apiKey,
-    token,
-    token_type,
-    sender,
-    escrow,
-    transfer_id,
-    expiration,
-    amount,
-    authorization
-  ) => {
-    return request(`${apiHost}/deposit-with-authorization`, {
-      headers: defineHeaders(apiKey),
-      method: 'POST',
-      body: JSON.stringify({
-        sender,
-        token,
-        token_type,
-        escrow,
-        transfer_id,
-        expiration,
-        amount,
-        authorization
-      })
-    })
-  },
-  deposit: (
-    apiHost,
-    apiKey,
-    token,
-    token_type,
-    sender,
-    escrow,
-    transfer_id,
-    expiration,
-    amount,
-    tx_hash
-  ) => {
-    return request(`${apiHost}/deposit`, {
-      headers: defineHeaders(apiKey),
-      method: 'POST',
-      body: JSON.stringify({
-        sender,
-        escrow,
-        transfer_id,
-        token,
-        token_type,
-        expiration,
-        amount,
-        tx_hash
-      })
-    })
-  },
+
+  depositWithAuthorization: depositWithAuth,
+  deposit,
+  depositERC721,
+  depositERC1155,
   getTransferStatus: (
     apiHost,
     apiKey,
-    sender,
     transferId
   ) => {
-    return request(`${apiHost}/payment-status/sender/${sender}/transfer/${transferId}`, {
+    return request(`${apiHost}/payment-status/transfer/${transferId}`, {
       headers: defineHeaders(apiKey),
     })
   },
+
   getTransferStatusByTxHash: (
     apiHost,
     apiKey,
@@ -145,15 +79,28 @@ const requests: TRequests = {
       headers: defineHeaders(apiKey),
     })
   },
+
   getFee: (
     apiHost,
     apiKey,
-    amount,
     tokenAddress,
     sender,
-    tokenType
+    tokenType,
+    transferId,
+    expiration,
+    amount,
+    tokenId
   ) => {
-    return request(`${apiHost}/fee?amount=${amount}&token_address=${tokenAddress}&sender=${sender}&token_type=${tokenType}`, {
+    const queryVariables = createQueryString({
+      amount,
+      token_address: tokenAddress,
+      sender,
+      token_type: tokenType,
+      transfer_id: transferId,
+      expiration,
+      token_id: tokenId
+    })
+    return request(`${apiHost}/fee?${queryVariables}`, {
       headers: defineHeaders(apiKey),
     })
   },
@@ -184,7 +131,11 @@ const requests: TRequests = {
     tokenAddress,
     tokenType
   ) => {
-    return request(`${apiHost}/limits?token_address=${tokenAddress}&token_type=${tokenType}`, {
+    const queryVariables = createQueryString({
+      token_address: tokenAddress,
+      token_type: tokenType,
+    })
+    return request(`${apiHost}/limits?${queryVariables}`, {
       headers: defineHeaders(apiKey),
     })
   }

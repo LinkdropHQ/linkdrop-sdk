@@ -1,18 +1,26 @@
-import { EChains, TTokenType, ETokenAddress } from "../../../../types"
+import { TTokenType, ETokenAddress, TClaimLinkSource, TDeploymentType } from "../../../../types"
 import ClaimLink from "../../../claim-link"
 
 export type TInitializeClaimLinkArgs = {
   sender: string
-  token?: ETokenAddress
+  token: ETokenAddress
   amount: string
-  expiration?: number
+  expiration: number
   chainId: number
-  apiHost: string
+  apiUrl: string
   apiKey: string | null
   baseUrl?: string
   transferId?: string
   claimUrl?: string
-  tokenType: TTokenType
+  feeAmount?: string
+  totalAmount?: string
+  feeToken?: string
+  feeAuthorization?: string
+  tokenType: TTokenType,
+  tokenId?: string
+  forRecipient?: boolean
+  source: TClaimLinkSource
+  deployment: TDeploymentType
 }
 
 type TInitializeClaimLink = ({
@@ -22,11 +30,19 @@ type TInitializeClaimLink = ({
   baseUrl,
   amount,
   sender, 
-  apiHost, 
+  apiUrl, 
   apiKey,
   transferId,
   claimUrl,
-  tokenType
+  tokenType,
+  feeAmount,
+  totalAmount,
+  feeAuthorization,
+  feeToken,
+  tokenId,
+  forRecipient,
+  source,
+  deployment
 }: TInitializeClaimLinkArgs) => Promise<(ClaimLink)>
 
 export default TInitializeClaimLink
