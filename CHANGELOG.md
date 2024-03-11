@@ -1,6 +1,5 @@
 # Linkdrop P2P SDK
 
-
 ## 3.5.0-beta
 - Escrow contracts update
 - added optional "deployment" param to LinkdropP2P constructor
