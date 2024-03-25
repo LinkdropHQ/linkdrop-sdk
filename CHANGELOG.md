@@ -1,5 +1,8 @@
 # Linkdrop P2P SDK
 
+## 3.7.0-alpha
+- added machine-readable error handling
+
 ## 3.6.0-beta
 - support for new dashboard URL schema
 
