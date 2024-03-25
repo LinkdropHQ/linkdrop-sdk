@@ -1,5 +1,8 @@
 # Linkdrop P2P SDK
 
+## 3.6.0-beta
+- support for new dashboard URL schema
+
 ## 3.5.0-beta
 - Escrow contracts update
 - added optional "deployment" param to LinkdropP2P constructor

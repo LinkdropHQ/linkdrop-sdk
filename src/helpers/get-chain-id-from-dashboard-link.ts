@@ -1,11 +1,10 @@
 import { parseQueryParams } from '.'
-import { EChains } from '../types';
+import { EChains } from '../types'
 
 type TGetChainIdFromDashboardLink = (claimUrl: string) => EChains
 
 const getChainIdFromDashboardLink: TGetChainIdFromDashboardLink = (claimUrl) => {
-  const hashIndex = claimUrl.indexOf('#');
-  const paramsString = claimUrl.substring(hashIndex + 1).split('?')[1]
+  const paramsString = claimUrl.split('?')[1]
   const parsedParams = parseQueryParams(paramsString)
   const chainId = parsedParams["c"]
   if (!chainId) {
