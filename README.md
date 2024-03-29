@@ -194,7 +194,29 @@ const {
 ```
 
 
-## Error types
+
+## Error handling
+
+### Catching errors
+```js
+
+try {
+  ...
+  const txHash = await claimLink.redeem('')
+  ...
+  
+} catch (err) {
+  console.log(err.message)
+  // Validation Error: Argument "dest" is not provided (argument="dest", value="")
+
+  console.log(err.error)
+  // DESTINATION_ADDRESS_NOT_PROVIDED
+}
+
+```
+
+
+### Error types
 - SENDER_NOT_PROVIDED - argument "sender" is not provided to constructor
 - TOKEN_ID_NOT_PROVIDED - argument "tokenId" is not provided to constructor
 - AMOUNT_NOT_PROVIDED - argument "amount" is not provided to method or constructor
