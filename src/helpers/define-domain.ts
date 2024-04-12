@@ -71,7 +71,7 @@ const defineDomain: TDefineDomain = (
     return {
       "name": "USD Coin",
       "version": "2",
-      "chainId": EChains.polygon,
+      "chainId": EChains.sepolia,
       "verifyingContract": ETokenAddress.usdcSepolia
     }
   } 
