@@ -69,7 +69,7 @@ const defineDomain: TDefineDomain = (
 
   if (chainId === EChains.sepolia) { // Sepolia
     return {
-      "name": "USD Coin",
+      "name": "USDC",
       "version": "2",
       "chainId": EChains.sepolia,
       "verifyingContract": ETokenAddress.usdcSepolia
