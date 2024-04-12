@@ -232,7 +232,7 @@ try {
 - BASE_URL_NOT_PROVIDED - argument "baseUrl" is not provided to constructor
 - GET_RANDOM_BYTES_NOT_PROVIDED - function "signTypedData" is not provided to constructor
 - CHAIN_ID_NOT_PROVIDED - argument "chainId" is not provided to constructor or method
-- CHAIN_NOT_SUPPORTED - current chain is not supported. Supported chains: 137, 80001, 8453, 84531, 43114, 10, 42161, 100
+- CHAIN_NOT_SUPPORTED - current chain is not supported. Supported chains: 137, 11155111, 8453, 84531, 43114, 10, 42161, 100
 - FROM_NOT_PROVIDED - argument "from" is not provided to method
 - LIMITS_NOT_AVAILABLE_FOR_ERC721_AND_ERC1155 - limits are not available for ERC721 and ERC1155 tokens
 - DEPOSIT_STILL_PENDING - recipient attempts to claim tokens before the deposit transaction is completed

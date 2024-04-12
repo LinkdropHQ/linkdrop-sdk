@@ -67,12 +67,12 @@ const defineDomain: TDefineDomain = (
     }
   }
 
-  if (chainId === EChains.mumbai) { // Mumbai
+  if (chainId === EChains.sepolia) { // Sepolia
     return {
-      name: 'USD Coin (PoS)',
-      version: '1',
-      verifyingContract: ETokenAddress.usdcMumbai,
-      salt: '0x0000000000000000000000000000000000000000000000000000000000013881'
+      "name": "USD Coin",
+      "version": "2",
+      "chainId": EChains.polygon,
+      "verifyingContract": ETokenAddress.usdcSepolia
     }
   } 
 

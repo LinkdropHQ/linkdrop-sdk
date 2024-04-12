@@ -8,7 +8,7 @@ const defineNetworkName: TDefineNetworkName = (chainId) => {
   switch (Number(chainId)) {
     case EChains.polygon: return 'polygon'
     case EChains.base: return 'base'
-    case EChains.mumbai: return 'mumbai'
+    case EChains.sepolia: return 'sepolia'
     case EChains.baseGoerli: return 'goerli'
     case EChains.avalanche: return 'avalanche'
     case EChains.optimism: return 'optimism'
