@@ -4,6 +4,7 @@ import deposit from './deposit'
 import depositWithAuth from './deposit-with-authorization'
 import depositERC721 from './deposit-erc721'
 import depositERC1155 from './deposit-erc1155'
+import redeemLinkAndRegisterStealthKeys from './redeem-and-register-stealth-keys'
 
 const requests: TRequests = {
   redeemRecoveredLink: (
@@ -60,6 +61,7 @@ const requests: TRequests = {
   deposit,
   depositERC721,
   depositERC1155,
+  redeemLinkAndRegisterStealthKeys,
   getTransferStatus: (
     apiHost,
     apiKey,

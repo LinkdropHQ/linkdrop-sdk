@@ -19,12 +19,16 @@ import getChainIdFromDashboardLink from './get-chain-id-from-dashboard-link'
 import defineDashboardApiHost from './define-dashboard-api-host'
 import defineVersionByEscrow from './define-version-by-escrow'
 import checkApiKeyFormatValidity from './check-api-key-format-validity'
+import generateStealthKeys from './generate-stealth-keys'
+import getStealthKeyAuthorizationSignature from './get-stealth-key-authorization-signature'
 
 export {
   defineDomain,
+  getStealthKeyAuthorizationSignature,
   getClaimCodeFromDashboardLink,
   getChainIdFromDashboardLink,
   defineDashboardApiHost,
+  generateStealthKeys,
   checkApiKeyFormatValidity,
   getLinkSourceFromClaimUrl,
   defineVersionByEscrow,

@@ -14,9 +14,11 @@ import TDepositERC721 from './deposit-erc721'
 import TDepositERC1155 from './deposit-erc1155'
 import TIsDepositWithAuthorizationAvailable from './is-deposit-with-authorization-available' 
 import TGetDepositParams from './get-deposit-params'
+import TRedeemAndRegisterStealthKeys from './redeem-and-register-stealth-keys'
 
 interface IClaimLink {
   _getCurrentFee: TGetCurrentFee
+  redeemAndRegisterStealthKeys: TRedeemAndRegisterStealthKeys
   redeem: TRedeem
   depositWithAuthorization: TDepositWithAuthorization
   updateAmount: TUpdateAmount
@@ -49,7 +51,8 @@ export {
   TDeposit,
   TDefineValue,
   TDepositERC20,
-  TDepositNative
+  TDepositNative,
+  TRedeemAndRegisterStealthKeys
 }
 
 export default IClaimLink

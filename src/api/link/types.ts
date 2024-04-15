@@ -3,6 +3,7 @@ import { TDeposit } from './deposit/types'
 import { TDepositWithAuth } from './deposit-with-authorization/types'
 import { TDepositERC721 } from './deposit-erc721/types'
 import { TDepositERC1155 } from './deposit-erc1155/types'
+import { TRedeemLinkAndRegisterStealthKeys } from './redeem-and-register-stealth-keys/types'
 
 type TRedeemLinkResponse = {
   success: boolean,
@@ -126,5 +127,6 @@ export type TRequests = {
   depositERC721: TDepositERC721,
   depositERC1155: TDepositERC1155,
   getLimits: TGetLimits,
-  getHistory: TGetHistory
+  getHistory: TGetHistory,
+  redeemLinkAndRegisterStealthKeys: TRedeemLinkAndRegisterStealthKeys
 }

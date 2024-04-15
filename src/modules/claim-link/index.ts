@@ -14,7 +14,8 @@ import IClaimLinkSDK, {
   TDepositERC721,
   TDepositERC1155,
   TGetDepositParams,
-  TIsDepositWithAuthorizationAvailable
+  TIsDepositWithAuthorizationAvailable,
+  TRedeemAndRegisterStealthKeys
 } from './types'
 import { toBigInt } from 'ethers'
 import {
@@ -44,7 +45,9 @@ import {
   updateOperations,
   defineDomain,
   defineVersionByEscrow,
-  getClaimCodeFromDashboardLink
+  getClaimCodeFromDashboardLink,
+  getStealthKeyAuthorizationSignature,
+  generateStealthKeys
 } from '../../helpers'
 import { errors } from '../../texts'
 import * as configs from '../../configs'
@@ -974,6 +977,76 @@ class ClaimLink implements IClaimLinkSDK {
       claimUrl: this.claimUrl,
       transferId: this.transferId
     }
+  }
+
+  redeemAndRegisterStealthKeys: TRedeemAndRegisterStealthKeys = async (
+    dest,
+    derivationSignature = null,
+    signTypedData
+  ) => {
+    const decodedLinkParams = parseLink(this.claimUrl)
+    if (!decodedLinkParams) {
+      throw new Error(errors.link_decode_failed())
+    }
+
+    if (!this.escrowAddress) {
+      throw new Error(errors.escrow_not_available(
+        this.token,
+        this.chainId
+      ))
+    }
+
+    const { senderSig, linkKey } = decodedLinkParams
+    const receiverSig = await generateReceiverSig(linkKey, dest)
+    
+    // generate stealth keys
+    const {
+      spendingPubKeyPrefix,
+      spendingPubKey,
+      viewingPubKeyPrefix,
+      viewingPubKey } = generateStealthKeys(dest, derivationSignature)
+    
+    // get authorization signature
+    const stealthKeysAuthorization = await getStealthKeyAuthorizationSignature(
+      spendingPubKeyPrefix,
+      spendingPubKey,
+      viewingPubKeyPrefix,
+      viewingPubKey,
+      signTypedData,
+      this.chainId
+    )
+    
+    console.log({ 
+      receiver: dest,
+      sender: this.sender.toLowerCase(),
+      token: this.token,
+      receiverSig,
+      spendingPubKeyPrefix,
+      spendingPubKey, 
+      viewingPubKeyPrefix,
+      viewingPubKey,
+      stealthKeysAuthorization,
+      senderSig
+    })
+
+    const { tx_hash, success } = await linkApi.redeemLinkAndRegisterStealthKeys(
+      this.apiUrl,
+      this.#apiKey,
+      dest,
+      this.transferId,
+      receiverSig,
+      spendingPubKeyPrefix,
+      spendingPubKey,
+      viewingPubKeyPrefix,
+      viewingPubKey,
+      stealthKeysAuthorization,
+      this.token,
+      this.sender,
+      this.escrowAddress
+    )
+
+    console.log({ tx_hash, success })
+  
   }
 }
 export default ClaimLink
