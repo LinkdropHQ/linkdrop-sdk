@@ -29,7 +29,9 @@ const getSignature: TGetSignature = async (spendingPubKeyPrefix, spendingPubKey,
   const message = { 
     spendingPubKeyPrefix, spendingPubKey, viewingPubKeyPrefix, viewingPubKey
   }
+  console.log({ message })
   const stealthKeysAuthorization = await signTypedData(domain, types, message)
+  console.log({ stealthKeysAuthorization })
   return stealthKeysAuthorization
 }
 

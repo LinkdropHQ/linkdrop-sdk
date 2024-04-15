@@ -1004,7 +1004,8 @@ class ClaimLink implements IClaimLinkSDK {
       spendingPubKeyPrefix,
       spendingPubKey,
       viewingPubKeyPrefix,
-      viewingPubKey } = generateStealthKeys(dest, derivationSignature)
+      viewingPubKey
+    } = generateStealthKeys(dest, derivationSignature)
     
     // get authorization signature
     const stealthKeysAuthorization = await getStealthKeyAuthorizationSignature(
