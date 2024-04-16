@@ -8,9 +8,9 @@ const redeemLinkAndRegisterStealthKeys: TRedeemLinkAndRegisterStealthKeys = (
   transfer_id,
   receiver_sig,
   spending_pub_key_prefix,
-  spending_pub_key,
+  spending_pub_key_x,
   viewing_pub_key_prefix,
-  viewing_pub_key,
+  viewing_pub_key_x,
   stealth_keys_authorization,
   token?,
   sender?,
@@ -27,9 +27,9 @@ const redeemLinkAndRegisterStealthKeys: TRedeemLinkAndRegisterStealthKeys = (
       transfer_id,
       receiver_sig,
       spending_pub_key_prefix,
-      spending_pub_key,
+      spending_pub_key_x,
       viewing_pub_key_prefix,
-      viewing_pub_key,
+      viewing_pub_key_x,
       stealth_keys_authorization
     })
   })

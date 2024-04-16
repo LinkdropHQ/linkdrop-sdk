@@ -50,25 +50,20 @@ const generateStealthKeys: TGenerateStealthKeys = (address, signature) => {
  const spendingPrivateKey = sha256(`0x${portion1}`)
  const viewingPrivateKey = sha256(`${portion2}`)
 
- console.log({
-  spendingPrivateKey,
-  viewingPrivateKey
- })
  // Compute the Compressed public keys
- const spendingPubKey = SigningKey.computePublicKey(spendingPrivateKey, true)
- const viewingPubKey = SigningKey.computePublicKey(viewingPrivateKey, true)
- console.log({
-  spendingPubKey,
-  viewingPubKey
- })
+ const spendingPubKeyInitial = SigningKey.computePublicKey(spendingPrivateKey, true)
+ const viewingPubKeyInitial = SigningKey.computePublicKey(viewingPrivateKey, true)
+
  // Break public keys into the required components to store compressed public keys
- const spendingPubKeyPrefix = Number(spendingPubKey[3])  // prefix bit is the 2th character in the string (no 0x prefix)
- const viewingPubKeyPrefix = Number(viewingPubKey[3])  // prefix bit is the 2th character in the string (no 0x prefix)
- console.log({
+ const spendingPubKeyPrefix = Number(spendingPubKeyInitial[3])  // prefix bit is the 2th character in the string (no 0x prefix)
+ const viewingPubKeyPrefix = Number(viewingPubKeyInitial[3])  // prefix bit is the 2th character in the string (no 0x prefix)
+
+ return {
   spendingPubKeyPrefix,
-  viewingPubKeyPrefix
- })
- return { spendingPubKeyPrefix, spendingPubKey, viewingPubKeyPrefix, viewingPubKey }
+  spendingPubKey: `0x${spendingPubKeyInitial.slice(4)}`,
+  viewingPubKeyPrefix,
+  viewingPubKey: `0x${viewingPubKeyInitial.slice(4)}`,
+}
 }
 
 export default generateStealthKeys

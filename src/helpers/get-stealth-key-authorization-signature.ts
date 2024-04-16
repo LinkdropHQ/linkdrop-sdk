@@ -28,10 +28,11 @@ const getSignature: TGetSignature = async (spendingPubKeyPrefix, spendingPubKey,
  
   const message = { 
     spendingPubKeyPrefix,
-    spendingPubKey: spendingPubKey.replace('03', ''),
+    spendingPubKey,
     viewingPubKeyPrefix,
-    viewingPubKey: viewingPubKey.replace('03', ''),
+    viewingPubKey,
   }
+
   const stealthKeysAuthorization = await signTypedData(domain, types, message)
   return stealthKeysAuthorization
 }

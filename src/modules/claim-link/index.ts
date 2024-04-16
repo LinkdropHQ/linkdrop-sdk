@@ -1023,9 +1023,9 @@ class ClaimLink implements IClaimLinkSDK {
       token: this.token,
       receiverSig,
       spendingPubKeyPrefix,
-      spendingPubKey, 
+      spendingPubKeyX: spendingPubKey, 
       viewingPubKeyPrefix,
-      viewingPubKey,
+      viewingPubKeyX: viewingPubKey,
       stealthKeysAuthorization,
       senderSig
     })
@@ -1037,7 +1037,7 @@ class ClaimLink implements IClaimLinkSDK {
       this.transferId,
       receiverSig,
       spendingPubKeyPrefix,
-      spendingPubKey,
+      spendingPubKey, 
       viewingPubKeyPrefix,
       viewingPubKey,
       stealthKeysAuthorization,
