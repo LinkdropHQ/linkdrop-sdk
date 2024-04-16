@@ -9,7 +9,14 @@ type TGetSignature = (
   chainId: number
 ) => Promise<string>
 
-const getSignature: TGetSignature = async (spendingPubKeyPrefix, spendingPubKey, viewingPubKeyPrefix, viewingPubKey, signTypedData, chainId) => { 
+const getSignature: TGetSignature = async (
+  spendingPubKeyPrefix,
+  spendingPubKey,
+  viewingPubKeyPrefix,
+  viewingPubKey,
+  signTypedData,
+  chainId
+) => { 
   const types = {
     StealthKeys: [
       { name: 'spendingPubKeyPrefix', type: 'uint256'},

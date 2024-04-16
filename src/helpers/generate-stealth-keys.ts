@@ -59,11 +59,11 @@ const generateStealthKeys: TGenerateStealthKeys = (address, signature) => {
  const viewingPubKeyPrefix = Number(viewingPubKeyInitial[3])  // prefix bit is the 2th character in the string (no 0x prefix)
 
  return {
-  spendingPubKeyPrefix,
-  spendingPubKey: `0x${spendingPubKeyInitial.slice(4)}`,
-  viewingPubKeyPrefix,
-  viewingPubKey: `0x${viewingPubKeyInitial.slice(4)}`,
-}
+    spendingPubKeyPrefix,
+    spendingPubKey: `0x${spendingPubKeyInitial.slice(4)}`,
+    viewingPubKeyPrefix,
+    viewingPubKey: `0x${viewingPubKeyInitial.slice(4)}`,
+  }
 }
 
 export default generateStealthKeys
