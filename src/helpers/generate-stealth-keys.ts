@@ -5,8 +5,7 @@ import {
   SigningKey
 } from 'ethers'
 const isValidSignature = (sig: string) => {
-  // return isHexString(sig) && sig.length === 132
-  return sig.length === 132
+  return isHexString(sig) && sig.length === 132
 }
 
 type TGenerateStealthKeys = (
@@ -22,7 +21,7 @@ type TGenerateStealthKeys = (
 const generateStealthKeys: TGenerateStealthKeys = (address, signature) => { 
   if (!signature) { 
     const value1 = ethers.id(`sk_${address}`)
-    const value2 = ethers.id(`vk_${address}`)
+    const value2 = ethers.id(`vk_${address}`).replace('0x', 'dd')
     signature =  value1 + value2
   }
 
@@ -48,7 +47,7 @@ const generateStealthKeys: TGenerateStealthKeys = (address, signature) => {
 
  // Hash the signature pieces to get the two private keys
  const spendingPrivateKey = sha256(`0x${portion1}`)
- const viewingPrivateKey = sha256(`${portion2}`)
+ const viewingPrivateKey = sha256(`0x${portion2}`)
 
  // Compute the Compressed public keys
  const spendingPubKeyInitial = SigningKey.computePublicKey(spendingPrivateKey, true)
