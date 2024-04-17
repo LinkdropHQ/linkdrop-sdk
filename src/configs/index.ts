@@ -16,7 +16,7 @@ export const supportedStableCoins = {
   [ETokenAddress.usdcBase]: ESelectors.receiveWithAuthorization,
   [ETokenAddress.usdcBaseGoerli]: ESelectors.receiveWithAuthorization,
   [ETokenAddress.usdcBridgedPolygon]: ESelectors.approveWithAuthorization,
-  [ETokenAddress.usdcMumbai]:  ESelectors.approveWithAuthorization,
+  [ETokenAddress.usdcSepolia]:  ESelectors.receiveWithAuthorization,
   [ETokenAddress.usdcPolygon]:  ESelectors.receiveWithAuthorization,
   [ETokenAddress.usdcArbitrum]:  ESelectors.receiveWithAuthorization,
   [ETokenAddress.usdcOptimism]:  ESelectors.receiveWithAuthorization,

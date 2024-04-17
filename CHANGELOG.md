@@ -1,5 +1,9 @@
 # Linkdrop P2P SDK
 
+## 3.8.0-beta
+- added Sepolia network support
+- removed Mumbai network support
+
 ## 3.7.0-beta
 - added machine-readable error handling
 

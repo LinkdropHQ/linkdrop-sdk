@@ -3,7 +3,7 @@ import { TDomain, TSignTypedData, ETokenAddress } from '../../types'
 import getDepositAuthorizationBase from './get-deposit-authorization-base'
 import getDepositAuthorizationPolygonBridgedUSDC from './get-deposit-authorization-polygon-bridged-usdc'
 import getDepositAuthorizationPolygonNativeUSDC from './get-deposit-authorization-polygon-native-usdc'
-import getDepositAuthorizationMumbai from './get-deposit-authorization-mumbai'
+import getDepositAuthorizationSepolia from './get-deposit-authorization-sepolia'
 
 import getDepositAuthorizationArbitrum from './get-deposit-authorization-arbitrum'
 import getDepositAuthorizationAvalanche from './get-deposit-authorization-avalanche'
@@ -115,7 +115,8 @@ async function getDepositAuthorization(
     )
   }
 
-  return getDepositAuthorizationMumbai(
+  // sepolia default
+  return getDepositAuthorizationSepolia(
     signTypedData,
     sender,
     to,

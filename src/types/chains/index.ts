@@ -1,6 +1,6 @@
 export enum EChains {
   polygon = 137,
-  mumbai = 80001,
+  sepolia = 11155111,
   base = 8453,
   baseGoerli = 84531,
   avalanche = 43114,
