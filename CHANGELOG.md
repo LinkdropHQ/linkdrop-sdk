@@ -1,6 +1,6 @@
 # Linkdrop P2P SDK
 
-## 3.9.1-beta
+## 3.9.1-alpha
 - update for zupla error handling
 
 ## 3.9.0-beta
