@@ -1,5 +1,8 @@
 # Linkdrop P2P SDK
 
+## 3.9.0-beta
+- added Degen network support
+
 ## 3.8.0-beta
 - added Sepolia network support
 - removed Mumbai network support
