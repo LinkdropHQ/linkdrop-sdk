@@ -1,5 +1,8 @@
 # Linkdrop P2P SDK
 
+## 3.9.1-beta
+- update for zupla error handling
+
 ## 3.9.0-beta
 - added Degen network support
 

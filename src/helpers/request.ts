@@ -14,7 +14,7 @@ async function request<TResponse>(
     const responseCode = res.status
     const responseMessage = (responseData.message as string) || 'Some error occured. Please check server response for more info'
     const responseErrors = responseData.errors as string[]
-    const responseErrorText = responseErrors && responseErrors.length ? responseErrors[0] : defineErrorText(res)
+    const responseErrorText = (responseErrors && responseErrors.length) ? responseErrors[0] : defineErrorText(res.status, responseData)
     switch (responseCode) {
       case 409:
         throw new ConflictError(responseMessage, responseErrorText)

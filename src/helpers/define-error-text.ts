@@ -1,5 +1,6 @@
-type TDefineErrorText = (error: {
+type TDefineErrorText = (
   status: number,
+  error: {
   message?: string,
   geographicContext?: {
     asn: string,
@@ -9,9 +10,10 @@ type TDefineErrorText = (error: {
 }) => string
 
 const defineErrorText: TDefineErrorText = (
+  status,
   error
 ) => {
-  switch (error.status) {
+  switch (status) {
     case 403:
       if (error.message) {
         return error.message
