@@ -20,7 +20,7 @@ const defineErrorText: TDefineErrorText = (
       }
 
       if (error.geographicContext) {
-        return 'Application is not available in this region'
+        return 'Service is not available in this region'
       }
 
       return 'Some error occured. Please check server response for more info'
