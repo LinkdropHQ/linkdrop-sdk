@@ -1,6 +1,9 @@
-import { TClaimLinkItemOperation } from "../types"
+import {
+  TClaimLinkItemOperation,
+  TClaimLinkOperation
+} from "../types"
 
-type TUpdateOperations = (operations: TClaimLinkItemOperation[]) => TClaimLinkItemOperation[]
+type TUpdateOperations = (operations: TClaimLinkItemOperation[]) => TClaimLinkOperation[]
 
 const updateOperations: TUpdateOperations = (operations) => {
   const operationsUpdated = operations.map(operation => {

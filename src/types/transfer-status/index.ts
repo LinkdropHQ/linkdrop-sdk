@@ -1,7 +1,10 @@
-export type TTransferStatus = 'created' | 
+export type TTransferStatus = 'created' |
+                              'depositing' |
                               'deposited' |
-                              'redeemed' |
-                              'canceled' |
+                              'redeemed'|
+                              'redeeming' |
                               'error' |
-                              'refunded'
+                              'refunded' |
+                              'refunding' |
+                              'cancelled'
 

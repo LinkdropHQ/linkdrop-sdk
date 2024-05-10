@@ -1,4 +1,4 @@
-import { TSendTransaction, TGetRandomBytes, TDepositResult } from "../../../../types"
+import { TSendTransaction, TDepositResult } from "../../../../types"
 
 type TDepositArgs = {
   sendTransaction: TSendTransaction

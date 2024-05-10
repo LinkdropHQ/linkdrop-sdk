@@ -1,4 +1,4 @@
-import { TClaimLinkItem, ETokenType } from '../../types'
+import { TClaimLinkItem, TTokenType } from '../../types'
 import { TDeposit } from './deposit/types'
 import { TDepositWithAuth } from './deposit-with-authorization/types'
 import { TDepositERC721 } from './deposit-erc721/types'
@@ -13,11 +13,11 @@ type TRedeemLink = (
   apiHost: string,
   apiKey: string | null,
   receiver: string,
-  sender: string,
-  escrow: string,
   transfer_id: string,
   receiver_sig: string,
-  token: string
+  token?: string,
+  sender?: string,
+  escrow?: string
 ) => Promise<TRedeemLinkResponse>
 
 type TRedeemRecoveredLinkResponse = {
@@ -75,7 +75,7 @@ type TGetFee = (
   apiKey: string | null,
   tokenAddress: string,
   sender: string,
-  tokenType: ETokenType,
+  tokenType: TTokenType,
   transferId: string,
   expiration: number,
   amount: string,
@@ -92,7 +92,7 @@ type TGetLimits = (
   apiHost: string,
   apiKey: string | null,
   tokenAddress: string,
-  tokenType: ETokenType
+  tokenType: TTokenType
 ) => Promise<TGetLimitsResponse>
 
 type TGetHistoryResponse = {

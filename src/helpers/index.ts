@@ -13,9 +13,21 @@ import defineDomain from './define-domain'
 import request from './request'
 import defineHeaders from './define-headers'
 import getVersionFromClaimUrl from './get-version-from-claim-url'
+import getLinkSourceFromClaimUrl from './get-link-source-from-claim-url'
+import getClaimCodeFromDashboardLink from './get-claim-code-from-dashboard-link'
+import getChainIdFromDashboardLink from './get-chain-id-from-dashboard-link'
+import defineDashboardApiHost from './define-dashboard-api-host'
+import defineVersionByEscrow from './define-version-by-escrow'
+import checkApiKeyFormatValidity from './check-api-key-format-validity'
 
 export {
   defineDomain,
+  getClaimCodeFromDashboardLink,
+  getChainIdFromDashboardLink,
+  defineDashboardApiHost,
+  checkApiKeyFormatValidity,
+  getLinkSourceFromClaimUrl,
+  defineVersionByEscrow,
   getVersionFromClaimUrl,
   defineHeaders,
   request,

@@ -1,9 +1,9 @@
-import { ETokenType } from "../../../../types"
+import { TTokenType } from "../../../../types"
 
 type TGetCurrentFee = (
   apiUrl: string,
   token: string,
-  tokenType: ETokenType,
+  tokenType: TTokenType,
   sender: string,
   transferId: string,
   expiration: number,

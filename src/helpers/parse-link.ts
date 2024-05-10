@@ -1,17 +1,21 @@
 import decodeLink from "./decode-link"
-import { ethers } from "ethers"
+import { TLink } from "../types"
 
 type TParseLink = (
-  link: string
+  link: string,
+  decodedLink?: TLink
 ) => {
   senderSig?: string,
   linkKey: string
 }
 
 const parseLink: TParseLink = (
-  link
+  link,
+  decodedLink
 ) => {
-  const decodedLink = decodeLink(link)
+  if (!decodedLink) {
+    decodedLink = decodeLink(link)
+  }
 
   return {
     senderSig: decodedLink.senderSig,

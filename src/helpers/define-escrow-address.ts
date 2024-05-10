@@ -1,23 +1,30 @@
 import * as configs from '../configs'
-import { ETokenType } from '../types'
+import { TDeploymentType, TTokenType } from '../types'
 
 type TDefineEscrowAddress = (
   chainId: number | null,
-  tokenType: ETokenType
+  tokenType: TTokenType,
+  deployment: TDeploymentType
 ) => string | null
 
 const defineEscrowAddress: TDefineEscrowAddress = (
   chainId,
-  tokenType
+  tokenType,
+  deployment
 ) => {
   if (!chainId || !tokenType) {
     return null
   }
-  const escrow = configs.escrowContracts[`${chainId}_${tokenType}`]
-  if (!escrow) {
-    return null
+
+  if (deployment === 'CBW') {
+    const escrow = configs.cbwEscrowContract
+    if (!escrow) {
+      return null
+    }
+    return escrow
   }
-  return escrow
+  
+  return configs.mainEscrowContract
 }
 
 export default defineEscrowAddress

@@ -1,32 +1,39 @@
 import {
-  ETokenType,
+  TTokenType,
   ETokenAddress,
-  TClaimLinkItemOperation,
-  TGetRandomBytes
+  TClaimLinkOperation,
+  TGetRandomBytes,
+  TClaimLinkItemStatus,
+  TClaimLinkSource,
+  TDeploymentType
 } from "../../../../types"
 
 type TConstructorArgs = {
   sender: string
   token?: ETokenAddress
   expiration: number
+  deployment: TDeploymentType
   chainId: number
   apiUrl: string
   apiKey: string | null
   baseUrl?: string
   transferId?: string
   claimUrl?: string
-  tokenType: ETokenType
+  tokenType: TTokenType
   escrowAddress?: string
-  operations?: TClaimLinkItemOperation[]
+  operations?: TClaimLinkOperation[]
   getRandomBytes: TGetRandomBytes
   linkKey: string | null
   tokenId?: string
+  forRecipient?: boolean
+  source: TClaimLinkSource
 
   amount: string
   feeAmount: string
   feeAuthorization?: string
   feeToken: string
   totalAmount: string
+  status?: TClaimLinkItemStatus
 }
 
 

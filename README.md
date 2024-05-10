@@ -1,4 +1,4 @@
-# Linkdrop P2P SDK (V2)
+# Linkdrop P2P SDK (V3)
 ## Import and initialize SDK
 ```js
 import { LinkdropP2P } from 'linkdrop-p2p-sdk'
@@ -75,8 +75,8 @@ const { claimUrl, transferId, txHash } = await claimLink.depositWithAuthorizatio
 **2b. Deposit native tokens (ETH/MATIC), ERC721, ERC1155 or ERC20 tokens to escrow contract via direct call :**  
 To avoid asking for sender private key directly, we ask to pass a function that signs and sends Ethereum transaction. The function should be similar to ethers `signer.sendTransaction` - https://docs.ethers.org/v6/api/providers/#Signer-signTypedData
 ```js
-const sendTransaction = async ({ to, value, gasLimit, data }) => { 
-  const tx = await signer.sendTransaction({ to, value, gasLimit, data })
+const sendTransaction = async ({ to, value, data }) => { 
+  const tx = await signer.sendTransaction({ to, value, data })
   return { hash: tx.hash }
 }
 const { claimUrl, transferId, txHash } = await claimLink.deposit({ sendTransaction }) 
@@ -181,3 +181,58 @@ In order to get the latest status of the claim link, use the following method:
 ```js
 const { status, operations } = await claimLink.getStatus()
 ```
+
+
+#### Get Claim Link deposit params
+In order to get params that will be passed to the sendTransaction method when making a deposit, you can use the public method getDepositParams
+```js
+const {
+  value,
+  data,
+  to,
+} = claimLink.getDepositParams()
+```
+
+
+
+## Error handling
+
+### Catching errors
+```js
+
+try {
+  ...
+  const txHash = await claimLink.redeem('')
+  ...
+  
+} catch (err) {
+  console.log(err.message)
+  // Validation Error: Argument "dest" is not provided (argument="dest", value="")
+
+  console.log(err.error)
+  // DESTINATION_ADDRESS_NOT_PROVIDED
+}
+
+```
+
+### Error types
+- SENDER_NOT_PROVIDED - argument "sender" is not provided to constructor
+- TOKEN_ID_NOT_PROVIDED - argument "tokenId" is not provided to constructor
+- AMOUNT_NOT_PROVIDED - argument "amount" is not provided to method or constructor
+- TOKEN_TYPE_NOT_PROVIDED - argument "tokenType" is not provided to constructor
+- TOKEN_NOT_PROVIDED - argument "token" is not provided to method or constructor
+- TRANSFER_ID_NOT_PROVIDED - argument "transferId" is not provided to constructor
+- SEND_TRANSACTION_NOT_PROVIDED - function "sendTransaction" is not provided to method
+- TOKEN_NOT_SUPPORTED_FOR_DEPOSIT_WITH_AUTH - current stablecoin is not supported
+- SIGN_TYPED_DATA_NOT_PROVIDED - function "signTypedData" is not provided to method
+- CANNOT_UPDATE_AMOUNT_FOR_ERC721 - you cannot specify the number of tokens for ERC721
+- MIN_LIMIT_FAILED - you cannot specify the number of tokens less than the lower limit
+- MAX_LIMIT_FAILED - you cannot specify the number of tokens greater than the upper limit
+- INVALID_DEPLOYMENT_PROPERTY - you cannot specify a deployment other than CBW or LD
+- BASE_URL_NOT_PROVIDED - argument "baseUrl" is not provided to constructor
+- GET_RANDOM_BYTES_NOT_PROVIDED - function "signTypedData" is not provided to constructor
+- CHAIN_ID_NOT_PROVIDED - argument "chainId" is not provided to constructor or method
+- CHAIN_NOT_SUPPORTED - current chain is not supported. Supported chains: 137, 11155111, 8453, 84531, 43114, 10, 42161, 100
+- FROM_NOT_PROVIDED - argument "from" is not provided to method
+- LIMITS_NOT_AVAILABLE_FOR_ERC721_AND_ERC1155 - limits are not available for ERC721 and ERC1155 tokens
+- DEPOSIT_STILL_PENDING - recipient attempts to claim tokens before the deposit transaction is completed

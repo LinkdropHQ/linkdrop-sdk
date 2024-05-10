@@ -1,7 +1,7 @@
-import { ETokenSymbol, ETokenType, ETokenAddress } from '../types'
+import { ETokenSymbol, TTokenType, ETokenAddress } from '../types'
 
 type TDefineTokenSymbol = (
-  tokenType: ETokenType,
+  tokenType: TTokenType,
   chainId: number,
   tokenAddress: string
 ) => ETokenSymbol | null
@@ -13,7 +13,7 @@ const defineTokenSymbol: TDefineTokenSymbol = (
 ) => {
   switch (tokenSymbol) {
     case 'NATIVE':
-      if (chainId === 80001 || chainId === 137) {
+      if (chainId === 137) {
         return ETokenSymbol.matic
       }
       return ETokenSymbol.eth

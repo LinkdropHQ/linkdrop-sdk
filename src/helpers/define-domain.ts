@@ -1,5 +1,5 @@
 import {
-  ETokenAddress, TDomain
+  ETokenAddress, TDomain, EChains
 } from '../types'
 
 type TDefineDomain = (
@@ -11,7 +11,7 @@ const defineDomain: TDefineDomain = (
   chainId,
   tokenAddress
 ) => {
-  if (chainId === 137) {
+  if (chainId === EChains.polygon) {
     if (tokenAddress === ETokenAddress.usdcBridgedPolygon) {
       return {
         name: 'USD Coin (PoS)',  // Polygon Mainnet
@@ -24,35 +24,63 @@ const defineDomain: TDefineDomain = (
     return {
       "name": "USD Coin",
       "version": "2",
-      "chainId": 137,
+      "chainId": EChains.polygon,
       "verifyingContract": ETokenAddress.usdcPolygon
     }
     
   }
 
-  if (chainId === 84531) {// Base Goerli
+
+  if (chainId === EChains.avalanche) { // avalanche
+    return {
+      "name": "USD Coin",
+      "version": "2",
+      "chainId": EChains.avalanche,
+      "verifyingContract": ETokenAddress.usdcAvalanche
+    }
+  }
+
+  if (chainId === EChains.optimism) { // optimism
+    return {
+      "name": "USD Coin",
+      "version": "2",
+      "chainId": EChains.optimism,
+      "verifyingContract": ETokenAddress.usdcOptimism
+    }
+  }
+
+  if (chainId === EChains.arbitrum) { // arbitrum
+    return {
+      "name": "USD Coin",
+      "version": "2",
+      "chainId": EChains.arbitrum,
+      "verifyingContract": ETokenAddress.usdcArbitrum
+    }
+  }
+
+  if (chainId === EChains.baseGoerli) {// Base Goerli
     return {
       name: 'USD Coin',  
       version: '2',
-      chainId: 84531,
+      chainId: EChains.baseGoerli,
       verifyingContract: ETokenAddress.usdcBaseGoerli
     }
   }
 
-  if (chainId === 80001) { // Mumbai
+  if (chainId === EChains.sepolia) { // Sepolia
     return {
-      name: 'USD Coin (PoS)',
-      version: '1',
-      verifyingContract: ETokenAddress.usdcMumbai,
-      salt: '0x0000000000000000000000000000000000000000000000000000000000013881'
+      "name": "USDC",
+      "version": "2",
+      "chainId": EChains.sepolia,
+      "verifyingContract": ETokenAddress.usdcSepolia
     }
   } 
 
-  if (chainId === 8453) { // Base
+  if (chainId === EChains.base) { // Base
     return {
       name: 'USD Coin',
       version: '2',
-      chainId: 8453,
+      chainId: EChains.base,
       verifyingContract: ETokenAddress.usdcBase
     }
   }

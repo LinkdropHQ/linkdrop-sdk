@@ -1,6 +1,42 @@
 # Linkdrop P2P SDK
 
-## 3.1.0-alpha.0
+## 3.9.1-alpha
+- update for zupla error handling
+
+## 3.9.0-beta
+- added Degen network support
+
+## 3.8.0-beta
+- added Sepolia network support
+- removed Mumbai network support
+
+## 3.7.0-beta
+- added machine-readable error handling
+
+## 3.6.0-beta
+- support for new dashboard URL schema
+
+## 3.5.0-beta
+- Escrow contracts update
+- added optional "deployment" param to LinkdropP2P constructor
+
+## 3.4.0-beta
+- Added getDepositParams method
+- Removed sender address check in generateClaimUrl method
+
+## 3.3.0-beta
+- Dashboard links retrieve and redeem
+- Added isDepositWithAuthorizationAvailable method to ClaimLink
+- Added error handling for api requests
+- operations format changed (snake_case to camelCase)
+
+## 3.2.0-beta
+- Arbitrum, Optimism, Avalanche networks support
+
+## 3.1.1-beta
+- enum ETokenType => type TTokenType
+
+## 3.1.0-beta
 - backward compatibility (v2 => v3)
 - ERC721 and ERC1155 tokens support
 

@@ -1,4 +1,4 @@
-import { TClaimLinkItem } from "../../../../types"
+import { THistoryItem } from "../../../../types"
 
 export type TGetHistoryArgs = {
   sender: string
@@ -17,7 +17,7 @@ type TGetHistory = ({
   limit,
   token
 }: TGetHistoryArgs) => Promise<({
-  claimLinks: TClaimLinkItem[],
+  claimLinks: THistoryItem[],
   resultSet: {
     total: number
     count: number
