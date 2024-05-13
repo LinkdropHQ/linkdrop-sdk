@@ -86,6 +86,8 @@ type TGetLimitsResponse = {
   success: boolean
   max_transfer_amount: string
   min_transfer_amount: string
+  min_transfer_amount_usd: string
+  max_transfer_amount_usd: string
 }
 
 type TGetLimits = (

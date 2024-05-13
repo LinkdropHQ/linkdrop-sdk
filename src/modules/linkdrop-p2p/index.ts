@@ -264,7 +264,9 @@ class LinkdropP2P implements ILinkdropP2P {
 
     return {
       minTransferAmount: limits.min_transfer_amount,
-      maxTransferAmount: limits.max_transfer_amount
+      maxTransferAmount: limits.max_transfer_amount,
+      minTransferAmountUSD: limits.min_transfer_amount_usd,
+      maxTransferAmountUSD: limits.max_transfer_amount_usd
     }
   }
 
