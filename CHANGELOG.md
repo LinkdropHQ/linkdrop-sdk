@@ -1,5 +1,14 @@
 # Linkdrop P2P SDK
 
+## 3.10.0-beta
+- update for getLimits method (usd limits added)
+
+## 3.9.1-alpha
+- update for zupla error handling
+
+## 3.9.0-beta
+- added Degen network support
+
 ## 3.8.0-beta
 - added Sepolia network support
 - removed Mumbai network support

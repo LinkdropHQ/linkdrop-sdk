@@ -24,12 +24,11 @@ const sdk = LinkdropP2P({
 Learn more about the `claimLink` object in [the ClaimLink section](#claimlink-properties)
 ```js
 const from = "0x2331bca1f2de4661ed88a30c99a7a9449aa84195" // Sender's Ethereum address
-const token = "0x0fa8781a83e46826621b3bc094ea2a0212e71b23" // token contract address
-const tokenType = "ERC1155" // one of "NATIVE" | "ERC20" | "ERC721" | "ERC1155"
-const chainId = 80001 // network chain ID
-const amount = "1000000" // atomic amount of tokens that sender wants to send (before fees). Not required for 'ERC721' tokens
+const token = "0x6f8a06447ff6fcf75d803135a7de15ce88c1d4ec" // token contract address
+const tokenType = "ERC20" // one of "NATIVE" | "ERC20"
+const chainId = 137 // network chain ID
+const amount = "1000000" // atomic amount of tokens that sender wants to send (before fees)
 const expiration = "1695985897077" // unix timestamp after which the claim link will expire and amount will be sent back to sender unless it was claimed before. Optional param, it not passed, it's going to be set to 15 days from now,
-const tokenId = "1" // ID of token. Required for "ERC721" and "ERC1155"
 
 const claimLink = await sdk.createClaimLink({
   from,
@@ -37,12 +36,11 @@ const claimLink = await sdk.createClaimLink({
   amount,
   expiration,
   chainId,
-  tokenType,
-  tokenId
+  tokenType
 })
 ```
 
-You can update amount for "NATIVE", "ERC20", and "ERC1155" tokens
+You can update amount for tokens
 
 ```js
 const { amount, feeAmount, totalAmount, feeToken } = await claimLink.updateAmount(amount)
@@ -50,14 +48,19 @@ const { amount, feeAmount, totalAmount, feeToken } = await claimLink.updateAmoun
 
 Methods `createClaimLink` and `updateAmount` will throw an error if amount is not valid according to limits.
 
-To define the minimum and maximum limit of amount that can be sent via link, use the getLimits method. Method is not available for ERC721 or ERC1155 tokens
+To define the minimum and maximum limit of amount that can be sent via link, use the getLimits method
 ```js
 
-const token = "0x0fa8781a83e46826621b3bc094ea2a0212e71b23" // token contract address. Not required if tokenType is NATIVE
+const token = "0x6f8a06447ff6fcf75d803135a7de15ce88c1d4ec" // token contract address. Not required if tokenType is NATIVE
 const tokenType = "ERC20" // one of "NATIVE" | "ERC20".
-const chainId = 80001 // network chain ID
+const chainId = 137 // network chain ID
 
-const { minTransferAmount, maxTransferAmount } = await sdk.getLimits({
+const {
+  minTransferAmount,
+  maxTransferAmount,
+  minTransferAmountUSD,
+  maxTransferAmountUSD
+} = await sdk.getLimits({
   token,
   tokenType,
   chainId
@@ -72,7 +75,7 @@ const signTypedData = (domain, types, message) => signer.signTypedData(domain, t
 const { claimUrl, transferId, txHash } = await claimLink.depositWithAuthorization({ signTypedData }) 
 ```
 
-**2b. Deposit native tokens (ETH/MATIC), ERC721, ERC1155 or ERC20 tokens to escrow contract via direct call :**  
+**2b. Deposit native tokens (ETH/MATIC) or ERC20 tokens to escrow contract via direct call :**  
 To avoid asking for sender private key directly, we ask to pass a function that signs and sends Ethereum transaction. The function should be similar to ethers `signer.sendTransaction` - https://docs.ethers.org/v6/api/providers/#Signer-signTypedData
 ```js
 const sendTransaction = async ({ to, value, data }) => { 
@@ -81,7 +84,7 @@ const sendTransaction = async ({ to, value, data }) => {
 }
 const { claimUrl, transferId, txHash } = await claimLink.deposit({ sendTransaction }) 
 ```
-For ERC20 (except USDC tokens), ERC721 and ERC1155 tokens before depositing, you need to approve tokens so that the contract has the opportunity to send them to the recipient
+For ERC20 (except USDC tokens), you need to approve tokens so that the contract has the opportunity to send them to the recipient
 
 **3. Re-generate Claim URL:**
 Sender can generate a new claim URL (if the original claim URL is lost):
@@ -106,7 +109,7 @@ const claimLink = await sdk.retrieveClaimLink({ chainId, transferId })
 You can also fetch information about created links
 ```js
 const onlyActive = true // to get only active links (have not been redeemed or refunded yet) set parameter to true
-const chainId = 80001
+const chainId = 137
 const sender = '0x2331bca1f2de4661ed88a30c99a7a9449aa84195'
 const limit = 10 // parameter specifies the number of claim links in response. Not required. Default: 100
 const offset = 10 // parameter is used to exclude from a response the first N claim links. Not required. Default: 0
@@ -155,7 +158,7 @@ Claim Link object contains methods and properties to facilitate both creation an
 
 ### ClaimLink properties:
 - _transferId_ (string, transfer unique id, e.g. "1695985897077")
-- _tokenType_ (string, token standard type, one of `'NATIVE' | 'ERC20' | 'ERC721' | 'ERC1155'`)
+- _tokenType_ (string, token standard type, one of `'NATIVE' | 'ERC20'`)
 - _amount_ (string, atomic amount of tokens receiver going to claim, e.g. "1000000" for 1 USDC)
 - _fee_ (string, atomic amount of tokens sender needs to pay as a fee, e.g. "100000" or 0.1 USDC)
 - _expiration_ (string, unix timestamp after which the claim link will expire and amount will be sent back to sender unless it was claimed before)
@@ -225,7 +228,6 @@ try {
 - SEND_TRANSACTION_NOT_PROVIDED - function "sendTransaction" is not provided to method
 - TOKEN_NOT_SUPPORTED_FOR_DEPOSIT_WITH_AUTH - current stablecoin is not supported
 - SIGN_TYPED_DATA_NOT_PROVIDED - function "signTypedData" is not provided to method
-- CANNOT_UPDATE_AMOUNT_FOR_ERC721 - you cannot specify the number of tokens for ERC721
 - MIN_LIMIT_FAILED - you cannot specify the number of tokens less than the lower limit
 - MAX_LIMIT_FAILED - you cannot specify the number of tokens greater than the upper limit
 - INVALID_DEPLOYMENT_PROPERTY - you cannot specify a deployment other than CBW or LD
@@ -234,5 +236,4 @@ try {
 - CHAIN_ID_NOT_PROVIDED - argument "chainId" is not provided to constructor or method
 - CHAIN_NOT_SUPPORTED - current chain is not supported. Supported chains: 137, 11155111, 8453, 84531, 43114, 10, 42161, 100
 - FROM_NOT_PROVIDED - argument "from" is not provided to method
-- LIMITS_NOT_AVAILABLE_FOR_ERC721_AND_ERC1155 - limits are not available for ERC721 and ERC1155 tokens
 - DEPOSIT_STILL_PENDING - recipient attempts to claim tokens before the deposit transaction is completed
