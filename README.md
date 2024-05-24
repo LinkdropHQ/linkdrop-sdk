@@ -4,17 +4,17 @@
 import { LinkdropP2P } from 'linkdrop-p2p-sdk'
 
 const baseUrl = "https://p2p.linkdrop.io" // baseUrl is the host to be used to generate claim URLs. Required
-const apiKey = "spfurjdmvfkdlfo" // apiKey is the string parameter that will be passed to headers as Bearer token ("authorization" header). Not required. Default value: null
-const apiUrl = "https://api.myurl.com" // apiUrl is the string parameter that will be used as request url prefix for endpoints. Not required. Default value: https://escrow-api.linkdrop.io/v2
+// const apiKey = "spfurjdmvfkdlfo" // apiKey is the string parameter that will be passed to headers as Bearer token ("authorization" header). Not required. Default value: null
+// const apiUrl = "https://api.myurl.com" // apiUrl is the string parameter that will be used as request url prefix for endpoints. Not required. Default value: https://escrow-api.linkdrop.io/v3
 const getRandomBytes = (length) => { 
   return new Uint8Array(crypto.randomBytes(length));
 } // To avoid using and linking native crypto libraries, we ask to pass a random bytes generation function. Required
 
 const sdk = LinkdropP2P({
-  apiKey,
   baseUrl,
-  apiUrl,
-  getRandomBytes
+  getRandomBytes,
+  // apiKey,
+  // apiUrl
 }) 
 ```
 
