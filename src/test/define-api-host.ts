@@ -1,6 +1,4 @@
-import { assert } from "chai"
 import defineApiHost from "../helpers/define-api-host"
-import { EChains } from '../types'
 import { apiUrl } from '../configs/index'
 import { expect} from "chai"
 

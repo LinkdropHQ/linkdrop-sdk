@@ -1,6 +1,16 @@
 import {
   ETokenAddress, TDomain, EChains
 } from '../types'
+import {
+  polygonUSDCBridged,
+  polygonUSDC,
+  optimismUSDC,
+  avalancheUSDC,
+  arbitrumUSDC,
+  baseGoerliUSDC,
+  baseUSDC,
+  sepoliaUSDC
+} from '../domains'
 
 type TDefineDomain = (
   chainId: number | null,
@@ -13,76 +23,33 @@ const defineDomain: TDefineDomain = (
 ) => {
   if (chainId === EChains.polygon) {
     if (tokenAddress === ETokenAddress.usdcBridgedPolygon) {
-      return {
-        name: 'USD Coin (PoS)',  // Polygon Mainnet
-        version: '1',
-        verifyingContract: ETokenAddress.usdcBridgedPolygon,
-        salt: '0x0000000000000000000000000000000000000000000000000000000000000089'
-      }
+      return polygonUSDCBridged
     }
-
-    return {
-      "name": "USD Coin",
-      "version": "2",
-      "chainId": EChains.polygon,
-      "verifyingContract": ETokenAddress.usdcPolygon
-    }
-    
+    return polygonUSDC
   }
 
-
   if (chainId === EChains.avalanche) { // avalanche
-    return {
-      "name": "USD Coin",
-      "version": "2",
-      "chainId": EChains.avalanche,
-      "verifyingContract": ETokenAddress.usdcAvalanche
-    }
+    if (tokenAddress === ETokenAddress.usdcAvalanche) return avalancheUSDC
   }
 
   if (chainId === EChains.optimism) { // optimism
-    return {
-      "name": "USD Coin",
-      "version": "2",
-      "chainId": EChains.optimism,
-      "verifyingContract": ETokenAddress.usdcOptimism
-    }
+    if (tokenAddress === ETokenAddress.usdcOptimism) return optimismUSDC
   }
 
   if (chainId === EChains.arbitrum) { // arbitrum
-    return {
-      "name": "USD Coin",
-      "version": "2",
-      "chainId": EChains.arbitrum,
-      "verifyingContract": ETokenAddress.usdcArbitrum
-    }
+    if (tokenAddress === ETokenAddress.usdcArbitrum) return arbitrumUSDC
   }
 
   if (chainId === EChains.baseGoerli) {// Base Goerli
-    return {
-      name: 'USD Coin',  
-      version: '2',
-      chainId: EChains.baseGoerli,
-      verifyingContract: ETokenAddress.usdcBaseGoerli
-    }
+    if (tokenAddress === ETokenAddress.usdcBaseGoerli) return baseGoerliUSDC
   }
 
   if (chainId === EChains.sepolia) { // Sepolia
-    return {
-      "name": "USDC",
-      "version": "2",
-      "chainId": EChains.sepolia,
-      "verifyingContract": ETokenAddress.usdcSepolia
-    }
+    if (tokenAddress === ETokenAddress.usdcSepolia) return sepoliaUSDC
   } 
 
   if (chainId === EChains.base) { // Base
-    return {
-      name: 'USD Coin',
-      version: '2',
-      chainId: EChains.base,
-      verifyingContract: ETokenAddress.usdcBase
-    }
+    if (tokenAddress === ETokenAddress.usdcBase) return baseUSDC
   }
 
   return null
