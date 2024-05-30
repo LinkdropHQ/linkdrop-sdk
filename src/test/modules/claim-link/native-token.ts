@@ -3,7 +3,6 @@ import { expect } from "chai"
 import randomBytes from 'randombytes'
 import { beforeEach } from "mocha"
 import { nativeTokenAddress } from "../../../configs"
-import { ethers } from "ethers"
 global.fetch = require('node-fetch')
 const getRandomBytes = (length: number) => new Uint8Array(randomBytes(length)) 
 const baseUrl = 'https://localhost:3000'
@@ -11,6 +10,7 @@ const apiKey = process.env.ZUPLO_API_KEY
 const userAccount = '0xb4c3d57327d4fc9bcc3499963e21db1a5435d537'
 const token = nativeTokenAddress
 const chainId = 11155111
+const preparedLink = 'https://p2p.linkdrop.io/#/code?k=EZsMmw7XRDiFLAgBTfkLa6WafjVaikbH8YaGYaDrpd9Z&c=11155111&v=3&src=p2p&w=metamask&theme=light'
 
 let linkdropP2P
 
@@ -72,7 +72,7 @@ describe("LinkdropP2P link creation", () => {
   })
 
 
-  it("should return a corrent claim link", () => {
+  it("should return a current claim link", () => {
     const amount = '50000000000000000'
     return new Promise(function (resolve, reject) {
       linkdropP2P.createClaimLink({
@@ -89,7 +89,7 @@ describe("LinkdropP2P link creation", () => {
     })
   })
 
-  it("should return a corrent claim link with total amount equals to feeAmount + amount", () => {
+  it("should return a current claim link with total amount equals to feeAmount + amount", () => {
     const amount = '50000000000000000'
     return new Promise(function (resolve, reject) {
       linkdropP2P.createClaimLink({
@@ -107,7 +107,7 @@ describe("LinkdropP2P link creation", () => {
     })
   })
 
-  it("should return a corrent claim link with no possibility to use depositWithAuthorization method", () => {
+  it("should return a current claim link with no possibility to use depositWithAuthorization method", () => {
     const amount = '50000000000000000'
     return new Promise(async function (resolve, reject) {
       const link: ClaimLink = await linkdropP2P.createClaimLink({
@@ -124,7 +124,7 @@ describe("LinkdropP2P link creation", () => {
     })
   })
 
-  it("should return a corrent claim link and fail with getLink method", () => {
+  it("should return a current claim link and fail with getLink method", () => {
     const amount = '50000000000000000'
     return new Promise(async function (resolve, reject) {
       const link: ClaimLink = await linkdropP2P.createClaimLink({
@@ -142,7 +142,7 @@ describe("LinkdropP2P link creation", () => {
   })
 
 
-  it("should return a corrent claim link and fail with redeem method", () => {
+  it("should return a current claim link and fail with redeem method", () => {
     const amount = '50000000000000000'
     return new Promise(async function (resolve, reject) {
       const link: ClaimLink = await linkdropP2P.createClaimLink({
@@ -161,7 +161,7 @@ describe("LinkdropP2P link creation", () => {
     })
   })
 
-  it("should return a corrent claim link and fail with updateAmount method with DEPOSIT_AMOUNT_EXCEEDED error", () => {
+  it("should return a current claim link and fail with updateAmount method with DEPOSIT_AMOUNT_EXCEEDED error", () => {
     const initialAmount = '50000000000000000'
     const updatedAmount = '10000000000000000000'
 
@@ -181,7 +181,7 @@ describe("LinkdropP2P link creation", () => {
     })
   })
 
-  it("should return a corrent claim link and fail with updateAmount method with DEPOSIT_AMOUNT_LESS_THAN_MIN error", () => {
+  it("should return a current claim link and fail with updateAmount method with DEPOSIT_AMOUNT_LESS_THAN_MIN error", () => {
     const initialAmount = '50000000000000000'
     const updatedAmount = '10000'
 
@@ -201,8 +201,19 @@ describe("LinkdropP2P link creation", () => {
     })
   })
 
+  it("should return a current claim link with seplia tokens", async () => {
+    const link: ClaimLink = await linkdropP2P.getClaimLink(preparedLink)
+    expect(link.chainId).to.be.equal(11155111)
+  })
+
+  it("should return a current claim link status as deposited", async () => {
+    const link: ClaimLink = await linkdropP2P.getClaimLink(preparedLink)
+    const { status } = await link.getStatus()
+    expect(status).to.be.equal('deposited')
+  })
 
   // check with link created with p2p app
+  // user history
 
   // check dashboard links
 

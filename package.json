@@ -9,7 +9,7 @@
   "scripts": {
     "build": "rm -rf ./dist && webpack && yarn build:types",
     "build:types": "tsc --emitDeclarationOnly",
-    "test": "env-cmd mocha 'src/test/**/*.ts' --timeout 2000"
+    "test": "env-cmd mocha 'src/test/**/*.ts' --timeout 5000"
   },
   "repository": {
     "type": "git",
