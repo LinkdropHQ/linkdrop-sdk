@@ -9,7 +9,11 @@
   "scripts": {
     "build": "rm -rf ./dist && webpack && yarn build:types",
     "build:types": "tsc --emitDeclarationOnly",
+<<<<<<< HEAD
     "test": "mocha 'src/test/**/*.ts'"
+=======
+    "test": "env-cmd mocha 'src/test/**/*.ts' --timeout 2000"
+>>>>>>> 12e936e (added tests env file)
   },
   "repository": {
     "type": "git",
@@ -42,6 +46,7 @@
     "@types/chai": "^4.3.16",
     "@types/mocha": "^10.0.6",
     "chai": "^4.2.0",
+    "env-cmd": "^10.1.0",
     "mocha": "^10.4.0",
     "ts-node": "^10.9.2",
     "webpack": "^5.75.0",
