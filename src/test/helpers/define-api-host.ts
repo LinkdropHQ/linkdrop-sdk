@@ -1,5 +1,5 @@
-import defineApiHost from "../helpers/define-api-host"
-import { apiUrl } from '../configs/index'
+import { defineApiHost } from "../../helpers"
+import { apiUrl } from '../../configs/index'
 import { expect} from "chai"
 
 describe("defineApiHost", () => {

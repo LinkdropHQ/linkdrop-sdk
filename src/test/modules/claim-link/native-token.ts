@@ -152,10 +152,12 @@ describe("LinkdropP2P link creation", () => {
         tokenType: 'NATIVE',
         amount
       })
-      link.redeem(userAccount).catch(err => {
-        expect(err.message).to.be.equal('Tokens should be deposited before redeem')
-        resolve(true)
-      })
+      link
+        .redeem(userAccount)
+        .catch(err => {
+          expect(err.message).to.be.equal('Tokens should be deposited before redeem')
+          resolve(true)
+        })
     })
   })
 

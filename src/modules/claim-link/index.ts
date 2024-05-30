@@ -306,6 +306,10 @@ class ClaimLink implements IClaimLinkSDK {
         ))
       }
     }
+
+    if (!this.claimUrl) {
+      throw new Error(errors.cannot_redeem_before_deposit())
+    }
   
     if (this.source === 'd') {
       const claimCode = getClaimCodeFromDashboardLink(this.claimUrl)

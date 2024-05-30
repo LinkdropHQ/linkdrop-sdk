@@ -1,4 +1,4 @@
-import getVersionFromClaimUrl from "../helpers/get-version-from-claim-url"
+import { getVersionFromClaimUrl } from "../../helpers"
 import { expect} from "chai"
 
 const linkV3 = 'https://staging.p2p.linkdrop.io/#/code?k=F3ji8LubxF75AdzxyhToQxGFd8tF1FCzdQnBqPS13YeX&c=137&v=3&src=p2p&w=metamask&theme=light'

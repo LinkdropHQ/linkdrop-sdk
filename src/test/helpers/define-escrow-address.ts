@@ -1,7 +1,7 @@
-import defineEscrowAddress from "../helpers/define-escrow-address"
+import { defineEscrowAddress } from "../../helpers"
 import { expect} from "chai"
-import * as configs from '../configs'
-import { EChains } from "../types"
+import * as configs from '../../configs'
+import { EChains } from "../../types"
 
 describe("defineEscrowAddress", () => {
   it("should return escrow for Coinbase", () => {

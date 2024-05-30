@@ -1,4 +1,4 @@
-import getVersionByEscrow from "../helpers/define-version-by-escrow"
+import getVersionByEscrow from "../../helpers/define-version-by-escrow"
 import { expect} from "chai"
 
 const escrowV1 = '0x0522dd6e9f2beca1cd15a5fd275dc279a1a08eac'

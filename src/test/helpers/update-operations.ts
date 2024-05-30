@@ -1,6 +1,6 @@
-import updateOperations from "../helpers/update-operations"
+import updateOperations from "../../helpers/update-operations"
 import { expect} from "chai"
-import { TClaimLinkItemOperation } from "../types"
+import { TClaimLinkItemOperation } from "../../types"
 
 const emptyOperations: TClaimLinkItemOperation[] = []
 const operations: TClaimLinkItemOperation[] = [{

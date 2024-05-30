@@ -1,6 +1,6 @@
-import defineDomain from "../helpers/define-domain"
+import defineDomain from "../../helpers/define-domain"
 import { expect} from "chai"
-import { EChains, ETokenAddress } from "../types"
+import { EChains, ETokenAddress } from "../../types"
 import {
   polygonUSDCBridged,
   polygonUSDC,
@@ -10,7 +10,7 @@ import {
   baseGoerliUSDC,
   baseUSDC,
   sepoliaUSDC
-} from '../domains'
+} from '../../domains'
 
 describe("defineDomain", () => {
   it("should return polygon usdc bridged domain", () => {
