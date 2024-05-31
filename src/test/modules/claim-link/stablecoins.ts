@@ -55,7 +55,6 @@ describe("LinkdropP2P link creation", () => {
         expect(link.token).to.equal(token)
         resolve(true)
       }).catch(err => {
-        console.log({ err })
         reject(err)
       })
     })
@@ -73,7 +72,6 @@ describe("LinkdropP2P link creation", () => {
         expect(link.chainId).to.equal(chainId)
         resolve(true)
       }).catch(err => {
-        console.log({ err })
         reject(err)
       })
     })
@@ -91,7 +89,6 @@ describe("LinkdropP2P link creation", () => {
         expect(link.tokenType).to.equal('ERC20')
         resolve(true)
       }).catch(err => {
-        console.log({ err })
         reject(err)
       })
     })
@@ -109,7 +106,6 @@ describe("LinkdropP2P link creation", () => {
         expect(link.amount).to.equal(amount)
         resolve(true)
       }).catch(err => {
-        console.log({ err })
         reject(err)
       })
     })
@@ -127,7 +123,6 @@ describe("LinkdropP2P link creation", () => {
         expect(link).to.have.any.keys('feeToken', 'feeAuthorization', 'feeAmount');
         resolve(true)
       }).catch(err => {
-        console.log({ err })
         reject(err)
       })
     })
@@ -145,7 +140,6 @@ describe("LinkdropP2P link creation", () => {
         expect(link.feeToken).to.equal(token)
         resolve(true)
       }).catch(err => {
-        console.log({ err })
         reject(err)
       })
     })
@@ -163,7 +157,6 @@ describe("LinkdropP2P link creation", () => {
         expect(link.feeAmount).to.equal('0')
         resolve(true)
       }).catch(err => {
-        console.log({ err })
         reject(err)
       })
     })

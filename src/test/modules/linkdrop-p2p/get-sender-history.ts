@@ -28,8 +28,6 @@ describe("LinkdropP2P getSenderHistory method", () => {
       sender: userAccount,
       chainId
     })
-    console.log({ history })
     expect(linkdropP2P.baseUrl).to.equal(baseUrl)
-
   })
 })

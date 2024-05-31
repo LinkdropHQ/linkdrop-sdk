@@ -174,7 +174,6 @@ describe("LinkdropP2P link creation", () => {
         amount: initialAmount
       })
       link.updateAmount(updatedAmount).catch(err => {
-        console.log({ err })
         expect(err.error).to.be.equal('DEPOSIT_AMOUNT_EXCEEDED')
         resolve(true)
       })
@@ -194,7 +193,6 @@ describe("LinkdropP2P link creation", () => {
         amount: initialAmount
       })
       link.updateAmount(updatedAmount).catch(err => {
-        console.log({ err })
         expect(err.error).to.be.equal('DEPOSIT_AMOUNT_LESS_THAN_MIN')
         resolve(true)
       })

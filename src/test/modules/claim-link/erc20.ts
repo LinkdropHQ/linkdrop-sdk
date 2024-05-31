@@ -35,7 +35,6 @@ describe("LinkdropP2P link creation", () => {
         expect(link).to.have.any.keys('feeToken', 'feeAuthorization', 'feeAmount');
         resolve(true)
       }).catch(err => {
-        console.log({ err })
         reject(err)
       })
     })
@@ -53,7 +52,6 @@ describe("LinkdropP2P link creation", () => {
         expect(link.feeToken).to.equal(nativeTokenAddress)
         resolve(true)
       }).catch(err => {
-        console.log({ err })
         reject(err)
       })
     })
@@ -68,11 +66,9 @@ describe("LinkdropP2P link creation", () => {
         tokenType: 'ERC20',
         amount
       }).then(link => {
-        console.log({ link })
         expect(link.feeAmount).to.equal('33300000000000')
         resolve(true)
       }).catch(err => {
-        console.log({ err })
         reject(err)
       })
     })
