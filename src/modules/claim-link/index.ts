@@ -204,6 +204,7 @@ class ClaimLink implements IClaimLinkSDK {
     if (this.source !== 'd') {
       if (!defineIfEscrowAddressIsCorrect(
         this.escrowAddress as string,
+        this.tokenType,
         this.deployment
       )) {
         throw new Error(errors.escrow_is_not_correct())
@@ -232,12 +233,12 @@ class ClaimLink implements IClaimLinkSDK {
   }
 
   getDepositParams: TGetDepositParams = () => {
-    const iface = new ethers.Interface(LinkdropEscrowToken.abi)
     let data
     if (!this.escrowAddress) {
       throw new Error(errors.property_not_provided('escrowAddress', String(this.escrowAddress)))
     }
     if (this.tokenType === 'ERC20') {
+      const iface = new ethers.Interface(LinkdropEscrowToken.abi)
       data = iface.encodeFunctionData("deposit", [
         this.token,
         this.transferId,
@@ -248,6 +249,7 @@ class ClaimLink implements IClaimLinkSDK {
         this.feeAuthorization
       ])
     } else if (this.tokenType === 'NATIVE') {
+      const iface = new ethers.Interface(LinkdropEscrowToken.abi)
       data = iface.encodeFunctionData("depositETH", [
         this.transferId,
         this.totalAmount,
@@ -256,7 +258,8 @@ class ClaimLink implements IClaimLinkSDK {
         this.feeAuthorization
       ])
     } else if (this.tokenType === 'ERC721') {
-      iface.encodeFunctionData("depositERC721", [
+      const iface = new ethers.Interface(LinkdropEscrowNFT.abi)
+      data = iface.encodeFunctionData("depositERC721", [
         this.token,
         this.transferId,
         this.tokenId,
@@ -265,7 +268,8 @@ class ClaimLink implements IClaimLinkSDK {
         this.feeAuthorization
       ])
     } else {
-      iface.encodeFunctionData("depositERC1155", [
+      const iface = new ethers.Interface(LinkdropEscrowNFT.abi)
+      data = iface.encodeFunctionData("depositERC1155", [
         this.token,
         this.transferId,
         this.tokenId,
@@ -532,7 +536,6 @@ class ClaimLink implements IClaimLinkSDK {
     }
 
     const { data, value, to } = this.getDepositParams()
-    
     const { hash: txHash } = await sendTransaction({
       data,
       value,
@@ -741,6 +744,7 @@ class ClaimLink implements IClaimLinkSDK {
     }
 
     const [validAfter, validBefore] = getValidAfterAndValidBefore()
+
     if (!this.escrowAddress) {
       throw new Error(errors.property_not_provided('escrowAddress', String(this.escrowAddress)))
     }

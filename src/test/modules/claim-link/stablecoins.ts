@@ -21,7 +21,7 @@ beforeEach(() => {
   })
 })
 
-describe("LinkdropP2P link creation", () => {
+describe("LinkdropP2P StableCoin link creation", () => {
 
   // it("should return error apiKey", () => {
   //   const linkdropP2P = new LinkdropP2P({

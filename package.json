@@ -1,6 +1,6 @@
 {
   "name": "linkdrop-p2p-sdk",
-  "version": "3.10.0-beta",
+  "version": "3.11.0-alpha-rc.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -9,7 +9,7 @@
   "scripts": {
     "build": "rm -rf ./dist && webpack && yarn build:types",
     "build:types": "tsc --emitDeclarationOnly",
-    "test": "env-cmd mocha 'src/test/**/*.ts' --timeout 5000"
+    "test": "env-cmd mocha './src/test/{,+(helpers|modules)}/**/*.ts' --timeout 5000"
   },
   "repository": {
     "type": "git",
@@ -41,6 +41,7 @@
     "@babel/preset-typescript": "^7.18.6",
     "@types/chai": "^4.3.16",
     "@types/mocha": "^10.0.6",
+    "@types/randombytes": "^2.0.3",
     "chai": "^4.2.0",
     "env-cmd": "^10.1.0",
     "mocha": "^10.4.0",

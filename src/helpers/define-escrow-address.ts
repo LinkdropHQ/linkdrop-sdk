@@ -23,6 +23,10 @@ const defineEscrowAddress: TDefineEscrowAddress = (
     }
     return escrow
   }
+
+  if (tokenType === 'ERC1155' || tokenType === 'ERC721') {
+    return configs.mainEscrowContractNFT
+  }
   
   return configs.mainEscrowContract
 }

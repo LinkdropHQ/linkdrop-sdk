@@ -10,7 +10,7 @@ const apiKey = process.env.ZUPLO_API_KEY
 const userAccount = '0xb4c3d57327d4fc9bcc3499963e21db1a5435d537'
 const token = nativeTokenAddress
 const chainId = 11155111
-const preparedLink = 'https://p2p.linkdrop.io/#/code?k=EZsMmw7XRDiFLAgBTfkLa6WafjVaikbH8YaGYaDrpd9Z&c=11155111&v=3&src=p2p&w=metamask&theme=light'
+  const preparedLink = 'https://p2p.linkdrop.io/#/code?k=EZsMmw7XRDiFLAgBTfkLa6WafjVaikbH8YaGYaDrpd9Z&c=11155111&v=3&src=p2p&w=metamask&theme=light'
 
 let linkdropP2P
 
@@ -22,7 +22,7 @@ beforeEach(() => {
   })
 })
 
-describe("LinkdropP2P link creation", () => {
+describe("LinkdropP2P  NATIVE link creation", () => {
   it("should throw an error that nativeTokenAddress is not a valid ERC20 token", () => {
     const amount = '10001'
     return new Promise(function (resolve, reject) {
@@ -199,7 +199,7 @@ describe("LinkdropP2P link creation", () => {
     })
   })
 
-  it("should return a current claim link with seplia tokens", async () => {
+  it("should return a current claim link with sepolia tokens", async () => {
     const link: ClaimLink = await linkdropP2P.getClaimLink(preparedLink)
     expect(link.chainId).to.be.equal(11155111)
   })
