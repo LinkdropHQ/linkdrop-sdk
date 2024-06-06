@@ -48,6 +48,7 @@ const claimLink = await sdk.createClaimLink({
 const from = "0x2331bca1f2de4661ed88a30c99a7a9449aa84195" // Sender's Ethereum address
 const token = "0x2b7ca50f95e830cd7f47f42f156a6934906e3957" // token contract address
 const tokenType = "ERC721"
+const chainId = 137 // network chain ID
 const expiration = "1695985897077" // unix timestamp after which the claim link will expire and amount will be sent back to sender unless it was claimed before. Optional param, it not passed, it's going to be set to 15 days from now
 const tokenId = '4'
 
