@@ -6,6 +6,5 @@ export enum EChains {
   avalanche = 43114,
   optimism = 10,
   arbitrum = 42161,
-  gnosis = 100,
-  degen = 666666666
+  gnosis = 100
 }
