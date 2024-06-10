@@ -1,6 +1,6 @@
 {
   "name": "linkdrop-p2p-sdk",
-  "version": "3.11.0-alpha-rc.1",
+  "version": "3.11.0-alpha-rc.2",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
