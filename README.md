@@ -22,13 +22,16 @@ const sdk = LinkdropP2P({
 ### Creating claim link
 **1. Initialize claim link object:**  
 Learn more about the `claimLink` object in [the ClaimLink section](#claimlink-properties)
+
+#### ERC20
 ```js
 const from = "0x2331bca1f2de4661ed88a30c99a7a9449aa84195" // Sender's Ethereum address
 const token = "0x6f8a06447ff6fcf75d803135a7de15ce88c1d4ec" // token contract address
-const tokenType = "ERC20" // one of "NATIVE" | "ERC20"
+const tokenType = "ERC20"
 const chainId = 137 // network chain ID
+const expiration = "1695985897077" // unix timestamp after which the claim link will expire and amount will be sent back to sender unless it was claimed before. Optional param, it not passed, it's going to be set to 15 days from now
+
 const amount = "1000000" // atomic amount of tokens that sender wants to send (before fees)
-const expiration = "1695985897077" // unix timestamp after which the claim link will expire and amount will be sent back to sender unless it was claimed before. Optional param, it not passed, it's going to be set to 15 days from now,
 
 const claimLink = await sdk.createClaimLink({
   from,
@@ -40,19 +43,58 @@ const claimLink = await sdk.createClaimLink({
 })
 ```
 
-You can update amount for tokens
+#### ERC721
+```js
+const from = "0x2331bca1f2de4661ed88a30c99a7a9449aa84195" // Sender's Ethereum address
+const token = "0x2b7ca50f95e830cd7f47f42f156a6934906e3957" // token contract address
+const tokenType = "ERC721"
+const chainId = 137 // network chain ID
+const expiration = "1695985897077" // unix timestamp after which the claim link will expire and amount will be sent back to sender unless it was claimed before. Optional param, it not passed, it's going to be set to 15 days from now
+const tokenId = '4'
 
+const claimLink = await sdk.createClaimLink({
+  from,
+  token,
+  expiration,
+  chainId,
+  tokenType,
+  tokenId
+})
+```
+
+#### ERC1155
+```js
+const from = "0x2331bca1f2de4661ed88a30c99a7a9449aa84195" // Sender's Ethereum address
+const token = "0x344ed1c4387f7f18de4655a982513e22a8034bd3" // token contract address
+const tokenType = "ERC1155"
+const chainId = 137 // network chain ID
+const expiration = "1695985897077" // unix timestamp after which the claim link will expire and amount will be sent back to sender unless it was claimed before. Optional param, it not passed, it's going to be set to 15 days from now
+const tokenId = "1"
+const amount = "1"
+
+const claimLink = await sdk.createClaimLink({
+  from,
+  token,
+  amount,
+  expiration,
+  chainId,
+  tokenType,
+  tokenId
+})
+```
+
+You can update an amount for "NATIVE", "ERC20", and "ERC1155" tokens
 ```js
 const { amount, feeAmount, totalAmount, feeToken } = await claimLink.updateAmount(amount)
 ```
 
 Methods `createClaimLink` and `updateAmount` will throw an error if amount is not valid according to limits.
 
-To define the minimum and maximum limit of amount that can be sent via link, use the getLimits method
+To define the minimum and maximum limit of amount that can be sent via link, use the getLimits method. Method is not available for ERC721 or ERC1155 tokens
 ```js
 
 const token = "0x6f8a06447ff6fcf75d803135a7de15ce88c1d4ec" // token contract address. Not required if tokenType is NATIVE
-const tokenType = "ERC20" // one of "NATIVE" | "ERC20".
+const tokenType = "ERC20" // one of "NATIVE" | "ERC20" | "ERC721" | "ERC1155"
 const chainId = 137 // network chain ID
 
 const {
@@ -75,7 +117,7 @@ const signTypedData = (domain, types, message) => signer.signTypedData(domain, t
 const { claimUrl, transferId, txHash } = await claimLink.depositWithAuthorization({ signTypedData }) 
 ```
 
-**2b. Deposit native tokens (ETH/MATIC) or ERC20 tokens to escrow contract via direct call :**  
+**2b. Deposit native tokens (ETH/MATIC), ERC721, ERC1155 or ERC20 tokens to escrow contract via direct call :**  
 To avoid asking for sender private key directly, we ask to pass a function that signs and sends Ethereum transaction. The function should be similar to ethers `signer.sendTransaction` - https://docs.ethers.org/v6/api/providers/#Signer-signTypedData
 ```js
 const sendTransaction = async ({ to, value, data }) => { 
@@ -84,7 +126,7 @@ const sendTransaction = async ({ to, value, data }) => {
 }
 const { claimUrl, transferId, txHash } = await claimLink.deposit({ sendTransaction }) 
 ```
-For ERC20 (except USDC tokens), you need to approve tokens so that the contract has the opportunity to send them to the recipient
+For ERC20 (except USDC tokens), ERC721, and ERC1155 you need to approve tokens so that the contract has the opportunity to send them to the recipient
 
 **3. Re-generate Claim URL:**
 Sender can generate a new claim URL (if the original claim URL is lost):
@@ -158,7 +200,7 @@ Claim Link object contains methods and properties to facilitate both creation an
 
 ### ClaimLink properties:
 - _transferId_ (string, transfer unique id, e.g. "1695985897077")
-- _tokenType_ (string, token standard type, one of `'NATIVE' | 'ERC20'`)
+- _tokenType_ (string, token standard type, one of `'NATIVE' | 'ERC20' | ;'ERC721' | 'ERC1155'`)
 - _amount_ (string, atomic amount of tokens receiver going to claim, e.g. "1000000" for 1 USDC)
 - _fee_ (string, atomic amount of tokens sender needs to pay as a fee, e.g. "100000" or 0.1 USDC)
 - _expiration_ (string, unix timestamp after which the claim link will expire and amount will be sent back to sender unless it was claimed before)
@@ -222,6 +264,8 @@ try {
 - SENDER_NOT_PROVIDED - argument "sender" is not provided to constructor
 - TOKEN_ID_NOT_PROVIDED - argument "tokenId" is not provided to constructor
 - AMOUNT_NOT_PROVIDED - argument "amount" is not provided to method or constructor
+- CANNOT_UPDATE_AMOUNT_FOR_ERC721 - you cannot specify the number of tokens for ERC721
+- LIMITS_NOT_AVAILABLE_FOR_ERC721_AND_ERC1155 - limits are not available for ERC721 and ERC1155 tokens
 - TOKEN_TYPE_NOT_PROVIDED - argument "tokenType" is not provided to constructor
 - TOKEN_NOT_PROVIDED - argument "token" is not provided to method or constructor
 - TRANSFER_ID_NOT_PROVIDED - argument "transferId" is not provided to constructor

@@ -1,17 +1,19 @@
 import * as configs from '../configs'
-import { TDeploymentType } from '../types'
+import { TDeploymentType, TTokenType } from '../types'
 
 type TDefineIfEscrowAddressIsCorrect = (
   escrowAddress: string,
+  tokenType: TTokenType,
   deployment: TDeploymentType
 ) => boolean
 
 const defineIfEscrowAddressIsCorrect: TDefineIfEscrowAddressIsCorrect = (
   escrowAddress,
+  tokenType,
   deployment
 ) => {
 
-  if (!escrowAddress) {
+  if (!escrowAddress || !tokenType) {
     return false
   }
 
@@ -22,6 +24,12 @@ const defineIfEscrowAddressIsCorrect: TDefineIfEscrowAddressIsCorrect = (
     return true
   }
 
+  if (tokenType === 'ERC1155' || tokenType === 'ERC721') {
+    if (escrowAddress !== configs.mainEscrowContractNFT) {
+      return false
+    }
+    return true
+  }
 
   if (escrowAddress !== configs.mainEscrowContract) {
     return false
