@@ -7,6 +7,8 @@ export default {
   'cannot_update_amount': () => `Cannot update amount after deposit`,
   'deploy_with_auth_wrong_type': () => `You can use 'depositWithAuthorization' method only for ERC20 tokens. Use 'deposit' method instead`,
   'not_possible_create_claim_url': () => `Link should have senderSig or sender to be created`,
+  'cannot_redeem_before_deposit': () => `Tokens should be deposited before redeem`,
+
   'link_decode_failed': () => `Link should have 'sg' (signature) or 's' (sender) param to be decoded`,
   'link_parse_failed': () => `Link should have 'sg' (signature) or 's' (sender) param to be parsed`,
   'variable_cannot_be_defined': (variable: string) => `${variable} cannot be defined`,

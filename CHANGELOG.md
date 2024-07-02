@@ -1,5 +1,8 @@
 # Linkdrop P2P SDK
 
+## 3.11.0-beta
+- bug fixes for ERC1155/ERC721
+
 ## 3.10.0-beta
 - update for getLimits method (usd limits added)
 

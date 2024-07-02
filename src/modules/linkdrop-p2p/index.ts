@@ -557,7 +557,8 @@ class LinkdropP2P implements ILinkdropP2P {
         fee_amount,
         total_amount,
         sender,
-        status
+        status,
+        token_id
       } = claim_link
 
       const claimLinkData = {
@@ -576,6 +577,7 @@ class LinkdropP2P implements ILinkdropP2P {
         feeToken: fee_token,
         totalAmount: total_amount as string,
         status,
+        tokenId: token_id,
         source: (customApiHost ? 'd' : 'p2p') as TClaimLinkSource,
         deployment: this.deployment
       }
@@ -600,7 +602,8 @@ class LinkdropP2P implements ILinkdropP2P {
         fee_amount,
         total_amount,
         version,
-        status
+        status,
+        token_id
       } = claim_link
 
       const claimLinkData = {
@@ -617,6 +620,7 @@ class LinkdropP2P implements ILinkdropP2P {
         baseUrl: this.baseUrl,
         feeAmount: fee_amount,
         feeToken: fee_token,
+        tokenId: token_id,
         totalAmount: total_amount as string,
         status,
         source: 'p2p' as TClaimLinkSource,
