@@ -4,12 +4,12 @@ import { ethers, decodeBase58 } from 'ethers'
 type TDecodeLink = (link: string) => TLink
 
 const defineSig = (
-  signatureLength: number = 132,
+  signatureLength: number = 65,
   signature?: string
 ) => {
   if (!signature) return undefined
   const originalSignature = decodeBase58(signature)
-  return ethers.toBeHex(originalSignature, (signatureLength - 2) / 2)
+  return ethers.toBeHex(originalSignature, signatureLength)
 }
 
 const decodeLink: TDecodeLink = (link) => {
@@ -23,7 +23,7 @@ const decodeLink: TDecodeLink = (link) => {
     transferId: parsedParams["i"] || "",
     chainId: parsedParams["c"],
     version: parsedParams["v"] || "1",
-    signatureLength: parsedParams["sgl"] || '132'
+    signatureLength: parsedParams["sgl"] || '65'
   }
 
   const linkKey = ethers.toBeHex(decodeBase58(params.linkKey), 32) 
