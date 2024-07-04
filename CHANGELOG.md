@@ -2,6 +2,7 @@
 
 ## 3.11.0-beta
 - bug fixes for ERC1155/ERC721
+- added signature length query variable for recovered link
 
 ## 3.10.0-beta
 - update for getLimits method (usd limits added)
