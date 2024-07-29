@@ -18,6 +18,12 @@ const defineIfEscrowAddressIsCorrect: TDefineIfEscrowAddressIsCorrect = (
   }
 
   if (deployment === 'CBW') {
+    if (tokenType === 'ERC1155' || tokenType === 'ERC721') {
+      if (escrowAddress !== configs.cbwEscrowContractNFT) {
+        return false
+      }
+      return true
+    }
     if (escrowAddress !== configs.cbwEscrowContract) {
       return false
     }
