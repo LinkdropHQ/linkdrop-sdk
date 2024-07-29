@@ -1,5 +1,8 @@
 # Linkdrop P2P SDK
 
+## 3.12.0-beta
+- new escrow contract addresses for CBW users
+
 ## 3.11.0-beta
 - bug fixes for ERC1155/ERC721
 - added signature length query variable for recovered link
