@@ -1,5 +1,9 @@
 # Linkdrop P2P SDK
 
+
+## 3.12.1-beta
+- bug fix for old escrow contract links
+
 ## 3.12.0-beta
 - new escrow contract addresses for CBW users
 
