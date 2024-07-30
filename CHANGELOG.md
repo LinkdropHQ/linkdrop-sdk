@@ -1,6 +1,9 @@
 # Linkdrop P2P SDK
 
 
+## 3.12.2-beta
+- support for v3 links
+
 ## 3.12.1-beta
 - bug fix for old escrow contract links
 
