@@ -598,18 +598,6 @@ class LinkdropP2P implements ILinkdropP2P {
         deployment: this.deployment
       }
 
-      // if (defineVersionByEscrow(escrow) === '3') {
-      //   const linkdropP2P2 = new LinkdropP2PV3_11.LinkdropP2P({
-      //     baseUrl: this.baseUrl,
-      //     apiKey: String(this.#apiKey),
-      //     getRandomBytes: this.getRandomBytes,
-      //     deployment: this.deployment
-      //   })
-  
-      //   return await linkdropP2P2.retrieveClaimLink({
-      //     txHash,
-      //     chainId
-      //   })
       return this._initializeClaimLink(claimLinkData)
     } else if (txHash) {
       
