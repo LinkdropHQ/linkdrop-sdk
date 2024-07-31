@@ -17,6 +17,9 @@ export const mainEscrowContractNFT = '0x648b9a6c54890a8fb17de128c6352f621154f358
 
 export const supportedStableCoins = {
   [ETokenAddress.usdcBase]: ESelectors.receiveWithAuthorization,
+
+  [ETokenAddress.eurcBase]: ESelectors.receiveWithAuthorization,
+
   [ETokenAddress.usdcBaseGoerli]: ESelectors.receiveWithAuthorization,
   [ETokenAddress.usdcBridgedPolygon]: ESelectors.approveWithAuthorization,
   [ETokenAddress.usdcSepolia]:  ESelectors.receiveWithAuthorization,
