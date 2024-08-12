@@ -205,7 +205,8 @@ class ClaimLink implements IClaimLinkSDK {
       if (!defineIfEscrowAddressIsCorrect(
         this.escrowAddress as string,
         this.tokenType,
-        this.deployment
+        this.deployment,
+        this.chainId
       )) {
         throw new Error(errors.escrow_is_not_correct())
       }  
