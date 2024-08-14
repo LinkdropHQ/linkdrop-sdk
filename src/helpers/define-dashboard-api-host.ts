@@ -1,8 +1,18 @@
-import { dashboardApiUrl } from '../configs'
+import {
+  dashboardApiUrl,
+  devDashboardApiUrl
+} from '../configs'
 
-type TDefineDashboardApiHost = () => string
+type TDefineDashboardApiHost = (
+  claimLink: string
+) => string
 
-const defineDashboardApiHost: TDefineDashboardApiHost = () => {
+const defineDashboardApiHost: TDefineDashboardApiHost = (
+  claimLink
+) => {
+  if (claimLink.includes('dev.')) {
+    return devDashboardApiUrl
+  }
   return dashboardApiUrl
 }
 

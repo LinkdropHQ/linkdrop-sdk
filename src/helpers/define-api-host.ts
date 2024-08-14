@@ -20,6 +20,7 @@ const defineApiHost: TDefineApiHost = (
     case EChains.optimism: return `${apiHostActual}/optimism`
     case EChains.avalanche: return `${apiHostActual}/avalanche`
     case EChains.gnosis: return `${apiHostActual}/gnosis`
+    case EChains.immutableZkevm: return `${apiHostActual}/immutable-zkevm`
 
     default:
       return null
