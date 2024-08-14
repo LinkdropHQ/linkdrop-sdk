@@ -1,5 +1,8 @@
 # Linkdrop P2P SDK
 
+## 3.10.1-beta
+- update for error handling helper
+
 ## 3.10.0-beta
 - update for getLimits method (usd limits added)
 
