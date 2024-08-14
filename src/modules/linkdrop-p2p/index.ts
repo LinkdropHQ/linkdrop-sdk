@@ -137,7 +137,7 @@ class LinkdropP2P implements ILinkdropP2P {
 
     return this._initializeClaimLink({
       token: token as ETokenAddress || configs.nativeTokenAddress,
-      expiration: expiration ||  Math.floor(Date.now() / 1000 + 60 * 60 * 24 * 30),
+      expiration: expiration ||  Math.floor(Date.now() / 1000 + 60 * 60 * 24 * 15),
       chainId,
       amount: amount || '1',
       sender: from.toLowerCase(),
@@ -399,7 +399,7 @@ class LinkdropP2P implements ILinkdropP2P {
       const linkKey = ethers.id(claimCode)
       const transferId = new ethers.Wallet(linkKey).address
 
-      const customApiHost = defineDashboardApiHost()
+      const customApiHost = defineDashboardApiHost(claimUrl)
       const { claim_link } = await linkApi.getTransferStatus(
         customApiHost,
         this.#apiKey,

@@ -1,6 +1,6 @@
 import { ethers } from 'ethers'
 import { getNonce } from '..'
-import { TDomain, TSignTypedData, ESelectors } from '../../types'
+import { TDomain, TSignTypedData } from '../../types'
 
 async function getDepositAuthorizationBase(
   signTypedData: TSignTypedData,

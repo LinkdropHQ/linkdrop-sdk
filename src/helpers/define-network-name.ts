@@ -14,6 +14,7 @@ const defineNetworkName: TDefineNetworkName = (chainId) => {
     case EChains.optimism: return 'optimism'
     case EChains.arbitrum: return 'arbitrum'
     case EChains.gnosis: return 'gnosis'
+    case EChains.immutableZkevm: return 'immutableZkevm'
 
     default:
       return null

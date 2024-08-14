@@ -1,5 +1,9 @@
 # Linkdrop P2P SDK
 
+## 3.12.4-beta
+- immutable-zkevm network support added
+- error handling update
+- 15 days expiration of link by default
 
 ## 3.12.3-beta
 - support for EURC coin (base network)
