@@ -1,4 +1,4 @@
-import { LinkdropP2P } from "../../.."
+import { LinkdropSDK } from "../../.."
 import { expect } from "chai"
 import randomBytes from 'randombytes'
 import { beforeEach } from "mocha"
@@ -11,41 +11,20 @@ const userAccount = '0xb4c3d57327d4fc9bcc3499963e21db1a5435d537'
 const token = '0x1c7d4b196cb0c7b01d743fbc6116a902379c7238'
 const amount = '10000'
 const chainId = 11155111
-let linkdropP2P
+let linkdropSDK
 
 beforeEach(() => {
-  linkdropP2P = new LinkdropP2P({
+  linkdropSDK = new LinkdropSDK({
     baseUrl,
     getRandomBytes,
     apiKey
   })
 })
 
-describe("LinkdropP2P StableCoin link creation", () => {
-
-  // it("should return error apiKey", () => {
-  //   const linkdropP2P = new LinkdropP2P({
-  //     baseUrl,
-  //     getRandomBytes,
-  //   })
-  //   return new Promise(function (resolve, reject) {
-  //     linkdropP2P.createClaimLink({
-  //       from: '0xB4C3d57327D4fC9bcC3499963E21dB1A5435d537',
-  //       chainId: 137,
-  //       token: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
-  //       tokenType: 'ERC20',
-  //       amount: '10000'
-  //     })
-  //     .catch(err => {
-  //       expect(err.message).contains()
-  //       resolve(err)
-  //     })
-  //   })
-  // })
-
+describe("LinkdropSDK StableCoin link creation", () => {
   it("should create a valid class instance with correct token address", () => {
     return new Promise(function (resolve, reject) {
-      linkdropP2P.createClaimLink({
+      linkdropSDK.createClaimLink({
         from: userAccount,
         chainId,
         token,
@@ -62,7 +41,7 @@ describe("LinkdropP2P StableCoin link creation", () => {
 
   it("should create a valid class instance with correct chainId", () => {
     return new Promise(function (resolve, reject) {
-      linkdropP2P.createClaimLink({
+      linkdropSDK.createClaimLink({
         from: userAccount,
         chainId,
         token,
@@ -79,7 +58,7 @@ describe("LinkdropP2P StableCoin link creation", () => {
 
   it("should create a valid class instance with correct tokenType", () => {
     return new Promise(function (resolve, reject) {
-      linkdropP2P.createClaimLink({
+      linkdropSDK.createClaimLink({
         from: userAccount,
         chainId,
         token,
@@ -96,7 +75,7 @@ describe("LinkdropP2P StableCoin link creation", () => {
 
   it("should create a valid class instance with correct amount", () => {
     return new Promise(function (resolve, reject) {
-      linkdropP2P.createClaimLink({
+      linkdropSDK.createClaimLink({
         from: userAccount,
         chainId,
         token,
@@ -113,7 +92,7 @@ describe("LinkdropP2P StableCoin link creation", () => {
 
   it("should create a valid class instance with correct feeToken, feeAuthorization and feeAmount", () => {
     return new Promise(function (resolve, reject) {
-      linkdropP2P.createClaimLink({
+      linkdropSDK.createClaimLink({
         from: userAccount,
         chainId,
         token,
@@ -130,7 +109,7 @@ describe("LinkdropP2P StableCoin link creation", () => {
 
   it("should create a valid class instance with feeToken same as token", () => {
     return new Promise(function (resolve, reject) {
-      linkdropP2P.createClaimLink({
+      linkdropSDK.createClaimLink({
         from: userAccount,
         chainId,
         token,
@@ -147,7 +126,7 @@ describe("LinkdropP2P StableCoin link creation", () => {
 
   it("should create a valid class instance with feeAmount as 0 for stablecoins", () => {
     return new Promise(function (resolve, reject) {
-      linkdropP2P.createClaimLink({
+      linkdropSDK.createClaimLink({
         from: userAccount,
         chainId,
         token,

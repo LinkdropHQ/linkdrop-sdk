@@ -1,4 +1,4 @@
-import { LinkdropP2P } from "../../../"
+import { LinkdropSDK } from "../../../"
 import { expect } from "chai"
 import randomBytes from 'randombytes'
 import { beforeEach } from "mocha"
@@ -7,30 +7,30 @@ const getRandomBytes = (length: number) => new Uint8Array(randomBytes(length))
 const baseUrl = 'https://localhost:3000'
 const deployment = 'CBW'
 
-describe("LinkdropP2P initialization", () => {
+describe("LinkdropSDK initialization", () => {
   it("should return correct baseUrl", () => {
-    const linkdropP2P = new LinkdropP2P({
+    const linkdropSDK = new LinkdropSDK({
       baseUrl,
       getRandomBytes
     })
-    expect(linkdropP2P.baseUrl).to.equal(baseUrl)
+    expect(linkdropSDK.baseUrl).to.equal(baseUrl)
   })
 
   it("should return CBW deployment", () => {
-    const linkdropP2P = new LinkdropP2P({
+    const linkdropSDK = new LinkdropSDK({
       baseUrl,
       getRandomBytes,
       deployment
     })
-    expect(linkdropP2P.deployment).to.equal('CBW')
+    expect(linkdropSDK.deployment).to.equal('CBW')
   })
 
   it("should return undefined apiUrl", () => {
-    const linkdropP2P = new LinkdropP2P({
+    const linkdropSDK = new LinkdropSDK({
       baseUrl,
       getRandomBytes,
       deployment
     })
-    expect(linkdropP2P.apiUrl).to.equal(undefined)
+    expect(linkdropSDK.apiUrl).to.equal(undefined)
   })
 })
