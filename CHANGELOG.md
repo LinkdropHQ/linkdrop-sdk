@@ -1,5 +1,9 @@
 # Linkdrop P2P SDK
 
+## 3.12.5-beta
+- package rename to linkdrop-sdk
+
+
 ## 3.12.4-beta
 - immutable-zkevm network support added
 - error handling update

@@ -1,4 +1,4 @@
-import ILinkdropP2P, {
+import ILinkdropSDK, {
   TCreateClaimLink,
   TConstructorArgs,
   TGetClaimLink,
@@ -41,7 +41,7 @@ import * as LinkdropP2PV2 from 'linkdrop-p2p-sdk2'
 import * as LinkdropP2PV3_11 from 'linkdrop-p2p-sdk3.11.0-beta'
 
 
-class LinkdropP2P implements ILinkdropP2P {
+class LinkdropSDK implements ILinkdropSDK {
   #apiKey: string | null
   baseUrl: string
   apiUrl: string
@@ -679,4 +679,4 @@ class LinkdropP2P implements ILinkdropP2P {
   }
 }
 
-export default LinkdropP2P
+export default LinkdropSDK

@@ -1,5 +1,5 @@
 import ClaimLink from './modules/claim-link'
-import LinkdropP2P from './modules/linkdrop-p2p'
+import LinkdropSDK from './modules/linkdrop-sdk'
 import {
   LinkdropP2P as LinkdropP2PV2,
   ClaimLink as ClaimLinkV2
@@ -11,7 +11,7 @@ import {
 } from 'linkdrop-p2p-sdk3.11.0-beta'
 
 export {
-  LinkdropP2P,
+  LinkdropSDK,
   ClaimLink,
   LinkdropP2PV2,
   ClaimLinkV2,
