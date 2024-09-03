@@ -43,7 +43,8 @@ const getLinkParams = async (
       preferred_wallet_on,
       linkdrop_token,
       token_image,
-      token_name
+      token_name,
+      additional_wallets_on
     } : TLinkParams = data
 
     return {
@@ -69,7 +70,8 @@ const getLinkParams = async (
       preferred_wallet_on,
       linkdrop_token,
       token_image,
-      token_name
+      token_name,
+      additional_wallets_on
     }
   }
 }

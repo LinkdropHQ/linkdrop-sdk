@@ -1,5 +1,8 @@
 # Linkdrop SDK
 
+## 2.1.10
+- added additional_wallets_on param to link
+
 ## 2.1.9
 - package rename to linkdrop-batch-sdk
 
