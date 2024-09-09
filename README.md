@@ -7,11 +7,8 @@ Currently, Linkdrop supports the following networks:
 - Ethereum Mainnet
 - Polygon Mainnet
 - Basic Mainnet
-
-Testnets:
-- Goerli (Ethereum testnet)
-- Mumbai (Polygon testnet)  
-- Basic Goerli (Basic testnet)
+- X Layer Mainnet
+- Immutable Zkevm
   
 We can add support of any EVM-based chain by request. Please contact us If you need to use Linkdrop on other networks. 
 
@@ -28,13 +25,8 @@ import LinkdropBatchSDK from 'linkdrop-batch-sdk'
 // or
 // const LinkdropBatchSDK = require('linkdrop-batch-sdk').default
 ```
-To use SDK on a tesnet:
-```ts
-// initializing Linkdrop SDK on a testnet (Goerli or Mumbai)
-const apiKey = /* to request an API key, please contact us at hi@linkdrop.io */
-const sdk = new LinkdropBatchSDK({ mode: 'testnets', apiKey });
-```
-To use SDK on a production network (Ethereum Mainnet or Polygon): 
+
+To use SDK on a production network (Ethereum Mainnet, Polygon, Base, X Layer, Immutable Zkevm): 
 ```ts
 // initializing Linkdrop SDK on a production network 
 const apiKey = /* to request an API key, please contact us at hi@linkdrop.io */
