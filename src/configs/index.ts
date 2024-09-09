@@ -8,3 +8,4 @@ export const polygonJSONRPCUrl = 'https://rpc-mainnet.maticvigil.com/v1/ad4cd2ea
 export const mainnetJSONRPCUrl = 'https://mainnet.infura.io/v3/620c738fbe1843a18f47ada0e60e738a'
 export const baseJSONRPCUrl = 'https://developer-access-mainnet.base.org'
 export const immutableZkevmJSONRPCUrl = 'https://rpc.immutable.com'
+export const xlayerJSONRPCUrl='https://rpc.xlayer.tech'

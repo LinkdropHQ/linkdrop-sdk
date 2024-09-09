@@ -1,5 +1,8 @@
 # Linkdrop SDK
 
+## 2.1.11
+- added X Layer network support
+
 ## 2.1.10
 - added additional_wallets_on param to link
 

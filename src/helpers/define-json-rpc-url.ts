@@ -3,7 +3,8 @@ import {
   polygonJSONRPCUrl,
   mainnetJSONRPCUrl,
   baseJSONRPCUrl,
-  immutableZkevmJSONRPCUrl
+  immutableZkevmJSONRPCUrl,
+  xlayerJSONRPCUrl
 } from '../configs'
 
 const defineJSONRpcUrl = ({ chainId } : { chainId: number }) => {
@@ -17,6 +18,8 @@ const defineJSONRpcUrl = ({ chainId } : { chainId: number }) => {
       return baseJSONRPCUrl
     case 'immutableZkevm':
       return immutableZkevmJSONRPCUrl
+    case 'xlayer':
+      return xlayerJSONRPCUrl
     default:
       return alert('Current chain id is not supported')
   }
