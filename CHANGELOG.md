@@ -1,5 +1,8 @@
 # Linkdrop P2P SDK
 
+## 3.12.5-beta
+- depositWithAuthorization method support for cbBTC
+
 ## 3.12.4-beta
 - immutable-zkevm network support added
 - error handling update
