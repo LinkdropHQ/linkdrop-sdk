@@ -1,7 +1,7 @@
-# Linkdrop P2P SDK (V3)
+# Linkdrop SDK (V3)
 ## Import and initialize SDK
 ```js
-import { LinkdropP2P } from 'linkdrop-p2p-sdk'
+import { LinkdropSDK } from 'linkdrop-sdk'
 
 const baseUrl = "https://p2p.linkdrop.io" // baseUrl is the host to be used to generate claim URLs. Required
 // const apiKey = "spfurjdmvfkdlfo" // apiKey is the string parameter that will be passed to headers as Bearer token ("authorization" header). Not required. Default value: null
@@ -10,7 +10,7 @@ const getRandomBytes = (length) => {
   return new Uint8Array(crypto.randomBytes(length));
 } // To avoid using and linking native crypto libraries, we ask to pass a random bytes generation function. Required
 
-const sdk = LinkdropP2P({
+const sdk = LinkdropSDK({
   baseUrl,
   getRandomBytes,
   // apiKey,

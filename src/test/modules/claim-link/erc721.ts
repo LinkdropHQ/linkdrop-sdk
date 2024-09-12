@@ -1,4 +1,4 @@
-import { LinkdropP2P } from "../../.."
+import { LinkdropSDK } from "../../.."
 import { expect } from "chai"
 import randomBytes from 'randombytes'
 import { beforeEach } from "mocha"
@@ -13,20 +13,20 @@ const tokenId = '4'
 
 const chainId = 11155111
 
-let linkdropP2P
+let linkdropSDK
 
 beforeEach(() => {
-  linkdropP2P = new LinkdropP2P({
+  linkdropSDK = new LinkdropSDK({
     baseUrl,
     getRandomBytes,
     apiKey
   })
 })
 
-describe("LinkdropP2P ERC721 link creation", () => {
+describe("LinkdropSDK ERC721 link creation", () => {
   it("should create a valid class instance with correct feeToken, feeAuthorization and feeAmount", () => {
     return new Promise(function (resolve, reject) {
-      linkdropP2P.createClaimLink({
+      linkdropSDK.createClaimLink({
         from: userAccount,
         chainId,
         token,
@@ -43,7 +43,7 @@ describe("LinkdropP2P ERC721 link creation", () => {
 
   it("should fail with no tokenId", () => {
     return new Promise(function (resolve, reject) {
-      linkdropP2P.createClaimLink({
+      linkdropSDK.createClaimLink({
         from: userAccount,
         chainId,
         token,
@@ -57,7 +57,7 @@ describe("LinkdropP2P ERC721 link creation", () => {
 
   it("should create a valid class instance with feeToken as native token of network", () => {
     return new Promise(function (resolve, reject) {
-      linkdropP2P.createClaimLink({
+      linkdropSDK.createClaimLink({
         from: userAccount,
         chainId,
         token,
@@ -74,7 +74,7 @@ describe("LinkdropP2P ERC721 link creation", () => {
 
   it("should create a valid class instance with feeAmount as 33300000000000 for ERC20 token", () => {
     return new Promise(function (resolve, reject) {
-      linkdropP2P.createClaimLink({
+      linkdropSDK.createClaimLink({
         from: userAccount,
         chainId,
         token,

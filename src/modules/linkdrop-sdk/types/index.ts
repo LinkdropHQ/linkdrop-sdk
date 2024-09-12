@@ -10,7 +10,7 @@ import TGetVersionFromEscrowContract from './get-version-from-escrow-contract'
 import TGetCurrentFee from './get-current-fee'
 import TGetLinkSourceFromClaimUrl from './get-link-source-from-claim-url'
 
-interface ILinkdropP2P {
+interface ILinkdropSDK {
   createClaimLink: TCreateClaimLink
   retrieveClaimLink: TRetrieveClaimLink
   getClaimLink: TGetClaimLink
@@ -36,4 +36,4 @@ export {
   TGetLimits,
   TGetHistory
 }
-export default ILinkdropP2P
+export default ILinkdropSDK
