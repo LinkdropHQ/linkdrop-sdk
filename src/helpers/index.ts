@@ -4,7 +4,6 @@ import decodeLink from './decode-link'
 import defineApiHost from './define-api-host'
 import parseLink from './parse-link'
 import defineEscrowAddress from './define-escrow-address'
-import defineTokenSymbol from './define-token-symbol'
 import defineIfEscrowAddressIsCorrect from './define-if-escrow-address-is-correct'
 import createQueryString from './create-query-string'
 import updateOperations from './update-operations'
@@ -35,7 +34,6 @@ export {
   parseQueryParams,
   createQueryString,
   defineIfEscrowAddressIsCorrect,
-  defineTokenSymbol,
   defineNetworkName,
   defineApiHost,
   encodeLink,

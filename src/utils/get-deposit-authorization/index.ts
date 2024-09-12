@@ -55,7 +55,10 @@ async function getDepositAuthorization(
     
   }
 
-  if (chainId === EChains.base || chainId === EChains.baseGoerli) {
+  if (
+    chainId === EChains.base ||
+    chainId === EChains.baseGoerli
+  ) {
     return getDepositAuthorizationBase(
       signTypedData,
       sender,

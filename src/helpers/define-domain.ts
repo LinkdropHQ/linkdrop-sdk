@@ -27,7 +27,6 @@ const defineDomain: TDefineDomain = (
       "chainId": EChains.polygon,
       "verifyingContract": ETokenAddress.usdcPolygon
     }
-    
   }
 
 
@@ -77,6 +76,15 @@ const defineDomain: TDefineDomain = (
   } 
 
   if (chainId === EChains.base) { // Base
+    if (tokenAddress === ETokenAddress.cbBTC) {
+      return {
+        name: 'Coinbase Wrapped BTC',
+        version: '2',
+        chainId: EChains.base,
+        verifyingContract: ETokenAddress.cbBTC
+      }
+    }
+
     return {
       name: 'USD Coin',
       version: '2',
