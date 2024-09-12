@@ -736,7 +736,7 @@ class ClaimLink implements IClaimLinkSDK {
     }
 
     if (this.tokenType === 'NATIVE') {
-      throw new Error(errors.deploy_with_auth_wrong_type())
+      throw new Error(errors.deposit_with_auth_wrong_type())
     }
 
     const domain = this._defineDomain()
