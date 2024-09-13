@@ -1,5 +1,8 @@
 # Linkdrop SDK
 
+## 2.1.12
+- get factory address for claim link
+
 ## 2.1.11
 - added X Layer network support
 

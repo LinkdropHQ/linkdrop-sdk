@@ -24,6 +24,7 @@ type TLinkParams = {
   token_image: string
   token_name: string
   additional_wallets_on: boolean
+  factory_address: boolean
 }
 
 export default TLinkParams

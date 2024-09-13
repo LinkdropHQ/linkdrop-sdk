@@ -44,11 +44,13 @@ const getLinkParams = async (
       linkdrop_token,
       token_image,
       token_name,
-      additional_wallets_on
+      additional_wallets_on,
+      factory_address
     } : TLinkParams = data
 
     return {
       creator_address,
+      factory_address,
       sponsored,
       chain_id,
       campaign_number,
