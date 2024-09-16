@@ -1,5 +1,8 @@
 # Linkdrop SDK
 
+## 2.1.13
+- fix for factory address type
+
 ## 2.1.12
 - get factory address for claim link
 
