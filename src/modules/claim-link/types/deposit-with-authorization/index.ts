@@ -2,14 +2,14 @@ import {
   TSignTypedData,
   TDepositResult,
   TDomain,
-  EAuthorizationMethod
+  TAuthorizationMethod
 } from "../../../../types"
 
 type TDepositWithAuthorizationArgs = {
   signTypedData: TSignTypedData,
   authConfig?: {
     domain: TDomain
-    authorizationMethod: EAuthorizationMethod
+    authorizationMethod: TAuthorizationMethod
   }
 }
 

@@ -1,5 +1,5 @@
 
-import { TDomain, TSignTypedData, ETokenAddress, EAuthorizationMethod } from '../../types'
+import { TDomain, TSignTypedData, ETokenAddress, TAuthorizationMethod } from '../../types'
 import getDepositAuthorizationApprove from './get-deposit-authorization-approve'
 import getDepositAuthorizationReceive from './get-deposit-authorization-receive'
 import { EChains } from '../../types'
@@ -17,10 +17,10 @@ async function getDepositAuthorization(
   chainId: number,
   token: string,
   feeAmount: string,
-  authorizationMethod?: EAuthorizationMethod
+  authorizationMethod?: TAuthorizationMethod
 ) {
   if (authorizationMethod) {
-    if (authorizationMethod === EAuthorizationMethod.ApproveWithAuthorization) {
+    if (authorizationMethod === 'ApproveWithAuthorization') {
       return getDepositAuthorizationApprove(
         signTypedData,
         sender,
