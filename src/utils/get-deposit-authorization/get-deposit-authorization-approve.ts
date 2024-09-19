@@ -1,6 +1,6 @@
 import { ethers } from 'ethers'
 import { getNonce } from '..'
-import { TDomain, TSignTypedData, EAuthorizationMethod } from '../../types'
+import { TDomain, TSignTypedData } from '../../types'
 
 async function getDepositAuthorizationApprove(
   signTypedData: TSignTypedData,
@@ -16,7 +16,7 @@ async function getDepositAuthorizationApprove(
 ) {
   // The EIP-712 type data
   const types = {
-    [EAuthorizationMethod.ApproveWithAuthorization]: [
+    'ApproveWithAuthorization': [
       { name: 'owner', type: 'address' },
       { name: 'spender', type: 'address' },
       { name: 'value', type: 'uint256' },

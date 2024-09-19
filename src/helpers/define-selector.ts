@@ -1,7 +1,7 @@
-import { EAuthorizationMethod, ESelectors } from "../types"
+import { TAuthorizationMethod, ESelectors } from "../types"
 
-const defineSelector = (authorizationMethod: EAuthorizationMethod) => {
-  if (authorizationMethod === EAuthorizationMethod.ApproveWithAuthorization) {
+const defineSelector = (authorizationMethod: TAuthorizationMethod) => {
+  if (authorizationMethod === 'ApproveWithAuthorization') {
     return ESelectors.approveWithAuthorization
   }
 

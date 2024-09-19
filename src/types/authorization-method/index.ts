@@ -1,4 +1,1 @@
-export enum EAuthorizationMethod {
-  ApproveWithAuthorization = 'ApproveWithAuthorization',
-  ReceiveWithAuthorization = 'ReceiveWithAuthorization'
-}
+export type TAuthorizationMethod = 'ApproveWithAuthorization' | 'ReceiveWithAuthorization'
