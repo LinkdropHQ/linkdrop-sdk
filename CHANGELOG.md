@@ -1,5 +1,8 @@
 # Linkdrop SDK
 
+## 3.13.1-beta
+- update for depositWithAuthorization method (additional params available)
+
 ## 3.13.0-beta
 - depositWithAuthorization method support for cbBTC
 - package rename to linkdrop-sdk
