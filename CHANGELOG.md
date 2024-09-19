@@ -1,5 +1,8 @@
 # Linkdrop P2P SDK
 
+## 3.12.7-beta
+- update for depositWithAuthorization method (additional params available)
+
 ## 3.12.5-beta
 - depositWithAuthorization method support for cbBTC
 
