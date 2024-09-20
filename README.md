@@ -121,10 +121,10 @@ const authConfig = {
     // required params
     name,
     version,
-    chainId,
     verifyingContract,
 
     // optional params
+    chainId,
     salt
   },
   authorizationMethod // "ApproveWithAuthorization" || "ReceiveWithAuthorization"
