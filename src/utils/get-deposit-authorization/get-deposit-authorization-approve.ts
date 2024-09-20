@@ -2,7 +2,7 @@ import { ethers } from 'ethers'
 import { getNonce } from '..'
 import { TDomain, TSignTypedData } from '../../types'
 
-async function getDepositAuthorizationPolygon(
+async function getDepositAuthorizationApprove(
   signTypedData: TSignTypedData,
   sender: string,
   to: string,
@@ -16,7 +16,7 @@ async function getDepositAuthorizationPolygon(
 ) {
   // The EIP-712 type data
   const types = {
-    ApproveWithAuthorization: [
+    'ApproveWithAuthorization': [
       { name: 'owner', type: 'address' },
       { name: 'spender', type: 'address' },
       { name: 'value', type: 'uint256' },
@@ -49,4 +49,4 @@ async function getDepositAuthorizationPolygon(
   return authorization
 }
 
-export default getDepositAuthorizationPolygon
+export default getDepositAuthorizationApprove

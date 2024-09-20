@@ -2,7 +2,7 @@ import { ethers } from 'ethers'
 import { getNonce } from '..'
 import { TDomain, TSignTypedData } from '../../types'
 
-async function getDepositAuthorizationAvalanche(
+async function getDepositAuthorizationReceive (
   signTypedData: TSignTypedData,
   sender: string,
   to: string,
@@ -16,7 +16,7 @@ async function getDepositAuthorizationAvalanche(
 ) {
   // The EIP-712 type data
   const types = {
-    ReceiveWithAuthorization: [
+    'ReceiveWithAuthorization': [
       { name: 'from', type: 'address' },
       { name: 'to', type: 'address' },
       { name: 'value', type: 'uint256' },
@@ -48,4 +48,4 @@ async function getDepositAuthorizationAvalanche(
   return authorization
 }
 
-export default getDepositAuthorizationAvalanche
+export default getDepositAuthorizationReceive
