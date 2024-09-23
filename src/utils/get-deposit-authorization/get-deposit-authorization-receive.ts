@@ -2,7 +2,7 @@ import { ethers } from 'ethers'
 import { getNonce } from '..'
 import { TDomain, TSignTypedData } from '../../types'
 
-async function getDepositAuthorizationReceive (
+async function getDepositAuthorizationReceive(
   signTypedData: TSignTypedData,
   sender: string,
   to: string,
@@ -36,13 +36,13 @@ async function getDepositAuthorizationReceive (
   }
 
   const signature = await signTypedData(domain, types, message)
-  const signatureSplit = ethers.Signature.from(signature)
+  //const signatureSplit = ethers.Signature.from(signature)
 
   // Encode the authorization
   const coder = ethers.AbiCoder.defaultAbiCoder()
   const authorization = coder.encode(
-    ['address', 'address', 'uint256', 'uint256', 'uint256', 'bytes32', 'uint8', 'bytes32', 'bytes32'],
-    [message.from, message.to, message.value, message.validAfter, message.validBefore, message.nonce, signatureSplit.v, signatureSplit.r, signatureSplit.s]
+    ['address', 'address', 'uint256', 'uint256', 'uint256', 'bytes32', 'bytes'],
+    [message.from, message.to, message.value, message.validAfter, message.validBefore, message.nonce, signature]
   )
 
   return authorization
