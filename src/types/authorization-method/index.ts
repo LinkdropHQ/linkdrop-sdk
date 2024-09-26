@@ -1,1 +1,1 @@
-export type TAuthorizationMethod = 'ApproveWithAuthorization' | 'ReceiveWithAuthorization'
+export type TAuthorizationMethod = 'ApproveWithAuthorization' | 'ReceiveWithAuthorization' | 'ReceiveWithAuthorizationEOA'

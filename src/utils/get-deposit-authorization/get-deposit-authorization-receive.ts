@@ -1,6 +1,6 @@
 import { ethers } from 'ethers'
 import { getNonce } from '..'
-import { TDomain, TSignTypedData } from '../../types'
+import { TDomain, TSignTypedData, ESelectors } from '../../types'
 
 async function getDepositAuthorizationReceive(
   signTypedData: TSignTypedData,
@@ -12,7 +12,8 @@ async function getDepositAuthorizationReceive(
   transferId: string,
   expiration: string,
   feeAmount: string,
-  domain: TDomain
+  domain: TDomain,
+  authSelector: string
 ) {
   // The EIP-712 type data
   const types = {
@@ -36,14 +37,24 @@ async function getDepositAuthorizationReceive(
   }
 
   const signature = await signTypedData(domain, types, message)
-  //const signatureSplit = ethers.Signature.from(signature)
+  let authorization;
+  const coder = ethers.AbiCoder.defaultAbiCoder()
 
   // Encode the authorization
-  const coder = ethers.AbiCoder.defaultAbiCoder()
-  const authorization = coder.encode(
-    ['address', 'address', 'uint256', 'uint256', 'uint256', 'bytes32', 'bytes'],
-    [message.from, message.to, message.value, message.validAfter, message.validBefore, message.nonce, signature]
-  )
+  if (authSelector === ESelectors.receiveWithAuthorizationEOA) {
+    // legacy receiveWithAuthorization accepts signature in splitted format
+    const signatureSplit = ethers.Signature.from(signature)
+    authorization = coder.encode(
+      ['address', 'address', 'uint256', 'uint256', 'uint256', 'bytes32', 'uint8', 'bytes32', 'bytes32'],
+      [message.from, message.to, message.value, message.validAfter, message.validBefore, message.nonce, signatureSplit.v, signatureSplit.r, signatureSplit.s]
+    )
+  } else {
+    // new receiveWithAuthorization accepts signature as bytes
+    authorization = coder.encode(
+      ['address', 'address', 'uint256', 'uint256', 'uint256', 'bytes32', 'bytes'],
+      [message.from, message.to, message.value, message.validAfter, message.validBefore, message.nonce, signature]
+    )
+  }
 
   return authorization
 }

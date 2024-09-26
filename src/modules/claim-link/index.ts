@@ -212,10 +212,10 @@ class ClaimLink implements IClaimLinkSDK {
         this.chainId
       )) {
         throw new Error(errors.escrow_is_not_correct())
-      }  
+      }
     }
 
-    
+
     if (!transferId) {
       throw new ValidationError(
         errors.argument_not_provided('transferId', String(transferId)),
@@ -283,7 +283,7 @@ class ClaimLink implements IClaimLinkSDK {
         this.feeAuthorization
       ])
     }
- 
+
     const value = this._defineValue(
       this.token,
       this.feeToken,
@@ -318,7 +318,7 @@ class ClaimLink implements IClaimLinkSDK {
     if (!this.claimUrl) {
       throw new Error(errors.cannot_redeem_before_deposit())
     }
-  
+
     if (this.source === 'd') {
       const claimCode = getClaimCodeFromDashboardLink(this.claimUrl)
       const linkKey = ethers.id(claimCode)
@@ -396,7 +396,7 @@ class ClaimLink implements IClaimLinkSDK {
   _defineDomain: TDefineDomain = () => {
     return defineDomain(this.chainId, this.token)
   }
-  
+
   _defineValue: TDefineValue = (
     tokenAddress,
     feeToken,
@@ -411,7 +411,7 @@ class ClaimLink implements IClaimLinkSDK {
       // native token
       return totalAmount
     }
-  
+
     // erc20
     return feeAmount
   }
@@ -424,7 +424,7 @@ class ClaimLink implements IClaimLinkSDK {
     }
 
     const { data, value, to } = this.getDepositParams()
-    
+
     const { hash: txHash } = await sendTransaction({
       data,
       value,
@@ -482,7 +482,7 @@ class ClaimLink implements IClaimLinkSDK {
     }
 
     const { data, value, to } = this.getDepositParams()
-    
+
     const { hash: txHash } = await sendTransaction({
       data,
       value,
@@ -598,7 +598,7 @@ class ClaimLink implements IClaimLinkSDK {
     }
 
     const { data, value, to } = this.getDepositParams()
-    
+
     const { hash: txHash } = await sendTransaction({
       data,
       value,
@@ -698,7 +698,7 @@ class ClaimLink implements IClaimLinkSDK {
       return this._depositERC1155({
         sendTransaction
       })
-    } 
+    }
   }
 
   isDepositWithAuthorizationAvailable: TIsDepositWithAuthorizationAvailable = (
@@ -790,6 +790,7 @@ class ClaimLink implements IClaimLinkSDK {
       this.chainId,
       this.token,
       this.feeAmount,
+      authSelector,
 
       // if last param exists, then return needed type of authorization
       // otherwise define it dynamically with chain and token
@@ -853,7 +854,7 @@ class ClaimLink implements IClaimLinkSDK {
       newAmount,
       this.tokenId
     )
-  
+
     return result
   }
 

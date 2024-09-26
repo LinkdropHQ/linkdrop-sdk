@@ -17,6 +17,7 @@ async function getDepositAuthorization(
   chainId: number,
   token: string,
   feeAmount: string,
+  authSelector: string,
   authorizationMethod?: TAuthorizationMethod
 ) {
   if (authorizationMethod) {
@@ -44,10 +45,11 @@ async function getDepositAuthorization(
       transferId,
       expiration,
       feeAmount,
-      domain
+      domain,
+      authSelector
     )
   }
-  
+
   if (chainId === EChains.polygon) {
     if (token === ETokenAddress.usdcBridgedPolygon) {
       return getDepositAuthorizationApprove(
@@ -75,7 +77,8 @@ async function getDepositAuthorization(
     transferId,
     expiration,
     feeAmount,
-    domain
+    domain,
+    authSelector
   )
 }
 
