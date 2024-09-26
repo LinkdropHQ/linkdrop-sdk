@@ -29,6 +29,6 @@ export const supportedStableCoins = {
   [ETokenAddress.usdcPolygon]: ESelectors.receiveWithAuthorization,
   [ETokenAddress.usdcArbitrum]: ESelectors.receiveWithAuthorization,
   [ETokenAddress.usdcOptimism]: ESelectors.receiveWithAuthorization,
-  [ETokenAddress.usdcAvalanche]: ESelectors.receiveWithAuthorization,
+  [ETokenAddress.usdcAvalanche]: ESelectors.receiveWithAuthorizationEOA,
   [ETokenAddress.cbBTC]: ESelectors.receiveWithAuthorizationEOA
 }
