@@ -1,5 +1,8 @@
 # Linkdrop SDK
 
+## 3.13.2-beta
+
+
 ## 3.13.1-beta
 - update for depositWithAuthorization method (additional params available)
 
