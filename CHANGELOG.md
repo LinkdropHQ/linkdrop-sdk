@@ -1,7 +1,7 @@
 # Linkdrop P2P SDK
 
 ## 3.12.9-beta
-- update for escrow address list
+- removed escrow address check
 
 ## 3.12.8-beta
 - update for escrow address list
