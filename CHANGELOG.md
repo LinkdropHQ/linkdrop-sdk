@@ -1,5 +1,8 @@
 # Linkdrop P2P SDK
 
+## 3.12.8-beta
+- update for escrow address list
+
 ## 3.12.7-beta
 - update for depositWithAuthorization method (additional params available)
 
