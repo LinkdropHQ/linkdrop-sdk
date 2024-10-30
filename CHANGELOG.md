@@ -1,5 +1,9 @@
 # Linkdrop SDK
 
+
+## 2.1.14
+- added claiming_finished_auto_redirect property
+
 ## 2.1.13
 - fix for factory address type
 
