@@ -21,6 +21,11 @@ export type TInitializeClaimLinkArgs = {
   forRecipient?: boolean
   source: TClaimLinkSource
   deployment: TDeploymentType
+
+  pendingTxs?: number
+  pendingBlocks?: number | null
+  pendingTxSubmittedBn?: number | null
+  pendingTxSubmittedAt?: number | null
 }
 
 type TInitializeClaimLink = ({
@@ -37,6 +42,10 @@ type TInitializeClaimLink = ({
   tokenType,
   feeAmount,
   totalAmount,
+  pendingTxs,
+  pendingBlocks,
+  pendingTxSubmittedBn,
+  pendingTxSubmittedAt,
   feeAuthorization,
   feeToken,
   tokenId,

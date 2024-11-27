@@ -1,6 +1,6 @@
 {
   "name": "linkdrop-sdk",
-  "version": "3.13.2-beta",
+  "version": "3.13.3-alpha-rc.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [

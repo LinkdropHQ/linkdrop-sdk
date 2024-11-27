@@ -85,10 +85,20 @@ class ClaimLink implements IClaimLinkSDK {
 
   status: TClaimLinkItemStatus
 
+
+  pendingTxs?: number
+  pendingTxSubmittedBn?: null | number
+  pendingTxSubmittedAt?: null | number
+  pendingBlocks?: null | number
+
   constructor({
     sender,
     token,
     amount,
+    pendingTxs,
+    pendingTxSubmittedBn,
+    pendingTxSubmittedAt,
+    pendingBlocks,
     feeAmount,
     totalAmount,
     expiration,
@@ -149,6 +159,10 @@ class ClaimLink implements IClaimLinkSDK {
     if (feeToken) {
       this.feeToken = feeToken.toLowerCase()
     }
+    this.pendingBlocks = pendingBlocks
+    this.pendingTxSubmittedAt = pendingTxSubmittedAt
+    this.pendingTxSubmittedBn = pendingTxSubmittedBn
+    this.pendingTxs = pendingTxs
     if (tokenType !== 'ERC721' && !amount) {
       throw new ValidationError(
         errors.argument_not_provided('amount', String(amount)),

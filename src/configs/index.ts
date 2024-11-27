@@ -6,7 +6,7 @@ import {
 export const baseUrl = 'http://localhost:3000'
 export const apiUrl = 'https://escrow-api.linkdrop.io/v3'
 export const dashboardApiUrl = 'https://escrow-api.linkdrop.io/dashboard'
-export const devDashboardApiUrl = 'https://escrow-api.linkdrop.io/dev-dashboard'
+export const devDashboardApiUrl = 'https://escrow-api.linkdrop.io/staging'
 
 export const nativeTokenAddress = '0x0000000000000000000000000000000000000000'
 

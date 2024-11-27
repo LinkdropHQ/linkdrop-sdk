@@ -278,6 +278,11 @@ class LinkdropSDK implements ILinkdropSDK {
     let feeAuthorization = claimLinkData.feeAuthorization
     let feeToken = claimLinkData.feeToken
 
+    let pendingTxs = claimLinkData.pendingTxs
+    let pendingBlocks = claimLinkData.pendingBlocks
+    let pendingTxSubmittedBn = claimLinkData.pendingTxSubmittedBn
+    let pendingTxSubmittedAt = claimLinkData.pendingTxSubmittedAt
+
     let keyPair
     if (!transferId) {
       keyPair = await generateKeypair(this.getRandomBytes)
@@ -299,6 +304,11 @@ class LinkdropSDK implements ILinkdropSDK {
       totalAmount = feeData.total_amount
       feeAuthorization = feeData.fee_authorization
       feeToken = feeData.fee_token
+
+      pendingTxs = feeData.pending_txs
+      pendingBlocks = feeData.pending_blocks
+      pendingTxSubmittedBn = feeData.pending_tx_submitted_bn
+      pendingTxSubmittedAt = feeData.pending_tx_submitted_at
 
       if (
         claimLinkData.tokenType === 'NATIVE' || claimLinkData.tokenType === 'ERC20'
@@ -360,7 +370,11 @@ class LinkdropSDK implements ILinkdropSDK {
       feeToken: feeToken as string,
       feeAuthorization,
       totalAmount,
-      source: claimLinkData.source
+      source: claimLinkData.source,
+      pendingTxs,
+      pendingTxSubmittedBn,
+      pendingTxSubmittedAt,
+      pendingBlocks
     })
 
     return claimLink
@@ -398,8 +412,8 @@ class LinkdropSDK implements ILinkdropSDK {
       const chainId = getChainIdFromDashboardLink(claimUrl)
       const linkKey = ethers.id(claimCode)
       const transferId = new ethers.Wallet(linkKey).address
-
       const customApiHost = defineDashboardApiHost(claimUrl)
+
       const { claim_link } = await linkApi.getTransferStatus(
         customApiHost,
         this.#apiKey,
@@ -453,6 +467,7 @@ class LinkdropSDK implements ILinkdropSDK {
         source: linkSource,
         deployment: this.deployment
       }
+
       return this._initializeClaimLink(claimLinkData)
     }
 

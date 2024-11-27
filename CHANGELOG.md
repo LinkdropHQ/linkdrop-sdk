@@ -1,5 +1,8 @@
 # Linkdrop SDK
 
+## 3.13.3-beta
+- added pending data to ClaimLink instance and /fee endpoint
+
 ## 3.13.2-beta
 - new escrow address
 

@@ -33,6 +33,12 @@ type TConstructorArgs = {
   feeAuthorization?: string
   feeToken: string
   totalAmount: string
+
+  pendingTxs?: number
+  pendingBlocks?: number | null
+  pendingTxSubmittedBn?: number | null
+  pendingTxSubmittedAt?: number | null
+
   status?: TClaimLinkItemStatus
 }
 
