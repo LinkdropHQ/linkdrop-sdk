@@ -79,7 +79,7 @@ class ClaimLink implements IClaimLinkSDK {
   feeToken: string
   source: TClaimLinkSource
 
-  forRecipient: boolean
+  #forRecipient: boolean
 
   deployment: TDeploymentType
 
@@ -133,7 +133,7 @@ class ClaimLink implements IClaimLinkSDK {
 
     this.deployment = deployment
 
-    this.forRecipient = Boolean(forRecipient)
+    this.#forRecipient = Boolean(forRecipient)
 
     if (tokenType === 'ERC721' || tokenType === 'ERC1155') {
       if (!tokenId) {
@@ -433,7 +433,7 @@ class ClaimLink implements IClaimLinkSDK {
   _depositERC20: TDepositERC20 = async ({
     sendTransaction
   }) => {
-    if (this.forRecipient) {
+    if (this.#forRecipient) {
       throw new Error(errors.link_only_for_claim())
     }
 
@@ -491,7 +491,7 @@ class ClaimLink implements IClaimLinkSDK {
   _depositNative: TDepositNative = async ({
     sendTransaction
   }) => {
-    if (this.forRecipient) {
+    if (this.#forRecipient) {
       throw new Error(errors.link_only_for_claim())
     }
 
@@ -549,7 +549,7 @@ class ClaimLink implements IClaimLinkSDK {
   _depositERC1155: TDepositERC1155 = async ({
     sendTransaction
   }) => {
-    if (this.forRecipient) {
+    if (this.#forRecipient) {
       throw new Error(errors.link_only_for_claim())
     }
 
@@ -607,7 +607,7 @@ class ClaimLink implements IClaimLinkSDK {
   _depositERC721: TDepositERC721 = async ({
     sendTransaction
   }) => {
-    if (this.forRecipient) {
+    if (this.#forRecipient) {
       throw new Error(errors.link_only_for_claim())
     }
 
@@ -665,7 +665,7 @@ class ClaimLink implements IClaimLinkSDK {
   deposit: TDeposit = async ({
     sendTransaction
   }) => {
-    if (this.forRecipient) {
+    if (this.#forRecipient) {
       throw new Error(errors.link_only_for_claim())
     }
 
@@ -726,7 +726,7 @@ class ClaimLink implements IClaimLinkSDK {
     signTypedData,
     authConfig
   }) => {
-    if (this.forRecipient) {
+    if (this.#forRecipient) {
       throw new Error(errors.link_only_for_claim())
     }
 
@@ -856,7 +856,10 @@ class ClaimLink implements IClaimLinkSDK {
     }
   }
 
-  _getCurrentFee: TGetCurrentFee = async (newAmount) => {
+  getCurrentFee: TGetCurrentFee = async (newAmount) => {
+    if (this.#forRecipient) {
+      throw new Error(errors.link_only_for_claim())
+    }
     const result = await linkApi.getFee(
       this.apiUrl,
       this.#apiKey,
@@ -873,7 +876,7 @@ class ClaimLink implements IClaimLinkSDK {
   }
 
   updateAmount: TUpdateAmount = async (amount) => {
-    if (this.forRecipient) {
+    if (this.#forRecipient) {
       throw new Error(errors.link_only_for_claim())
     }
     if (this.tokenType === 'ERC721') {
@@ -889,7 +892,7 @@ class ClaimLink implements IClaimLinkSDK {
       max_transfer_amount: maxTransferAmount,
       fee_authorization: feeAuthorization,
       fee_token: feeToken
-    } = await this._getCurrentFee(
+    } = await this.getCurrentFee(
       amount as string
     )
 
@@ -971,7 +974,7 @@ class ClaimLink implements IClaimLinkSDK {
   generateClaimUrl: TGenerateClaimUrl = async ({
     signTypedData
   }) => {
-    if (this.forRecipient) {
+    if (this.#forRecipient) {
       throw new Error(errors.link_only_for_claim())
     }
     if (!this.getRandomBytes) {

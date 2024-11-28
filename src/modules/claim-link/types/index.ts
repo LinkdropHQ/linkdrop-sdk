@@ -16,7 +16,7 @@ import TIsDepositWithAuthorizationAvailable from './is-deposit-with-authorizatio
 import TGetDepositParams from './get-deposit-params'
 
 interface IClaimLink {
-  _getCurrentFee: TGetCurrentFee
+  getCurrentFee: TGetCurrentFee
   redeem: TRedeem
   depositWithAuthorization: TDepositWithAuthorization
   updateAmount: TUpdateAmount
