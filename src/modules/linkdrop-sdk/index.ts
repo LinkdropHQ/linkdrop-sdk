@@ -408,12 +408,11 @@ class LinkdropSDK implements ILinkdropSDK {
   getClaimLink: TGetClaimLink = async (claimUrl) => {
     const linkSource = this.getLinkSourceFromClaimUrl(claimUrl)
     if (linkSource === 'd') {
-      const claimCode = getClaimCodeFromDashboardLink(claimUrl)
+      const claimCode = getClaimCodeFromDashboardLink(claimUrl)    
       const chainId = getChainIdFromDashboardLink(claimUrl)
       const linkKey = ethers.id(claimCode)
       const transferId = new ethers.Wallet(linkKey).address
       const customApiHost = defineDashboardApiHost(claimUrl)
-
       const { claim_link } = await linkApi.getTransferStatus(
         customApiHost,
         this.#apiKey,

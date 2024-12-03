@@ -4,6 +4,12 @@ import {
   LinkdropP2P as LinkdropP2PV2,
   ClaimLink as ClaimLinkV2
 } from 'linkdrop-p2p-sdk2'
+import {
+  ConflictError,
+  ValidationError,
+  ForbiddenError,
+  NotFoundError
+} from './errors'
 
 import {
   LinkdropP2P as LinkdropP2PV3_11,
@@ -16,5 +22,9 @@ export {
   LinkdropP2PV2,
   ClaimLinkV2,
   LinkdropP2PV3_11,
-  ClaimLinkV3_11
+  ClaimLinkV3_11,
+  ConflictError,
+  ValidationError,
+  ForbiddenError,
+  NotFoundError
 }

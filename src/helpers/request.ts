@@ -1,4 +1,9 @@
-import { ConflictError, ValidationError, ForbiddenError } from '../errors'
+import {
+  ConflictError,
+  ValidationError,
+  ForbiddenError,
+  NotFoundError
+} from '../errors'
 import defineErrorText from './define-error-text'
 
 async function request<TResponse>(
@@ -12,7 +17,9 @@ async function request<TResponse>(
       return res.json()
     }
     const responseData = await res.json()
+
     const responseCode = res.status
+
     // error.message
     const responseMessage = defineErrorText(res.status, responseData)
     // 
@@ -28,6 +35,8 @@ async function request<TResponse>(
         throw new ValidationError(responseMessage, responseErrorText)
       case 403:
         throw new ForbiddenError(responseMessage, responseErrorText)
+      case 404:
+        throw new NotFoundError(responseMessage, responseErrorText)
       default:
         throw new Error(responseMessage)
     }

@@ -1,5 +1,9 @@
 # Linkdrop SDK
 
+## 3.13.4-alpha-rc.0
+- 404 Error handling
+- export of error classes
+
 ## 3.13.3-beta
 - added pending data to ClaimLink instance and /fee endpoint
 
