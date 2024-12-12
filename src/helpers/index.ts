@@ -19,9 +19,11 @@ import defineDashboardApiHost from './define-dashboard-api-host'
 import defineVersionByEscrow from './define-version-by-escrow'
 import checkApiKeyFormatValidity from './check-api-key-format-validity'
 import defineSelector from './define-selector'
+import encryptMessage from './encrypt-message'
 
 export {
   defineDomain,
+  encryptMessage,
   defineSelector,
   getClaimCodeFromDashboardLink,
   getChainIdFromDashboardLink,

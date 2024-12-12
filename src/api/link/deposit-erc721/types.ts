@@ -19,5 +19,6 @@ export type TDepositERC721 = (
   token_id: string,
   fee_amount: string,
   total_amount: string,
-  fee_token: string
+  fee_token: string,
+  encrypted_message?: string
 ) => Promise<TDepositERC721Response>

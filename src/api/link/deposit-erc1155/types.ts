@@ -20,5 +20,6 @@ export type TDepositERC1155 = (
   amount: string,
   fee_amount: string,
   total_amount: string,
-  fee_token: string
+  fee_token: string,
+  encrypted_message?: string
 ) => Promise<TDepositERC1155Response>

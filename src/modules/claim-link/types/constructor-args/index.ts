@@ -5,7 +5,8 @@ import {
   TGetRandomBytes,
   TClaimLinkItemStatus,
   TClaimLinkSource,
-  TDeploymentType
+  TDeploymentType,
+  TSignTypedData
 } from "../../../../types"
 
 type TConstructorArgs = {
@@ -40,6 +41,8 @@ type TConstructorArgs = {
   pendingTxSubmittedAt?: number | null
 
   status?: TClaimLinkItemStatus
+
+  encryptedMessage?: string
 }
 
 
