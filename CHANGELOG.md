@@ -1,7 +1,7 @@
 # Linkdrop SDK
 
 ## 3.14.0-beta
-- message added
+- message available for claim links
 
 ## 3.13.3-beta
 - added pending data to ClaimLink instance and /fee endpoint

@@ -25,24 +25,21 @@ const encryptMessage: TEncryptMessage = async ({
     name: "MyEncryptionScheme",
     version: "1",
     chainId: chainId
-  };
+  }
 
   const types = {
     EncryptionMessage: [
       { name: "seed", type: "string" }
     ]
-  };
+  }
 
   // Now you can sign typed data as follows:
 
   const seed = `Encrypting message (transferId: ${transferId})`
-  const value = {
-    seed
-  }
+  const value = { seed }
   const signature = await signTypedData(domain, types, value)
   const encryptionKey = ethers.sha256(signature)
-  const encryptedMessage = wccrypto.encrypt({ message, symKey: encryptionKey })
-
+  const encryptedMessage = wccrypto.encrypt({ message, symKey: encryptionKey.replace('0x', '') })
   return encryptedMessage
 }
 

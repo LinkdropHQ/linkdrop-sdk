@@ -83,6 +83,18 @@ const claimLink = await sdk.createClaimLink({
 })
 ```
 
+#### Additional encrypted message
+
+```js
+const message = 'Hello world!'
+const signTypedData = (domain, types, message) => signer.signTypedData(domain, types, message)
+const claimLink = await sdk.createClaimLink({
+  ...
+  message,
+  signTypedData
+})
+```
+
 You can update an amount for "NATIVE", "ERC20", and "ERC1155" tokens
 ```js
 const { amount, feeAmount, totalAmount, feeToken } = await claimLink.updateAmount(amount)
@@ -228,6 +240,7 @@ Claim Link object contains methods and properties to facilitate both creation an
 - _totalAmount_ (string, total amount sender needs to deposit, _amount_ + _fee_, e.g. "1100000" or 1.1 USDC)
 - _token_ (string, token contract address, e.g. "0x2791bca1f2de4661ed88a30c99a7a9449aa84174")
 - _chainId_ (number, network chain ID, e.g. 147 for Polygon network)
+- _encryptedMessage_ (string)
 - _sender_ (string, Sender's Ethereum address, e.g. "0x2331bca1f2de4661ed88a30c99a7a9449aa84195")
 - _escrow_ (string, Escrow contract address "0x1111bca1f2de4661ed88a30c44a7a9449aa84106")
 - _version_ (string, claim link version, e.g. "1")
