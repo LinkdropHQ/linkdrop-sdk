@@ -140,7 +140,7 @@ class LinkdropSDK implements ILinkdropSDK {
     if (message) {
       if (!signTypedData) {
         throw new ValidationError(
-          errors.argument_not_provided('signTypedData', String(token)),
+          errors.argument_not_provided('signTypedData', String(signTypedData)),
           'SIGN_TYPED_DATA_NOT_PROVIDED'
         )
       }

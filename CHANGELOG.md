@@ -1,7 +1,7 @@
 # Linkdrop SDK
 
 ## 3.14.0-beta
-- message added
+- message available for claim links
 
 ## 3.13.4-alpha-rc.0
 - 404 Error handling
