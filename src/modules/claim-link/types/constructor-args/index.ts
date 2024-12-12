@@ -38,8 +38,20 @@ type TConstructorArgs = {
   pendingBlocks?: number | null
   pendingTxSubmittedBn?: number | null
   pendingTxSubmittedAt?: number | null
-
   status?: TClaimLinkItemStatus
+
+
+  // data for dashboard links, otherwise null 
+  wallet: string | null
+  claimingFinishedDescription: string | null
+  claimingFinishedButtonTitle: string  | null
+  claimingFinishedButtonURL: string | null
+  claimingFinishedButtonOn: boolean | null
+  claimingFinishedAutoRedirect: boolean | null
+  preferredWalletOn: boolean | null
+  additionalWalletsOn: boolean | null
+  weiAmount: string | null
+
 }
 
 

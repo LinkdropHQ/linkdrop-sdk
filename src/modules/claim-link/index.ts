@@ -91,7 +91,28 @@ class ClaimLink implements IClaimLinkSDK {
   pendingTxSubmittedAt?: null | number
   pendingBlocks?: null | number
 
+
+  wallet: string | null
+  claimingFinishedDescription: string | null
+  claimingFinishedButtonTitle: string  | null
+  claimingFinishedButtonURL: string | null
+  claimingFinishedButtonOn: boolean | null
+  claimingFinishedAutoRedirect: boolean | null
+  preferredWalletOn: boolean | null
+  additionalWalletsOn: boolean | null
+  weiAmount: string | null
+
   constructor({
+    weiAmount,
+    additionalWalletsOn,
+    preferredWalletOn,
+    claimingFinishedAutoRedirect,
+    claimingFinishedButtonOn,
+    claimingFinishedButtonURL,
+    claimingFinishedButtonTitle,
+    claimingFinishedDescription,
+    wallet,
+
     sender,
     token,
     amount,
@@ -163,6 +184,18 @@ class ClaimLink implements IClaimLinkSDK {
     this.pendingTxSubmittedAt = pendingTxSubmittedAt
     this.pendingTxSubmittedBn = pendingTxSubmittedBn
     this.pendingTxs = pendingTxs
+
+
+    this.weiAmount = weiAmount
+    this.additionalWalletsOn = additionalWalletsOn
+    this.preferredWalletOn = preferredWalletOn
+    this.claimingFinishedAutoRedirect = claimingFinishedAutoRedirect
+    this.claimingFinishedButtonOn = claimingFinishedButtonOn
+    this.claimingFinishedButtonURL = claimingFinishedButtonURL
+    this.claimingFinishedButtonTitle = claimingFinishedButtonTitle
+    this.claimingFinishedDescription = claimingFinishedDescription
+    this.wallet = wallet
+  
     if (tokenType !== 'ERC721' && !amount) {
       throw new ValidationError(
         errors.argument_not_provided('amount', String(amount)),

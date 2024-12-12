@@ -22,36 +22,22 @@ export type TInitializeClaimLinkArgs = {
   source: TClaimLinkSource
   deployment: TDeploymentType
 
+  wallet: string | null
+  claimingFinishedDescription: string | null
+  claimingFinishedButtonTitle: string  | null
+  claimingFinishedButtonURL: string | null
+  claimingFinishedButtonOn: boolean | null
+  claimingFinishedAutoRedirect: boolean | null
+  preferredWalletOn: boolean | null
+  additionalWalletsOn: boolean | null
+  weiAmount: string | null
+
   pendingTxs?: number
   pendingBlocks?: number | null
   pendingTxSubmittedBn?: number | null
   pendingTxSubmittedAt?: number | null
 }
 
-type TInitializeClaimLink = ({
-  token,
-  expiration,
-  chainId,
-  baseUrl,
-  amount,
-  sender, 
-  apiUrl, 
-  apiKey,
-  transferId,
-  claimUrl,
-  tokenType,
-  feeAmount,
-  totalAmount,
-  pendingTxs,
-  pendingBlocks,
-  pendingTxSubmittedBn,
-  pendingTxSubmittedAt,
-  feeAuthorization,
-  feeToken,
-  tokenId,
-  forRecipient,
-  source,
-  deployment
-}: TInitializeClaimLinkArgs) => Promise<(ClaimLink)>
+type TInitializeClaimLink = (data: TInitializeClaimLinkArgs) => Promise<(ClaimLink)>
 
 export default TInitializeClaimLink

@@ -22,7 +22,8 @@ import {
   getClaimCodeFromDashboardLink,
   getChainIdFromDashboardLink,
   defineDashboardApiHost,
-  defineVersionByEscrow
+  defineVersionByEscrow,
+  getTransferIdFromDashboardLink
 } from '../../helpers'
 import { generateKeypair } from '../../utils'
 import { toBigInt, ethers } from 'ethers'
@@ -147,7 +148,16 @@ class LinkdropSDK implements ILinkdropSDK {
       baseUrl: this.baseUrl,
       tokenId,
       source: 'p2p',
-      deployment: this.deployment
+      deployment: this.deployment,
+      wallet: null,
+      claimingFinishedDescription: null,
+      claimingFinishedButtonTitle: null,
+      claimingFinishedButtonURL: null,
+      claimingFinishedButtonOn: null,
+      claimingFinishedAutoRedirect: null,
+      preferredWalletOn: null,
+      additionalWalletsOn: null,
+      weiAmount: null 
     })
   }
 
@@ -374,7 +384,18 @@ class LinkdropSDK implements ILinkdropSDK {
       pendingTxs,
       pendingTxSubmittedBn,
       pendingTxSubmittedAt,
-      pendingBlocks
+      pendingBlocks,
+
+
+      wallet: claimLinkData.wallet,
+      claimingFinishedDescription: claimLinkData.claimingFinishedDescription,
+      claimingFinishedButtonTitle: claimLinkData.claimingFinishedButtonTitle,
+      claimingFinishedButtonURL: claimLinkData.claimingFinishedButtonURL,
+      claimingFinishedButtonOn: claimLinkData.claimingFinishedButtonOn,
+      claimingFinishedAutoRedirect: claimLinkData.claimingFinishedAutoRedirect,
+      preferredWalletOn: claimLinkData.preferredWalletOn,
+      additionalWalletsOn: claimLinkData.additionalWalletsOn,
+      weiAmount: claimLinkData.claimingFinishedDescription
     })
 
     return claimLink
@@ -408,10 +429,13 @@ class LinkdropSDK implements ILinkdropSDK {
   getClaimLink: TGetClaimLink = async (claimUrl) => {
     const linkSource = this.getLinkSourceFromClaimUrl(claimUrl)
     if (linkSource === 'd') {
-      const claimCode = getClaimCodeFromDashboardLink(claimUrl)    
+      // const claimCode = getClaimCodeFromDashboardLink(claimUrl)    
+      // const linkKey = ethers.id(claimCode)
+      // const transferId = new ethers.Wallet(linkKey).address
+
+      const transferId = getTransferIdFromDashboardLink(claimUrl)
+
       const chainId = getChainIdFromDashboardLink(claimUrl)
-      const linkKey = ethers.id(claimCode)
-      const transferId = new ethers.Wallet(linkKey).address
       const customApiHost = defineDashboardApiHost(claimUrl)
       const { claim_link } = await linkApi.getTransferStatus(
         customApiHost,
@@ -431,7 +455,16 @@ class LinkdropSDK implements ILinkdropSDK {
         total_amount,
         escrow,
         token_id,
-        status
+        status,
+        claiming_finished_auto_redirect,
+        claiming_finished_button_on,
+        claiming_finished_button_title,
+        claiming_finished_button_url,
+        claiming_finished_description,
+        wei_amount,
+        wallet,
+        preferred_wallet_on,
+        additional_wallets_on
       } = claim_link
 
       const apiHost = defineApiHost(chainId, this.apiUrl)
@@ -464,7 +497,16 @@ class LinkdropSDK implements ILinkdropSDK {
         forRecipient: true,
         status,
         source: linkSource,
-        deployment: this.deployment
+        deployment: this.deployment,
+        wallet,
+        claimingFinishedDescription: claiming_finished_description,
+        claimingFinishedButtonTitle: claiming_finished_button_title,
+        claimingFinishedButtonURL: claiming_finished_button_url,
+        claimingFinishedButtonOn: claiming_finished_button_on,
+        claimingFinishedAutoRedirect: claiming_finished_auto_redirect,
+        preferredWalletOn: preferred_wallet_on,
+        additionalWalletsOn: additional_wallets_on,
+        weiAmount: wei_amount
       }
 
       return this._initializeClaimLink(claimLinkData)
@@ -513,7 +555,16 @@ class LinkdropSDK implements ILinkdropSDK {
       total_amount,
       escrow,
       token_id,
-      status
+      status,
+      claiming_finished_auto_redirect,
+      claiming_finished_button_on,
+      claiming_finished_button_title,
+      claiming_finished_button_url,
+      claiming_finished_description,
+      wei_amount,
+      wallet,
+      preferred_wallet_on,
+      additional_wallets_on
     } = claim_link
 
     const actualVersion = defineVersionByEscrow(escrow) 
@@ -550,7 +601,17 @@ class LinkdropSDK implements ILinkdropSDK {
       forRecipient: true,
       status,
       source: linkSource,
-      deployment: this.deployment
+      deployment: this.deployment,
+
+      wallet,
+      claimingFinishedDescription: claiming_finished_description,
+      claimingFinishedButtonTitle: claiming_finished_button_title,
+      claimingFinishedButtonURL: claiming_finished_button_url,
+      claimingFinishedButtonOn: claiming_finished_button_on,
+      claimingFinishedAutoRedirect: claiming_finished_auto_redirect,
+      preferredWalletOn: preferred_wallet_on,
+      additionalWalletsOn: additional_wallets_on,
+      weiAmount: wei_amount
     }
     return this._initializeClaimLink(claimLinkData)
   }
@@ -587,7 +648,16 @@ class LinkdropSDK implements ILinkdropSDK {
         sender,
         status,
         token_id,
-        escrow
+        escrow,
+        claiming_finished_auto_redirect,
+        claiming_finished_button_on,
+        claiming_finished_button_title,
+        claiming_finished_button_url,
+        claiming_finished_description,
+        wei_amount,
+        wallet,
+        preferred_wallet_on,
+        additional_wallets_on
       } = claim_link
 
       const claimLinkData = {
@@ -609,7 +679,16 @@ class LinkdropSDK implements ILinkdropSDK {
         escrowAddress: escrow,
         tokenId: token_id,
         source: (customApiHost ? 'd' : 'p2p') as TClaimLinkSource,
-        deployment: this.deployment
+        deployment: this.deployment,
+        wallet,
+        claimingFinishedDescription: claiming_finished_description,
+        claimingFinishedButtonTitle: claiming_finished_button_title,
+        claimingFinishedButtonURL: claiming_finished_button_url,
+        claimingFinishedButtonOn: claiming_finished_button_on,
+        claimingFinishedAutoRedirect: claiming_finished_auto_redirect,
+        preferredWalletOn: preferred_wallet_on,
+        additionalWalletsOn: additional_wallets_on,
+        weiAmount: wei_amount
       }
 
       return this._initializeClaimLink(claimLinkData)
@@ -635,7 +714,16 @@ class LinkdropSDK implements ILinkdropSDK {
         version,
         status,
         token_id,
-        escrow
+        escrow,
+        claiming_finished_auto_redirect,
+        claiming_finished_button_on,
+        claiming_finished_button_title,
+        claiming_finished_button_url,
+        claiming_finished_description,
+        wei_amount,
+        wallet,
+        preferred_wallet_on,
+        additional_wallets_on
       } = claim_link
 
       const claimLinkData = {
@@ -657,7 +745,16 @@ class LinkdropSDK implements ILinkdropSDK {
         status,
         escrow,
         source: 'p2p' as TClaimLinkSource,
-        deployment: this.deployment
+        deployment: this.deployment,
+        wallet,
+        claimingFinishedDescription: claiming_finished_description,
+        claimingFinishedButtonTitle: claiming_finished_button_title,
+        claimingFinishedButtonURL: claiming_finished_button_url,
+        claimingFinishedButtonOn: claiming_finished_button_on,
+        claimingFinishedAutoRedirect: claiming_finished_auto_redirect,
+        preferredWalletOn: preferred_wallet_on,
+        additionalWalletsOn: additional_wallets_on,
+        weiAmount: wei_amount
       }
 
       if (defineVersionByEscrow(escrow) === '2') {

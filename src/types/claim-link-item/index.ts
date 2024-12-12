@@ -30,4 +30,15 @@ export type TClaimLinkItem = {
   status: TClaimLinkItemStatus
   operations:  TClaimLinkItemOperation[]
   source: TClaimLinkSource
+
+
+  wallet: string | null
+  claiming_finished_description: string | null
+  claiming_finished_button_title: string  | null
+  claiming_finished_button_url: string | null
+  claiming_finished_button_on: boolean | null
+  claiming_finished_auto_redirect: boolean | null
+  preferred_wallet_on: boolean | null
+  additional_wallets_on: boolean | null
+  wei_amount: string | null
 }

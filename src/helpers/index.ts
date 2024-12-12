@@ -19,11 +19,13 @@ import defineDashboardApiHost from './define-dashboard-api-host'
 import defineVersionByEscrow from './define-version-by-escrow'
 import checkApiKeyFormatValidity from './check-api-key-format-validity'
 import defineSelector from './define-selector'
+import getTransferIdFromDashboardLink from './get-transfer-id-from-dashboard-link'
 
 export {
   defineDomain,
   defineSelector,
   getClaimCodeFromDashboardLink,
+  getTransferIdFromDashboardLink,
   getChainIdFromDashboardLink,
   defineDashboardApiHost,
   checkApiKeyFormatValidity,

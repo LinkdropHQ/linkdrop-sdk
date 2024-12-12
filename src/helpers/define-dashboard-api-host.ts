@@ -10,7 +10,11 @@ type TDefineDashboardApiHost = (
 const defineDashboardApiHost: TDefineDashboardApiHost = (
   claimLink
 ) => {
-  if (claimLink.includes('dev.') || claimLink.includes('localhost')) {
+  if (
+    claimLink.includes('dev.') ||
+    claimLink.includes('localhost') ||
+    claimLink.includes('vercel.app')
+  ) {
     return devDashboardApiUrl
   }
   return dashboardApiUrl
