@@ -1,7 +1,5 @@
 import { ChaCha20Poly1305 } from "@stablelib/chacha20poly1305"
-import { CryptoTypes } from "@walletconnect/types"
 import { concat, fromString, toString } from "uint8arrays"
-import { randomBytes } from "@stablelib/random"
 
 export const BASE10 = "base10";
 export const BASE16 = "base16";
@@ -24,16 +22,20 @@ export function decodeTypeByte(byte: Uint8Array): number {
   return Number(toString(byte, BASE10));
 }
 
-export function decrypt(params: CryptoTypes.DecryptParams): string {
+export function decrypt(params: any): string {
   const box = new ChaCha20Poly1305(fromString(params.symKey, BASE16));
-  const { sealed, iv } = deserialize({ encoded: params.encoded, encoding: params?.encoding });
+  const { sealed, iv } = deserialize({
+    encoded: params.encoded,
+    randomBytes: params.randomBytes,
+    encoding: params?.encoding
+  });
   const message = box.open(iv, sealed);
   if (message === null) throw new Error("Failed to decrypt");
   return toString(message, UTF8);
 }
 
 
-export function encrypt(params: CryptoTypes.EncryptParams): string {
+export function encrypt(params: any): string {
   const type = encodeTypeByte(typeof params.type !== "undefined" ? params.type : TYPE_0);
   if (decodeTypeByte(type) === TYPE_1 && typeof params.senderPublicKey === "undefined") {
     throw new Error("Missing sender public key for type 1 envelope");
@@ -44,13 +46,13 @@ export function encrypt(params: CryptoTypes.EncryptParams): string {
       : undefined;
 
   const iv =
-    typeof params.iv !== "undefined" ? fromString(params.iv, BASE16) : randomBytes(IV_LENGTH);
+    typeof params.iv !== "undefined" ? fromString(params.iv, BASE16) : params.randomBytes(IV_LENGTH);
   const box = new ChaCha20Poly1305(fromString(params.symKey, BASE16));
   const sealed = box.seal(iv, fromString(params.message, UTF8));
   return serialize({ type, sealed, iv, senderPublicKey, encoding: params.encoding });
 }
 
-export function serialize(params: CryptoTypes.EncodingParams): string {
+export function serialize(params: any): string {
   const { encoding = BASE64 } = params;
 
   if (decodeTypeByte(params.type) === TYPE_2) {
@@ -69,7 +71,7 @@ export function serialize(params: CryptoTypes.EncodingParams): string {
   return toString(concat([params.type, params.iv, params.sealed]), encoding);
 }
 
-export function deserialize(params: CryptoTypes.DecodingParams): CryptoTypes.EncodingParams {
+export function deserialize(params: any): any {
   const { encoded, encoding = BASE64 } = params;
   const bytes = fromString(encoded, encoding);
   const type = bytes.slice(ZERO_INDEX, TYPE_LENGTH);
@@ -85,7 +87,7 @@ export function deserialize(params: CryptoTypes.DecodingParams): CryptoTypes.Enc
   if (decodeTypeByte(type) === TYPE_2) {
     const sealed = bytes.slice(slice1);
     // iv is not used in type 2 envelopes
-    const iv = randomBytes(IV_LENGTH);
+    const iv = params.randomBytes(IV_LENGTH);
     return { type, sealed, iv };
   }
   // default to type 0 envelope

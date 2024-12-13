@@ -278,7 +278,8 @@ class ClaimLink implements IClaimLinkSDK {
       message: message,
       signTypedData,
       transferId: this.transferId,
-      chainId: this.chainId
+      chainId: this.chainId,
+      getRandomBytes: this.getRandomBytes
     })
 
     this.encryptedMessage = result.encryptedMessage

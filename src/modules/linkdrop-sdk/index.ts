@@ -594,7 +594,8 @@ class LinkdropSDK implements ILinkdropSDK {
       encryptedMessage: encrypted_message,
       decryptedMessage: (encrypted_message && encryptionKey) ? decryptMessage({
         message: encrypted_message,
-        encryptionKey
+        encryptionKey,
+        getRandomBytes: this.getRandomBytes
       }) : undefined
     }
     return this._initializeClaimLink(claimLinkData)
