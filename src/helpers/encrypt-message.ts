@@ -1,4 +1,4 @@
-import { TSignTypedData } from '../types'
+import { TGetRandomBytes, TSignTypedData } from '../types'
 import { ethers } from 'ethers'
 import { encrypt } from '../crypto'
 
@@ -6,12 +6,14 @@ type TEncryptMessage = ({
   message,
   signTypedData,
   chainId,
-  transferId
+  transferId,
+  getRandomBytes
 }: {
   message: string,
   signTypedData: TSignTypedData,
   transferId: string,
-  chainId: number
+  chainId: number,
+  getRandomBytes: TGetRandomBytes
 }) => Promise<{
   encryptedMessage: string
   encryptionKey: string
@@ -21,7 +23,8 @@ const encryptMessage: TEncryptMessage = async ({
   chainId,
   transferId,
   message,
-  signTypedData
+  signTypedData,
+  getRandomBytes
 }) => {
 
   const domain = {
@@ -43,7 +46,11 @@ const encryptMessage: TEncryptMessage = async ({
   const encryptionKeyInitial = ethers.sha256(signature)
   const encryptionKeyModified = encryptionKeyInitial.slice(0, 12)
   const encryptionKeyFinal = ethers.sha256(encryptionKeyModified).replace('0x', '')
-  const encryptedMessage = encrypt({ message, symKey: encryptionKeyFinal })
+  const encryptedMessage = encrypt({
+    message,
+    symKey: encryptionKeyFinal,
+    randomBytes: getRandomBytes
+  })
   return {
     encryptedMessage,
     encryptionKey: encryptionKeyModified // уйдет в линк
