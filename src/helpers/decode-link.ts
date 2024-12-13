@@ -23,7 +23,8 @@ const decodeLink: TDecodeLink = (link) => {
     transferId: parsedParams["i"] || "",
     chainId: parsedParams["c"],
     version: parsedParams["v"] || "1",
-    signatureLength: parsedParams["sgl"] || '65'
+    signatureLength: parsedParams["sgl"] || '65',
+    encryptionKey: parsedParams['m']
   }
 
   const linkKey = ethers.toBeHex(decodeBase58(params.linkKey), 32) 
@@ -39,7 +40,8 @@ const decodeLink: TDecodeLink = (link) => {
     linkKey,
     transferId,
     chainId,
-    version: params.version
+    version: params.version,
+    encryptionKey: params.encryptionKey
   }
 }
 

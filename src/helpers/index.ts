@@ -20,9 +20,11 @@ import defineVersionByEscrow from './define-version-by-escrow'
 import checkApiKeyFormatValidity from './check-api-key-format-validity'
 import defineSelector from './define-selector'
 import encryptMessage from './encrypt-message'
+import decryptMessage from './decrypt-message'
 
 export {
   defineDomain,
+  decryptMessage,
   encryptMessage,
   defineSelector,
   getClaimCodeFromDashboardLink,

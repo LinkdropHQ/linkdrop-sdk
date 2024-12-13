@@ -1,6 +1,6 @@
 import { TSignTypedData } from '../types'
 import { ethers } from 'ethers'
-import * as wccrypto from '@walletconnect/utils/dist/esm'
+import { encrypt } from '../crypto'
 
 type TEncryptMessage = ({
   message,
@@ -12,7 +12,10 @@ type TEncryptMessage = ({
   signTypedData: TSignTypedData,
   transferId: string,
   chainId: number
-}) => Promise<string>
+}) => Promise<{
+  encryptedMessage: string
+  encryptionKey: string
+}>
 
 const encryptMessage: TEncryptMessage = async ({
   chainId,
@@ -33,14 +36,18 @@ const encryptMessage: TEncryptMessage = async ({
     ]
   }
 
-  // Now you can sign typed data as follows:
-
   const seed = `Encrypting message (transferId: ${transferId})`
   const value = { seed }
   const signature = await signTypedData(domain, types, value)
-  const encryptionKey = ethers.sha256(signature)
-  const encryptedMessage = wccrypto.encrypt({ message, symKey: encryptionKey.replace('0x', '') })
-  return encryptedMessage
+
+  const encryptionKeyInitial = ethers.sha256(signature)
+  const encryptionKeyModified = encryptionKeyInitial.slice(0, 12)
+  const encryptionKeyFinal = ethers.sha256(encryptionKeyModified).replace('0x', '')
+  const encryptedMessage = encrypt({ message, symKey: encryptionKeyFinal })
+  return {
+    encryptedMessage,
+    encryptionKey: encryptionKeyModified // уйдет в линк
+  }
 }
 
 export default encryptMessage

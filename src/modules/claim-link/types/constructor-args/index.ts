@@ -43,6 +43,7 @@ type TConstructorArgs = {
   status?: TClaimLinkItemStatus
 
   encryptedMessage?: string
+  decryptedMessage?: string
 }
 
 

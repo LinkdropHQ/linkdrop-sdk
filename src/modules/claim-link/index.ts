@@ -95,6 +95,8 @@ class ClaimLink implements IClaimLinkSDK {
   pendingBlocks?: null | number
 
   encryptedMessage?: string
+  encryptionKey?: string
+  decryptedMessage?: string
 
   constructor({
     sender,
@@ -125,7 +127,8 @@ class ClaimLink implements IClaimLinkSDK {
     status,
     source,
     deployment,
-    encryptedMessage
+    encryptedMessage,
+    decryptedMessage
   }: TConstructorArgs) {
 
     this.getRandomBytes = getRandomBytes
@@ -138,7 +141,9 @@ class ClaimLink implements IClaimLinkSDK {
     }
 
     this.deployment = deployment
+
     this.encryptedMessage = encryptedMessage
+    this.decryptedMessage = decryptedMessage
 
     this.#forRecipient = Boolean(forRecipient)
 
@@ -269,13 +274,15 @@ class ClaimLink implements IClaimLinkSDK {
       throw new Error(errors.argument_not_provided('signTypedData', signTypedData))
     }
     
-    this.encryptedMessage = await encryptMessage({
+    const result = await encryptMessage({
       message: message,
       signTypedData,
       transferId: this.transferId,
       chainId: this.chainId
     })
 
+    this.encryptedMessage = result.encryptedMessage
+    this.encryptionKey = result.encryptionKey
   }
 
   getDepositParams: TGetDepositParams = () => {
@@ -495,7 +502,8 @@ class ClaimLink implements IClaimLinkSDK {
       linkKey: this.linkKey as string,
       transferId: this.transferId,
       chainId: this.chainId,
-      sender: this.sender.toLowerCase()
+      sender: this.sender.toLowerCase(),
+      encryptionKey: this.encryptionKey
     }
 
     const claimUrl = encodeLink(
@@ -554,7 +562,8 @@ class ClaimLink implements IClaimLinkSDK {
       linkKey: this.linkKey as string,
       transferId: this.transferId,
       chainId: this.chainId,
-      sender: this.sender.toLowerCase()
+      sender: this.sender.toLowerCase(),
+      encryptionKey: this.encryptionKey
     }
 
     const claimUrl = encodeLink(
@@ -613,7 +622,8 @@ class ClaimLink implements IClaimLinkSDK {
       linkKey: this.linkKey as string,
       transferId: this.transferId,
       chainId: this.chainId,
-      sender: this.sender.toLowerCase()
+      sender: this.sender.toLowerCase(),
+      encryptionKey: this.encryptionKey
     }
 
     const claimUrl = encodeLink(
@@ -672,7 +682,8 @@ class ClaimLink implements IClaimLinkSDK {
       linkKey: this.linkKey as string,
       transferId: this.transferId,
       chainId: this.chainId,
-      sender: this.sender.toLowerCase()
+      sender: this.sender.toLowerCase(),
+      encryptionKey: this.encryptionKey
     }
 
     const claimUrl = encodeLink(
@@ -868,7 +879,8 @@ class ClaimLink implements IClaimLinkSDK {
       linkKey: this.linkKey,
       transferId: this.transferId,
       chainId: this.chainId,
-      sender: this.sender.toLowerCase()
+      sender: this.sender.toLowerCase(),
+      encryptionKey: this.encryptionKey
     }
 
     const claimUrl = encodeLink(
@@ -1041,7 +1053,8 @@ class ClaimLink implements IClaimLinkSDK {
       linkKey,
       senderSig,
       transferId: this.transferId,
-      chainId: this.chainId
+      chainId: this.chainId,
+      encryptionKey: this.encryptionKey
     }
 
     const claimUrl = encodeLink(
