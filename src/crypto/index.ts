@@ -71,8 +71,6 @@ export function decrypt(params) {
 }
 
 export function encrypt(params) {
-  console.log("SDK: in encrypt...")
-  console.log("SDK:", params)
   const type = encodeTypeByte(
     typeof params.type !== "undefined" ? params.type : TYPE_0
   );
@@ -88,13 +86,7 @@ export function encrypt(params) {
   const iv =
     typeof params.iv !== "undefined" ? fromHex(params.iv) : params.randomBytes(IV_LENGTH);
   const key = fromHex(params.symKey);
-  console.log("SDK: before sealed")
-  console.log("SDK: ", { key, iv, message: toUtf8(params.message) })
   const sealed = nacl.secretbox(toUtf8(params.message), iv, key);
-
-  console.log("SDK: SEALED!")
-  console.log({ sealed })
-
   return serialize({ type, sealed, iv, senderPublicKey, encoding: params.encoding });
 }
 
