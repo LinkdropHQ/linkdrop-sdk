@@ -30,5 +30,5 @@ export type TClaimLinkItem = {
   status: TClaimLinkItemStatus
   operations:  TClaimLinkItemOperation[]
   source: TClaimLinkSource
-  encrypted_message?: string
+  encrypted_sender_message?: string
 }

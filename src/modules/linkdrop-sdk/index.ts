@@ -206,7 +206,7 @@ class LinkdropSDK implements ILinkdropSDK {
         feeAmount: claimLink.fee_amount,
         createdAt: claimLink.created_at,
         updatedAt: claimLink.updated_at,
-        encryptedMessage: claimLink.encrypted_message
+        encryptedSenderMessage: claimLink.encrypted_sender_message
       }
 
       delete claimLinkUpdated.transfer_id
@@ -218,7 +218,7 @@ class LinkdropSDK implements ILinkdropSDK {
       delete claimLinkUpdated.token_id
       delete claimLinkUpdated.fee_token
       delete claimLinkUpdated.fee_amount
-      delete claimLinkUpdated.encrypted_message
+      delete claimLinkUpdated.encrypted_sender_message
 
       return claimLinkUpdated
     })
@@ -300,8 +300,8 @@ class LinkdropSDK implements ILinkdropSDK {
     let pendingTxSubmittedAt = claimLinkData.pendingTxSubmittedAt
     let message = claimLinkData.message
     let signTypedData = claimLinkData.signTypedData
-    let encryptedMessage = claimLinkData.encryptedMessage
-    let decryptedMessage = claimLinkData.decryptedMessage
+    let encryptedSenderMessage = claimLinkData.encryptedSenderMessage
+    let senderMessage = claimLinkData.senderMessage
     let keyPair
     if (!transferId) {
       keyPair = await generateKeypair(this.getRandomBytes)
@@ -394,8 +394,8 @@ class LinkdropSDK implements ILinkdropSDK {
       pendingTxSubmittedBn,
       pendingTxSubmittedAt,
       pendingBlocks,
-      encryptedMessage,
-      decryptedMessage
+      encryptedSenderMessage,
+      senderMessage
     })
 
     if (message) {
@@ -468,7 +468,7 @@ class LinkdropSDK implements ILinkdropSDK {
         escrow,
         token_id,
         status,
-        encrypted_message
+        encrypted_sender_message
       } = claim_link
 
       const apiHost = defineApiHost(chainId, this.apiUrl)
@@ -502,7 +502,7 @@ class LinkdropSDK implements ILinkdropSDK {
         status,
         source: linkSource,
         deployment: this.deployment,
-        encryptedMessage: encrypted_message
+        encryptedSenderMessage: encrypted_sender_message
       }
 
       return this._initializeClaimLink(claimLinkData)
@@ -553,7 +553,7 @@ class LinkdropSDK implements ILinkdropSDK {
       escrow,
       token_id,
       status,
-      encrypted_message
+      encrypted_sender_message
     } = claim_link
 
     const actualVersion = defineVersionByEscrow(escrow) 
@@ -591,9 +591,9 @@ class LinkdropSDK implements ILinkdropSDK {
       status,
       source: linkSource,
       deployment: this.deployment,
-      encryptedMessage: encrypted_message,
-      decryptedMessage: (encrypted_message && encryptionKey) ? decryptMessage({
-        message: encrypted_message,
+      encryptedSenderMessage: encrypted_sender_message,
+      senderMessage: (encrypted_sender_message && encryptionKey) ? decryptMessage({
+        message: encrypted_sender_message,
         encryptionKey,
         getRandomBytes: this.getRandomBytes
       }) : undefined
@@ -634,7 +634,7 @@ class LinkdropSDK implements ILinkdropSDK {
         status,
         token_id,
         escrow,
-        encrypted_message
+        encrypted_sender_message
       } = claim_link
 
       const claimLinkData = {
@@ -657,7 +657,7 @@ class LinkdropSDK implements ILinkdropSDK {
         tokenId: token_id,
         source: (customApiHost ? 'd' : 'p2p') as TClaimLinkSource,
         deployment: this.deployment,
-        encryptedMessage: encrypted_message
+        encryptedSenderMessage: encrypted_sender_message
       }
 
       return this._initializeClaimLink(claimLinkData)
@@ -683,7 +683,7 @@ class LinkdropSDK implements ILinkdropSDK {
         status,
         token_id,
         escrow,
-        encrypted_message
+        encrypted_sender_message
       } = claim_link
 
       const claimLinkData = {
@@ -706,7 +706,7 @@ class LinkdropSDK implements ILinkdropSDK {
         escrow,
         source: 'p2p' as TClaimLinkSource,
         deployment: this.deployment,
-        encryptedMessage: encrypted_message
+        encryptedSenderMessage: encrypted_sender_message
       }
 
       if (defineVersionByEscrow(escrow) === '2') {

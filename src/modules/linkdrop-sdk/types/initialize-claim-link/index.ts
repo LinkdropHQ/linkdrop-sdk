@@ -28,8 +28,8 @@ export type TInitializeClaimLinkArgs = {
   pendingTxSubmittedAt?: number | null
   signTypedData?: TSignTypedData
   message?: string
-  encryptedMessage?: string
-  decryptedMessage?: string
+  encryptedSenderMessage?: string
+  senderMessage?: string
 }
 
 type TInitializeClaimLink = ({
@@ -58,8 +58,8 @@ type TInitializeClaimLink = ({
   deployment,
   message,
   signTypedData,
-  encryptedMessage,
-  decryptedMessage
+  encryptedSenderMessage,
+  senderMessage
 }: TInitializeClaimLinkArgs) => Promise<(ClaimLink)>
 
 export default TInitializeClaimLink

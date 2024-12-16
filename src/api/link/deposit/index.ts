@@ -16,7 +16,7 @@ const deposit: TDeposit = (
   fee_amount,
   total_amount,
   fee_token,
-  encrypted_message
+  encrypted_sender_message
 ) => {
   return request(`${apiHost}/deposit`, {
     headers: defineHeaders(apiKey),
@@ -34,7 +34,7 @@ const deposit: TDeposit = (
       fee_amount,
       total_amount,
       fee_token,
-      encrypted_message
+      encrypted_sender_message
     })
   })
 }

@@ -34,6 +34,7 @@ const decodeLink: TDecodeLink = (link) => {
   const transferId = params.transferId ? ethers.toBeHex(decodeBase58(params.transferId), 20) : (new ethers.Wallet(linkKey)).address.toLowerCase()
 
   const chainId = Number(params.chainId)
+  const encryptionKey = params.encryptionKey ? ethers.toBeHex(decodeBase58(params.encryptionKey), 5) : undefined
 
   return {
     senderSig,
@@ -41,7 +42,7 @@ const decodeLink: TDecodeLink = (link) => {
     transferId,
     chainId,
     version: params.version,
-    encryptionKey: params.encryptionKey
+    encryptionKey
   }
 }
 

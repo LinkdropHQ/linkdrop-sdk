@@ -16,7 +16,7 @@ const depositWithAuthorization: TDepositWithAuth = (
   amount,
   fee_amount,
   total_amount,
-  encrypted_message
+  encrypted_sender_message
 ) => {
   return request(`${apiHost}/deposit-with-authorization`, {
     headers: defineHeaders(apiKey),
@@ -34,7 +34,7 @@ const depositWithAuthorization: TDepositWithAuth = (
       fee_amount,
       total_amount,
       fee_authorization,
-      encrypted_message
+      encrypted_sender_message
     })
   })
 }

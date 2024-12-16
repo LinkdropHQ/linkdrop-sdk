@@ -94,9 +94,9 @@ class ClaimLink implements IClaimLinkSDK {
   pendingTxSubmittedAt?: null | number
   pendingBlocks?: null | number
 
-  encryptedMessage?: string
+  encryptedSenderMessage?: string
   encryptionKey?: string
-  decryptedMessage?: string
+  senderMessage?: string
 
   constructor({
     sender,
@@ -127,8 +127,8 @@ class ClaimLink implements IClaimLinkSDK {
     status,
     source,
     deployment,
-    encryptedMessage,
-    decryptedMessage
+    encryptedSenderMessage,
+    senderMessage
   }: TConstructorArgs) {
 
     this.getRandomBytes = getRandomBytes
@@ -142,8 +142,8 @@ class ClaimLink implements IClaimLinkSDK {
 
     this.deployment = deployment
 
-    this.encryptedMessage = encryptedMessage
-    this.decryptedMessage = decryptedMessage
+    this.encryptedSenderMessage = encryptedSenderMessage
+    this.senderMessage = senderMessage
 
     this.#forRecipient = Boolean(forRecipient)
 
@@ -282,7 +282,7 @@ class ClaimLink implements IClaimLinkSDK {
       getRandomBytes: this.getRandomBytes
     })
 
-    this.encryptedMessage = result.encryptedMessage
+    this.encryptedSenderMessage = result.encryptedSenderMessage
     this.encryptionKey = result.encryptionKey
   }
 
@@ -496,7 +496,7 @@ class ClaimLink implements IClaimLinkSDK {
       this.feeAmount,
       this.totalAmount,
       this.feeToken,
-      this.encryptedMessage
+      this.encryptedSenderMessage
     )
 
     const linkParams: TLink = {
@@ -556,7 +556,7 @@ class ClaimLink implements IClaimLinkSDK {
       this.feeAmount,
       this.totalAmount,
       this.feeToken,
-      this.encryptedMessage
+      this.encryptedSenderMessage
     )
 
     const linkParams: TLink = {
@@ -616,7 +616,7 @@ class ClaimLink implements IClaimLinkSDK {
       this.feeAmount,
       this.totalAmount,
       this.feeToken,
-      this.encryptedMessage
+      this.encryptedSenderMessage
     )
 
     const linkParams: TLink = {
@@ -676,7 +676,7 @@ class ClaimLink implements IClaimLinkSDK {
       this.feeAmount,
       this.totalAmount,
       this.feeToken,
-      this.encryptedMessage
+      this.encryptedSenderMessage
     )
 
     const linkParams: TLink = {
@@ -709,7 +709,7 @@ class ClaimLink implements IClaimLinkSDK {
   deposit: TDeposit = async ({
     sendTransaction
   }) => {
-    let encryptedMessage: string | undefined
+    let encryptedSenderMessage: string | undefined
     if (this.#forRecipient) {
       throw new Error(errors.link_only_for_claim())
     }
@@ -871,7 +871,7 @@ class ClaimLink implements IClaimLinkSDK {
       this.amount,
       this.feeAmount,
       this.totalAmount,
-      this.encryptedMessage
+      this.encryptedSenderMessage
     )
 
     const { tx_hash } = result
