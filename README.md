@@ -287,9 +287,6 @@ const {
 
 #### Add message (method is available only for link creator)
 
-
-##### For new link
-
 ```js
 
 const claimLink = await sdk.createClaimLink({
