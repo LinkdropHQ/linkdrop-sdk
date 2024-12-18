@@ -271,6 +271,10 @@ class ClaimLink implements IClaimLinkSDK {
     signTypedData,
     encryptionKeyLength = 12
   }) => {
+
+    if (this.deposited) {
+      throw new Error(errors.cannot_add_message_after_deposit())
+    }
   
     if (message.length > configs.MAX_MESSAGE_TEXT_LENGTH) {
       throw new Error(errors.message_text_length_failed())

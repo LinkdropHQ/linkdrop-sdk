@@ -29,6 +29,7 @@ export default {
   'at_least_one_argument_not_provided': (args: string[]) => `At least one of the following arguments should be provided: ${args.join(', ')}`,
   'encryption_key_length_failed': () => `Length of the encryption key should be greater than or equal to ${MIN_MESSAGE_ENCRYPTION_KEY_LENGTH} and lower than or equal to ${MAX_MESSAGE_ENCRYPTION_KEY_LENGTH}`,
   'message_text_length_failed': () => `Length of the message text should be lower than or equal to ${MAX_MESSAGE_TEXT_LENGTH}`,
+  'cannot_add_message_after_deposit': () => 'Cannot add message after the deposit',
   'variable_is_not_valid': (
     variableName: string,
     expectedValueType: string,
