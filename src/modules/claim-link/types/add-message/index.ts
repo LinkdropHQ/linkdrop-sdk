@@ -2,10 +2,12 @@ import { TSignTypedData } from "../../../../types"
 
 type TAddMessage = ({
   message,
-  signTypedData
+  signTypedData,
+  encryptionKeyLength
 }: {
   message: string,
-  signTypedData: TSignTypedData
+  signTypedData: TSignTypedData,
+  encryptionKeyLength?: number
 }) => Promise<void>
 
 export default TAddMessage

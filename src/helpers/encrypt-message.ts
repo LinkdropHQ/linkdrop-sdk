@@ -2,7 +2,8 @@ import { TGetRandomBytes, TSignTypedData } from '../types'
 import { ethers, encodeBase58 } from 'ethers'
 import { encrypt } from '../crypto'
 import {
-  createMessageEncyptionKey
+  createMessageEncyptionKey,
+  numberToHex
 } from '.'
 
 type TEncryptMessage = ({
@@ -18,7 +19,7 @@ type TEncryptMessage = ({
   transferId: string,
   chainId: number,
   getRandomBytes: TGetRandomBytes,
-  encryptionKeyLength?: number
+  encryptionKeyLength: number
 }) => Promise<{
   encryptedSenderMessage: string
   encryptionKey: string
@@ -49,8 +50,10 @@ const encryptMessage: TEncryptMessage = async ({
     randomBytes: getRandomBytes
   })
 
+  const encryptionKeyLengthAsHex = numberToHex(encryptionKeyLength)
+
   return {
-    encryptedSenderMessage, // encrypted sender message
+    encryptedSenderMessage: `${encryptionKeyLengthAsHex}${encryptedSenderMessage}`, // encrypted sender message
     encryptionKey: encryptionKeyLinkParam // goes to link as `m=...` query param
   }
 }

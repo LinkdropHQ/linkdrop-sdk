@@ -17,13 +17,11 @@ const decryptMessage: TDecryptMessage = ({
   message,
   encryptionKey
 }) => {
-
-  // const encryptionKeyDecoded = ethers.toBeHex(decodeBase58(encryptionKey), 5)
+  const messageEncrypted = message.slice(2) // first two characters are for encryptionKey length
   const encryptionKeyAsUint8Array = convertBase58ToUint8array(encryptionKey)
   const encryptionKeyFinal = ethers.sha256(encryptionKeyAsUint8Array).replace('0x', '')
-
   const decryptedMessage = decrypt({
-    encoded: message,
+    encoded: messageEncrypted,
     symKey: encryptionKeyFinal
   })
   return decryptedMessage
