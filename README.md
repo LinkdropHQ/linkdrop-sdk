@@ -244,7 +244,10 @@ if (claimLink instanceof ClaimLink) {
 
 
 ### ClaimLink properties:
-- _transferId_ (string, transfer unique id, e.g. "1695985897077")
+- _transferId_ (string, transfer unique id, e.g. "1695985897077")- - _pendingTxs_ (number) how many Linkdrop transactions there are that are stuck in the mempool
+- _pendingTxSubmittedBn_ (number) block number when the transaction was submitted for the inclusion into blockchain
+- _pendingTxSubmittedAt_ (number) UNIX timestamp when the oldest pending transaction was submitted for the inclusion into blockchain
+- _pendingBlocks_ (number) how many blocks the oldest pending transaction has been stuck in the mempool.
 - _tokenType_ (string, token standard type, one of `'NATIVE' | 'ERC20' | ;'ERC721' | 'ERC1155'`)
 - _amount_ (string, atomic amount of tokens receiver going to claim, e.g. "1000000" for 1 USDC)
 - _fee_ (string, atomic amount of tokens sender needs to pay as a fee, e.g. "100000" or 0.1 USDC)
