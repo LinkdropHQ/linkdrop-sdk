@@ -287,6 +287,7 @@ const {
 
 #### Add message (method is available only for link creator)
 
+You can add message before the deposit. The method will be locked after the deposit
 ```js
 
 const claimLink = await sdk.createClaimLink({
@@ -301,7 +302,7 @@ await claimLink.addMessage({
   signTypedData,
 
   // optional params. By default is set to 12. Can be modified to any number between 6 and 43
-  encryptionKey: 12 
+  encryptionKeyLength: 12 
 })
 ```
 
