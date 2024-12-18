@@ -215,9 +215,33 @@ const version = sdk.getVersionFromEscrowContract(escrowAddress)
 
 
 ## ClaimLink
-Claim Link object contains methods and properties to facilitate both creation and redemption of the claim link. 
+ClaimLink object contains methods and properties to facilitate both creation and redemption of the claim link. ClaimLink class has been updated over different versions of the library. Specifically, there are multiple versions of ClaimLink with different features:
+
+Version 2 (ClaimLinkV2)
+Version 3.11 (ClaimLinkV3_11)
+Version 3.14 (latest)
+
+To handle the different versions of ClaimLink, the retrieveClaimLink method of the SDK can return an instance of ClaimLink from any of the supported versions. 
+
+```ts
+import { ClaimLink, ClaimLinkV2, ClaimLinkV3_11 } from 'linkdrop-sdk';
+const claimLink = await sdk.retrieveClaimLink({
+  ...
+});
+
+// Check if the ClaimLink instance is from the latest version (3.14) and can call an appropriate method
+if (claimLink instanceof ClaimLink) {
+  // call methods from the latest version
+} else if (claimLink instanceof ClaimLinkV3_11) {
+  // call methods for 3.11 version of Linkdrop SDK
+}
+```
+
   
-`ClaimLink.claimUrl` is the URL shared with recipient. It is never stored in a remote database, so this property is going be `null` on retrieval. New claim URL can be generated with a `claimLink.generateClaimUrl` method call if needed.  
+`ClaimLink.claimUrl` is the URL shared with recipient. It is never stored in a remote database, so this property is going be `null` on retrieval. New claim URL can be generated with a `claimLink.generateClaimUrl` method call if needed.
+
+
+
 
 ### ClaimLink properties:
 - _transferId_ (string, transfer unique id, e.g. "1695985897077")
@@ -263,21 +287,41 @@ const {
 
 #### Add message (method is available only for link creator)
 
+
+##### For new link
+
 ```js
+
+const claimLink = await sdk.createClaimLink({
+  ...
+})
+
 const message = 'Hello world!'
 const signTypedData = (domain, types, message) => signer.signTypedData(domain, types, message)
+
 await claimLink.addMessage({
   message,
   signTypedData
 })
 ```
 
-#### Decrypt message (method is available only for link creator)
+
+#### Decrypt message (method is available only for link creator if retrieved ClaimLink is version 3.14 or higher)
 
 ```js
-const decryptedMessage = await claimLink.decryptSenderMessage({
-  signTypedData
+import { ClaimLink } from 'linkdrop-sdk';
+const claimLink = await sdk.retrieveClaimLink({
+  ...
 })
+if (claimLink && claimLink instanceof ClaimLink) {
+  const signTypedData = (domain, types, message) => signer.signTypedData(domain, types, message)
+
+  const decryptedMessage = await claimLink.decryptSenderMessage({
+    signTypedData
+  })
+
+  console.log(decryptedMessage) // 'Hello world!'
+}
 ```
 
 
