@@ -297,8 +297,11 @@ const message = 'Hello world!'
 const signTypedData = (domain, types, message) => signer.signTypedData(domain, types, message)
 
 await claimLink.addMessage({
-  message,
-  signTypedData
+  message, // max length of message is 140
+  signTypedData,
+
+  // optional params. By default is set to 12. Can be modified to any number between 6 and 43
+  encryptionKey: 12 
 })
 ```
 

@@ -52,7 +52,8 @@ import {
   getClaimCodeFromDashboardLink,
   defineSelector,
   encryptMessage,
-  createMessageEncyptionKey
+  createMessageEncyptionKey,
+  hexToNumber
 } from '../../helpers'
 import { errors } from '../../texts'
 import * as configs from '../../configs'
@@ -164,7 +165,7 @@ class ClaimLink implements IClaimLinkSDK {
     this.deployment = deployment
 
     this.encryptedSenderMessage = encryptedSenderMessage
-    this.senderMessage = senderMessage
+    this.senderMessage = senderMessage || ''
 
     this.#forRecipient = Boolean(forRecipient)
 
@@ -297,8 +298,17 @@ class ClaimLink implements IClaimLinkSDK {
 
   addMessage: TAddMessage = async ({
     message,
-    signTypedData
+    signTypedData,
+    encryptionKeyLength = 12
   }) => {
+  
+    if (message.length > configs.MAX_MESSAGE_TEXT_LENGTH) {
+      throw new Error(errors.message_text_length_failed())
+    }
+
+    if (encryptionKeyLength > configs.MAX_MESSAGE_ENCRYPTION_KEY_LENGTH || encryptionKeyLength < configs.MIN_MESSAGE_ENCRYPTION_KEY_LENGTH) {
+      throw new Error(errors.encryption_key_length_failed())
+    }
 
     if (!message) {
       throw new Error(errors.argument_not_provided('message', message))
@@ -313,7 +323,7 @@ class ClaimLink implements IClaimLinkSDK {
       signTypedData,
       transferId: this.transferId,
       chainId: this.chainId,
-      encryptionKeyLength: 12,
+      encryptionKeyLength,
       getRandomBytes: this.getRandomBytes
     })
 
@@ -490,15 +500,18 @@ class ClaimLink implements IClaimLinkSDK {
     }
 
     if (!this.encryptedSenderMessage) {
-      throw new Error(errors.property_not_provided('encryptedSenderMessage', String(this.encryptedSenderMessage)))
+      return ''
     }
+
+    const encryptionKeyLengthAsHex = this.encryptedSenderMessage.slice(0, 2)
+    const encryptionKeyLength = hexToNumber(encryptionKeyLengthAsHex)
 
     const {
       encryptionKey
     } = await createMessageEncyptionKey({
       transferId: this.transferId,
       signTypedData,
-      encryptionKeyLength: 12,
+      encryptionKeyLength,
       chainId: this.chainId
     })
 
@@ -1118,12 +1131,15 @@ class ClaimLink implements IClaimLinkSDK {
       chainId: this.chainId,
     }
     if (this.encryptedSenderMessage) {
+      const encryptionKeyLengthAsHex = this.encryptedSenderMessage.slice(0, 2)
+      const encryptionKeyLength = hexToNumber(encryptionKeyLengthAsHex)
+
       const {
         encryptionKeyLinkParam
       } = await createMessageEncyptionKey({
         transferId: this.transferId,
         signTypedData,
-        encryptionKeyLength: 12,
+        encryptionKeyLength: encryptionKeyLength,
         chainId: this.chainId
       })
       linkParams.encryptionKey = encryptionKeyLinkParam

@@ -1,4 +1,9 @@
 import { EChains } from '../types'
+import {
+  MAX_MESSAGE_ENCRYPTION_KEY_LENGTH,
+  MAX_MESSAGE_TEXT_LENGTH,
+  MIN_MESSAGE_ENCRYPTION_KEY_LENGTH
+} from '../configs'
 
 export default {
   'chain_not_supported': () => `Chain is not supported. Please use ${Object.keys(EChains).filter(item => isNaN(Number(item))).join(', ')}`,
@@ -22,6 +27,8 @@ export default {
   'cannot_deposit_after_retrieve': () => 'You cannot make a deposit again after retrieving the link',
   'cannot_deposit_twice': () => 'The deposit has already been made',
   'at_least_one_argument_not_provided': (args: string[]) => `At least one of the following arguments should be provided: ${args.join(', ')}`,
+  'encryption_key_length_failed': () => `Length of the encryption key should be greater than or equal to ${MIN_MESSAGE_ENCRYPTION_KEY_LENGTH} and lower than or equal to ${MAX_MESSAGE_ENCRYPTION_KEY_LENGTH}`,
+  'message_text_length_failed': () => `Length of the message text should be lower than or equal to ${MAX_MESSAGE_TEXT_LENGTH}`,
   'variable_is_not_valid': (
     variableName: string,
     expectedValueType: string,

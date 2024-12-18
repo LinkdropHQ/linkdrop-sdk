@@ -24,9 +24,13 @@ import encryptMessage from './encrypt-message'
 import decryptMessage from './decrypt-message'
 import createMessageEncyptionKey from './create-message-encryption-key'
 import convertBase58ToUint8array from './convert-base58-to-uint8array'
+import numberToHex from './number-to-hex'
+import hexToNumber from './hex-to-number'
 
 export {
   defineDomain,
+  numberToHex,
+  hexToNumber,
   convertBase58ToUint8array,
   createMessageEncyptionKey,
   decryptMessage,

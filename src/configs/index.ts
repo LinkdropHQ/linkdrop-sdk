@@ -20,6 +20,10 @@ export const immutableZkevmContract = '0x4366caf3963d147da4a4287061354058d871d1b
 export const immutableZkevmContractNFT = '0x317d2501396fe75d997799bf3bdbc7cc6768b533'
 
 
+export const MAX_MESSAGE_ENCRYPTION_KEY_LENGTH = 43
+export const MIN_MESSAGE_ENCRYPTION_KEY_LENGTH = 6
+export const MAX_MESSAGE_TEXT_LENGTH = 140
+
 export const supportedStableCoins = {
   [ETokenAddress.usdcBase]: ESelectors.receiveWithAuthorization,
   [ETokenAddress.eurcBase]: ESelectors.receiveWithAuthorization,
