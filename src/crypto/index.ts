@@ -1,141 +1,119 @@
-import nacl from "tweetnacl";
-import base64js from "base64-js";
+import nacl from 'tweetnacl';
+import { toUtf8Bytes, toUtf8String } from 'ethers'; // Ethers v6 for UTF-8 conversion
 
-// Polyfill TextEncoder and TextDecoder for React Native
-import { TextEncoder, TextDecoder } from 'text-encoding';
-
-export const BASE10 = "base10";
-export const BASE16 = "hex";
-export const BASE64 = "base64";
-export const BASE64URL = "base64url";
-export const UTF8 = "utf8";
-export const TYPE_0 = 0;
-export const TYPE_1 = 1;
-export const TYPE_2 = 2;
-const ZERO_INDEX = 0;
-const TYPE_LENGTH = 1;
-const IV_LENGTH = 24;
+const NONCE_LENGTH = 24;
 const KEY_LENGTH = 32;
+const TYPE_0 = 0;
+const TYPE_LENGTH = 1;
+const ZERO_INDEX = 0;
 
-function toUtf8(string) {
-  const encoder = new TextEncoder();
-  return encoder.encode(string);
+/**
+ * Converts Uint8Array to a hex string.
+ */
+function toHex(uint8Array: Uint8Array): string {
+  return Array.from(uint8Array)
+    .map((byte) => byte.toString(16).padStart(2, '0'))
+    .join('');
 }
 
-function fromUtf8(bytes) {
-  const decoder = new TextDecoder();
-  return decoder.decode(bytes);
-}
-
-function toHex(uint8Array) {
-  return Array.from(uint8Array).map((byte: number) => byte.toString(16).padStart(2, '0')).join('');
-}
-
-function fromHex(hex) {
-  const len = hex.length;
-  const arr = new Uint8Array(len / 2);
-  for (let i = 0; i < len; i += 2) {
-    arr[i / 2] = parseInt(hex.substr(i, 2), 16);
+/**
+ * Converts a hex string to Uint8Array.
+ */
+function fromHex(hex: string): Uint8Array {
+  const length = hex.length;
+  const arr = new Uint8Array(length / 2);
+  for (let i = 0; i < length; i += 2) {
+    arr[i / 2] = parseInt(hex.substring(i, i + 2), 16);
   }
   return arr;
 }
 
-function toBase64(uint8Array) {
-  return base64js.fromByteArray(uint8Array);
+/**
+ * Encodes the type as a single byte Uint8Array.
+ */
+function encodeTypeByte(type: number): Uint8Array {
+  return new Uint8Array([type]);
 }
 
-function fromBase64(base64) {
-  return base64js.toByteArray(base64);
-
+/**
+ * Decodes the type byte back to a number.
+ */
+function decodeTypeByte(byte: Uint8Array): number {
+  return byte[0];
 }
 
-export function encodeTypeByte(type) {
-  return toUtf8(`${type}`);
+/**
+ * Encrypts a message using nacl.secretbox with TYPE_0 format:
+ * [type(1 byte), iv(24 bytes), sealed(...)] -> Hex encoded.
+ */
+interface EncryptParams {
+  symKey: string;                  // 32-byte hex string
+  message: string;                 // Plaintext message
+  iv?: string;                     // Optional 24-byte hex nonce
+  randomBytes: (size: number) => Uint8Array;
 }
 
-export function decodeTypeByte(byte) {
-  return Number(fromUtf8(byte));
-}
-
-export function decrypt(params) {
+export function encrypt(params: EncryptParams): string {
+  const type = encodeTypeByte(TYPE_0);
   const key = fromHex(params.symKey);
-  const { sealed, iv } = deserialize({
-    encoded: params.encoded,
-    randomBytes: params.randomBytes,
-    encoding: params?.encoding,
-  });
 
-  const message = nacl.secretbox.open(sealed, iv, key);
-  if (!message) throw new Error("Failed to decrypt");
-  return fromUtf8(message);
-}
-
-export function encrypt(params) {
-  const type = encodeTypeByte(
-    typeof params.type !== "undefined" ? params.type : TYPE_0
-  );
-  if (decodeTypeByte(type) === TYPE_1 && typeof params.senderPublicKey === "undefined") {
-    throw new Error("Missing sender public key for type 1 envelope");
+  if (key.length !== KEY_LENGTH) {
+    throw new Error("Key must be 32 bytes (in hex).");
   }
 
-  const senderPublicKey =
-    typeof params.senderPublicKey !== "undefined"
-      ? fromHex(params.senderPublicKey)
-      : undefined;
+  const iv = typeof params.iv !== "undefined"
+    ? fromHex(params.iv)
+    : params.randomBytes(NONCE_LENGTH);
 
-  const iv =
-    typeof params.iv !== "undefined" ? fromHex(params.iv) : params.randomBytes(IV_LENGTH);
+  if (iv.length !== NONCE_LENGTH) {
+    throw new Error("IV must be 24 bytes.");
+  }
+
+  const messageBytes = toUtf8Bytes(params.message); // Use ethers v6 utility
+  const sealed = nacl.secretbox(messageBytes, iv, key);
+
+  // Combine [type(1), iv(24), sealed(...)]
+  const combined = new Uint8Array([...type, ...iv, ...sealed]);
+  return toHex(combined);
+}
+
+/**
+ * Decrypts a hex-encoded message using nacl.secretbox with TYPE_0 format.
+ * Expects [type(1 byte), iv(24 bytes), sealed(...)].
+ */
+interface DecryptParams {
+  symKey: string;                  // 32-byte hex string
+  encoded: string;                 // Hex-encoded encrypted message
+}
+
+export function decrypt(params: DecryptParams): string {
   const key = fromHex(params.symKey);
-  const sealed = nacl.secretbox(toUtf8(params.message), iv, key);
-  return serialize({ type, sealed, iv, senderPublicKey, encoding: params.encoding });
-}
 
-export function serialize(params) {
-  const { encoding = BASE64 } = params;
-
-  if (decodeTypeByte(params.type) === TYPE_2) {
-    return toBase64(new Uint8Array([...params.type, ...params.sealed]));
+  if (key.length !== KEY_LENGTH) {
+    throw new Error("Key must be 32 bytes (in hex).");
   }
-  if (decodeTypeByte(params.type) === TYPE_1) {
-    if (typeof params.senderPublicKey === "undefined") {
-      throw new Error("Missing sender public key for type 1 envelope");
-    }
-    return toBase64(
-      new Uint8Array([
-        ...params.type,
-        ...params.senderPublicKey,
-        ...params.iv,
-        ...params.sealed,
-      ])
-    );
-  }
-  // default to type 0 envelope
-  return toBase64(new Uint8Array([...params.type, ...params.iv, ...params.sealed]));
-}
 
-export function deserialize(params) {
-  const { encoded, encoding = BASE64 } = params;
-  const bytes = fromBase64(encoded);
+  const bytes = fromHex(params.encoded);
   const type = bytes.slice(ZERO_INDEX, TYPE_LENGTH);
-  const slice1 = TYPE_LENGTH;
 
-  if (decodeTypeByte(type) === TYPE_1) {
-    const slice2 = slice1 + KEY_LENGTH;
-    const slice3 = slice2 + IV_LENGTH;
-    const senderPublicKey = bytes.slice(slice1, slice2);
-    const iv = bytes.slice(slice2, slice3);
-    const sealed = bytes.slice(slice3);
-    return { type, sealed, iv, senderPublicKey };
+  if (decodeTypeByte(type) !== TYPE_0) {
+    throw new Error("Invalid type byte, expected TYPE_0.");
   }
-  if (decodeTypeByte(type) === TYPE_2) {
-    const sealed = bytes.slice(slice1);
-    // iv is not used in type 2 envelopes
-    const iv = params.randomBytes(IV_LENGTH);
-    return { type, sealed, iv };
-  }
-  // default to type 0 envelope
-  const slice2 = slice1 + IV_LENGTH;
+
+  const slice1 = TYPE_LENGTH;
+  const slice2 = slice1 + NONCE_LENGTH;
   const iv = bytes.slice(slice1, slice2);
+
+  if (iv.length !== NONCE_LENGTH) {
+    throw new Error("Invalid IV length.");
+  }
+
   const sealed = bytes.slice(slice2);
-  return { type, sealed, iv };
+  const message = nacl.secretbox.open(sealed, iv, key);
+
+  if (!message) {
+    throw new Error("Failed to decrypt");
+  }
+
+  return toUtf8String(message); // Use ethers v6 utility
 }

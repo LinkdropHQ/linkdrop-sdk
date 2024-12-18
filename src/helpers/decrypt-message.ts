@@ -15,20 +15,18 @@ type TDecryptMessage = ({
 
 const decryptMessage: TDecryptMessage = ({
   message,
-  encryptionKey,
-  getRandomBytes
+  encryptionKey
 }) => {
 
   // const encryptionKeyDecoded = ethers.toBeHex(decodeBase58(encryptionKey), 5)
   const encryptionKeyAsUint8Array = convertBase58ToUint8array(encryptionKey)
   const encryptionKeyFinal = ethers.sha256(encryptionKeyAsUint8Array).replace('0x', '')
 
-  const dcryptedMessage = decrypt({
+  const decryptedMessage = decrypt({
     encoded: message,
-    symKey: encryptionKeyFinal,
-    randomBytes: getRandomBytes
+    symKey: encryptionKeyFinal
   })
-  return dcryptedMessage
+  return decryptedMessage
 }
 
 export default decryptMessage

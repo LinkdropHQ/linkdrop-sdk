@@ -28,7 +28,6 @@
   "keywords": [],
   "dependencies": {
     "babel-loader": "8.1.0",
-    "base64-js": "^1.5.1",
     "ethers": "^6.8.0",
     "linkdrop-p2p-sdk2": "npm:linkdrop-p2p-sdk@2.0.1",
     "linkdrop-p2p-sdk3.11.0-beta": "npm:linkdrop-p2p-sdk@3.11.0-beta",
