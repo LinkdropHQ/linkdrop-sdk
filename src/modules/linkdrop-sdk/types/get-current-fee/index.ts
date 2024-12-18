@@ -8,7 +8,7 @@ type TGetCurrentFee = (
   transferId: string,
   expiration: number,
   amount: string,
-  tokenId?: string 
+  tokenId?: string
 ) => Promise<{
   amount: string
   total_amount: string
@@ -17,6 +17,10 @@ type TGetCurrentFee = (
   fee_token: string
   fee_amount: string
   fee_authorization: string
+  pending_txs: number
+  pending_blocks: number | null
+  pending_tx_submitted_bn: number | null
+  pending_tx_submitted_at: number | null
 }>
 
 export default TGetCurrentFee

@@ -1,4 +1,7 @@
-import { TTokenType } from "../../../../types"
+import {
+  TTokenType,
+  TSignTypedData
+} from "../../../../types"
 import ClaimLink from "../../../claim-link"
 
 export type TCreateClaimLinkArgs = {

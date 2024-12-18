@@ -22,7 +22,8 @@ import {
   getClaimCodeFromDashboardLink,
   getChainIdFromDashboardLink,
   defineDashboardApiHost,
-  defineVersionByEscrow
+  defineVersionByEscrow,
+  decryptMessage
 } from '../../helpers'
 import { generateKeypair } from '../../utils'
 import { toBigInt, ethers } from 'ethers'
@@ -191,7 +192,8 @@ class LinkdropSDK implements ILinkdropSDK {
         feeToken: claimLink.fee_token,
         feeAmount: claimLink.fee_amount,
         createdAt: claimLink.created_at,
-        updatedAt: claimLink.updated_at
+        updatedAt: claimLink.updated_at,
+        encryptedSenderMessage: claimLink.encrypted_sender_message
       }
 
       delete claimLinkUpdated.transfer_id
@@ -203,6 +205,7 @@ class LinkdropSDK implements ILinkdropSDK {
       delete claimLinkUpdated.token_id
       delete claimLinkUpdated.fee_token
       delete claimLinkUpdated.fee_amount
+      delete claimLinkUpdated.encrypted_sender_message
 
       return claimLinkUpdated
     })
@@ -278,6 +281,12 @@ class LinkdropSDK implements ILinkdropSDK {
     let feeAuthorization = claimLinkData.feeAuthorization
     let feeToken = claimLinkData.feeToken
 
+    let pendingTxs = claimLinkData.pendingTxs
+    let pendingBlocks = claimLinkData.pendingBlocks
+    let pendingTxSubmittedBn = claimLinkData.pendingTxSubmittedBn
+    let pendingTxSubmittedAt = claimLinkData.pendingTxSubmittedAt
+    let encryptedSenderMessage = claimLinkData.encryptedSenderMessage
+    let senderMessage = claimLinkData.senderMessage
     let keyPair
     if (!transferId) {
       keyPair = await generateKeypair(this.getRandomBytes)
@@ -299,6 +308,11 @@ class LinkdropSDK implements ILinkdropSDK {
       totalAmount = feeData.total_amount
       feeAuthorization = feeData.fee_authorization
       feeToken = feeData.fee_token
+
+      pendingTxs = feeData.pending_txs
+      pendingBlocks = feeData.pending_blocks
+      pendingTxSubmittedBn = feeData.pending_tx_submitted_bn
+      pendingTxSubmittedAt = feeData.pending_tx_submitted_at
 
       if (
         claimLinkData.tokenType === 'NATIVE' || claimLinkData.tokenType === 'ERC20'
@@ -360,7 +374,13 @@ class LinkdropSDK implements ILinkdropSDK {
       feeToken: feeToken as string,
       feeAuthorization,
       totalAmount,
-      source: claimLinkData.source
+      source: claimLinkData.source,
+      pendingTxs,
+      pendingTxSubmittedBn,
+      pendingTxSubmittedAt,
+      pendingBlocks,
+      encryptedSenderMessage,
+      senderMessage
     })
 
     return claimLink
@@ -398,8 +418,8 @@ class LinkdropSDK implements ILinkdropSDK {
       const chainId = getChainIdFromDashboardLink(claimUrl)
       const linkKey = ethers.id(claimCode)
       const transferId = new ethers.Wallet(linkKey).address
-
       const customApiHost = defineDashboardApiHost(claimUrl)
+
       const { claim_link } = await linkApi.getTransferStatus(
         customApiHost,
         this.#apiKey,
@@ -418,7 +438,8 @@ class LinkdropSDK implements ILinkdropSDK {
         total_amount,
         escrow,
         token_id,
-        status
+        status,
+        encrypted_sender_message
       } = claim_link
 
       const apiHost = defineApiHost(chainId, this.apiUrl)
@@ -451,14 +472,17 @@ class LinkdropSDK implements ILinkdropSDK {
         forRecipient: true,
         status,
         source: linkSource,
-        deployment: this.deployment
+        deployment: this.deployment,
+        encryptedSenderMessage: encrypted_sender_message
       }
+
       return this._initializeClaimLink(claimLinkData)
     }
 
     const {
       transferId,
       chainId,
+      encryptionKey
     } = decodeLink(claimUrl)
 
     const version = this.getVersionFromClaimUrl(claimUrl)
@@ -499,7 +523,8 @@ class LinkdropSDK implements ILinkdropSDK {
       total_amount,
       escrow,
       token_id,
-      status
+      status,
+      encrypted_sender_message
     } = claim_link
 
     const actualVersion = defineVersionByEscrow(escrow) 
@@ -536,7 +561,14 @@ class LinkdropSDK implements ILinkdropSDK {
       forRecipient: true,
       status,
       source: linkSource,
-      deployment: this.deployment
+      deployment: this.deployment,
+      encryptedSenderMessage: encrypted_sender_message,
+      encryptionKey,
+      senderMessage: (encrypted_sender_message && encryptionKey) ? decryptMessage({
+        message: encrypted_sender_message,
+        encryptionKey,
+        getRandomBytes: this.getRandomBytes
+      }) : undefined
     }
     return this._initializeClaimLink(claimLinkData)
   }
@@ -573,9 +605,10 @@ class LinkdropSDK implements ILinkdropSDK {
         sender,
         status,
         token_id,
-        escrow
+        escrow,
+        encrypted_sender_message
       } = claim_link
-
+      
       const claimLinkData = {
         token: token as ETokenAddress,
         expiration,
@@ -595,7 +628,8 @@ class LinkdropSDK implements ILinkdropSDK {
         escrowAddress: escrow,
         tokenId: token_id,
         source: (customApiHost ? 'd' : 'p2p') as TClaimLinkSource,
-        deployment: this.deployment
+        deployment: this.deployment,
+        encryptedSenderMessage: encrypted_sender_message
       }
 
       return this._initializeClaimLink(claimLinkData)
@@ -618,10 +652,10 @@ class LinkdropSDK implements ILinkdropSDK {
         fee_token,
         fee_amount,
         total_amount,
-        version,
         status,
         token_id,
-        escrow
+        escrow,
+        encrypted_sender_message
       } = claim_link
 
       const claimLinkData = {
@@ -643,7 +677,8 @@ class LinkdropSDK implements ILinkdropSDK {
         status,
         escrow,
         source: 'p2p' as TClaimLinkSource,
-        deployment: this.deployment
+        deployment: this.deployment,
+        encryptedSenderMessage: encrypted_sender_message
       }
 
       if (defineVersionByEscrow(escrow) === '2') {

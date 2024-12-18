@@ -1,5 +1,14 @@
 # Linkdrop SDK
 
+## 3.14.0-beta
+- message available for claim links
+
+## 3.13.3-beta
+- added pending data to ClaimLink instance and /fee endpoint
+
+## 3.13.2-beta
+- new escrow address
+
 ## 3.13.1-beta
 - update for depositWithAuthorization method (additional params available)
 

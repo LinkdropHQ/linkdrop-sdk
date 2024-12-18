@@ -19,9 +19,21 @@ import defineDashboardApiHost from './define-dashboard-api-host'
 import defineVersionByEscrow from './define-version-by-escrow'
 import checkApiKeyFormatValidity from './check-api-key-format-validity'
 import defineSelector from './define-selector'
+import encryptMessage from './encrypt-message'
+import decryptMessage from './decrypt-message'
+import createMessageEncyptionKey from './create-message-encryption-key'
+import convertBase58ToUint8array from './convert-base58-to-uint8array'
+import numberToHex from './number-to-hex'
+import hexToNumber from './hex-to-number'
 
 export {
   defineDomain,
+  numberToHex,
+  hexToNumber,
+  convertBase58ToUint8array,
+  createMessageEncyptionKey,
+  decryptMessage,
+  encryptMessage,
   defineSelector,
   getClaimCodeFromDashboardLink,
   getChainIdFromDashboardLink,

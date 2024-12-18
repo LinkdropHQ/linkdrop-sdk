@@ -16,7 +16,8 @@ const depositERC721: TDepositERC1155 = (
   amount,
   fee_amount,
   total_amount,
-  fee_token
+  fee_token,
+  encrypted_sender_message
 ) => {
   return request(`${apiHost}/deposit-erc1155`, {
     headers: defineHeaders(apiKey),
@@ -34,7 +35,8 @@ const depositERC721: TDepositERC1155 = (
       amount,
       fee_amount,
       total_amount,
-      fee_token
+      fee_token,
+      encrypted_sender_message
     })
   })
 }

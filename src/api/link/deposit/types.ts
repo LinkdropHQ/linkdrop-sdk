@@ -19,5 +19,6 @@ export type TDeposit = (
   amount: string,
   fee_amount: string,
   total_amount: string,
-  fee_token: string
+  fee_token: string,
+  encrypted_sender_message?: string
 ) => Promise<TDepositResponse>

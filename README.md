@@ -215,12 +215,39 @@ const version = sdk.getVersionFromEscrowContract(escrowAddress)
 
 
 ## ClaimLink
-Claim Link object contains methods and properties to facilitate both creation and redemption of the claim link. 
+ClaimLink object contains methods and properties to facilitate both creation and redemption of the claim link. ClaimLink class has been updated over different versions of the library. Specifically, there are multiple versions of ClaimLink with different features:
+
+- Version 2 (ClaimLinkV2)
+- Version 3.11 (ClaimLinkV3_11)
+- Version 3.14 (latest)
+
+To handle the different versions of ClaimLink, the retrieveClaimLink method of the SDK can return an instance of ClaimLink from any of the supported versions. 
+
+```ts
+import { ClaimLink, ClaimLinkV2, ClaimLinkV3_11 } from 'linkdrop-sdk';
+const claimLink = await sdk.retrieveClaimLink({
+  ...
+});
+
+// Check if the ClaimLink instance is from the latest version (3.14) and can call an appropriate method
+if (claimLink instanceof ClaimLink) {
+  // call methods for the latest version of Linkdrop SDK ClaimLink
+} else if (claimLink instanceof ClaimLinkV3_11) {
+  // call methods for version 3.11 of Linkdrop SDK ClaimLink
+} else if (claimLink instanceof ClaimLinkV2) {
+  // call methods for version 2 of Linkdrop SDK ClaimLink
+}
+```
+
   
-`ClaimLink.claimUrl` is the URL shared with recipient. It is never stored in a remote database, so this property is going be `null` on retrieval. New claim URL can be generated with a `claimLink.generateClaimUrl` method call if needed.  
+`ClaimLink.claimUrl` is the URL shared with recipient. It is never stored in a remote database, so this property is going be `null` on retrieval. New claim URL can be generated with a `claimLink.generateClaimUrl` method call if needed.
+
 
 ### ClaimLink properties:
-- _transferId_ (string, transfer unique id, e.g. "1695985897077")
+- _transferId_ (string, transfer unique id, e.g. "1695985897077")- - _pendingTxs_ (number) how many Linkdrop transactions there are that are stuck in the mempool
+- _pendingTxSubmittedBn_ (number) block number when the transaction was submitted for the inclusion into blockchain
+- _pendingTxSubmittedAt_ (number) UNIX timestamp when the oldest pending transaction was submitted for the inclusion into blockchain
+- _pendingBlocks_ (number) how many blocks the oldest pending transaction has been stuck in the mempool.
 - _tokenType_ (string, token standard type, one of `'NATIVE' | 'ERC20' | ;'ERC721' | 'ERC1155'`)
 - _amount_ (string, atomic amount of tokens receiver going to claim, e.g. "1000000" for 1 USDC)
 - _fee_ (string, atomic amount of tokens sender needs to pay as a fee, e.g. "100000" or 0.1 USDC)
@@ -228,6 +255,8 @@ Claim Link object contains methods and properties to facilitate both creation an
 - _totalAmount_ (string, total amount sender needs to deposit, _amount_ + _fee_, e.g. "1100000" or 1.1 USDC)
 - _token_ (string, token contract address, e.g. "0x2791bca1f2de4661ed88a30c99a7a9449aa84174")
 - _chainId_ (number, network chain ID, e.g. 147 for Polygon network)
+- _encryptedSenderMessage_ (string)
+- _senderMessage_ (string)
 - _sender_ (string, Sender's Ethereum address, e.g. "0x2331bca1f2de4661ed88a30c99a7a9449aa84195")
 - _escrow_ (string, Escrow contract address "0x1111bca1f2de4661ed88a30c44a7a9449aa84106")
 - _version_ (string, claim link version, e.g. "1")
@@ -259,6 +288,47 @@ const {
 } = claimLink.getDepositParams()
 ```
 
+#### Add message (method is available only for link creator)
+
+You can add message before the deposit. The method will be locked after the deposit
+```js
+
+const claimLink = await sdk.createClaimLink({
+  ...
+})
+
+const message = 'Hello world!'
+const signTypedData = (domain, types, message) => signer.signTypedData(domain, types, message)
+
+await claimLink.addMessage({
+  message, // max length of message is 140
+  signTypedData,
+
+  // optional params. By default is set to 12. Can be modified to any number between 6 and 43
+  encryptionKeyLength: 12 
+})
+```
+
+
+#### Decrypt message (method is available only for link creator if retrieved ClaimLink is version 3.14 or higher)
+
+```js
+import { ClaimLink } from 'linkdrop-sdk';
+
+const claimLink = await sdk.retrieveClaimLink({
+  ...
+})
+
+if (claimLink && claimLink instanceof ClaimLink) {
+  const signTypedData = (domain, types, message) => signer.signTypedData(domain, types, message)
+
+  const decryptedMessage = await claimLink.decryptSenderMessage({
+    signTypedData
+  })
+
+  console.log(decryptedMessage) // 'Hello world!'
+}
+```
 
 
 ## Error handling

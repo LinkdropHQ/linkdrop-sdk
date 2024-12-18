@@ -10,7 +10,7 @@ type TDefineDashboardApiHost = (
 const defineDashboardApiHost: TDefineDashboardApiHost = (
   claimLink
 ) => {
-  if (claimLink.includes('dev.')) {
+  if (claimLink.includes('dev.') || claimLink.includes('localhost')) {
     return devDashboardApiUrl
   }
   return dashboardApiUrl

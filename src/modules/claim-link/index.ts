@@ -14,8 +14,10 @@ import IClaimLinkSDK, {
   TDepositERC721,
   TDepositERC1155,
   TGetDepositParams,
-  TIsDepositWithAuthorizationAvailable
+  TIsDepositWithAuthorizationAvailable,
+  TDecryptSenderMessage
 } from './types'
+import { decrypt } from '../../crypto'
 import { toBigInt } from 'ethers'
 import {
   TEscrowPaymentDomain,
@@ -27,7 +29,8 @@ import {
   TClaimLinkSource,
   TDeploymentType,
   ESelectors,
-  TDomain
+  TDomain,
+  TSignTypedData
 } from '../../types'
 import { ValidationError } from '../../errors'
 import { LinkdropEscrowToken, LinkdropEscrowNFT } from '../../abi'
@@ -47,11 +50,15 @@ import {
   defineDomain,
   defineVersionByEscrow,
   getClaimCodeFromDashboardLink,
-  defineSelector
+  defineSelector,
+  encryptMessage,
+  createMessageEncyptionKey,
+  hexToNumber
 } from '../../helpers'
 import { errors } from '../../texts'
 import * as configs from '../../configs'
 import { ethers } from 'ethers'
+import TAddMessage from './types/add-message'
 
 class ClaimLink implements IClaimLinkSDK {
   sender: string
@@ -79,16 +86,30 @@ class ClaimLink implements IClaimLinkSDK {
   feeToken: string
   source: TClaimLinkSource
 
-  forRecipient: boolean
+  #forRecipient: boolean
 
   deployment: TDeploymentType
 
   status: TClaimLinkItemStatus
 
+
+  pendingTxs?: number
+  pendingTxSubmittedBn?: null | number
+  pendingTxSubmittedAt?: null | number
+  pendingBlocks?: null | number
+
+  encryptedSenderMessage?: string
+  encryptionKey?: string
+  senderMessage?: string
+
   constructor({
     sender,
     token,
     amount,
+    pendingTxs,
+    pendingTxSubmittedBn,
+    pendingTxSubmittedAt,
+    pendingBlocks,
     feeAmount,
     totalAmount,
     expiration,
@@ -109,7 +130,9 @@ class ClaimLink implements IClaimLinkSDK {
     forRecipient,
     status,
     source,
-    deployment
+    deployment,
+    encryptedSenderMessage,
+    senderMessage
   }: TConstructorArgs) {
 
     this.getRandomBytes = getRandomBytes
@@ -123,7 +146,10 @@ class ClaimLink implements IClaimLinkSDK {
 
     this.deployment = deployment
 
-    this.forRecipient = Boolean(forRecipient)
+    this.encryptedSenderMessage = encryptedSenderMessage
+    this.senderMessage = senderMessage || ''
+
+    this.#forRecipient = Boolean(forRecipient)
 
     if (tokenType === 'ERC721' || tokenType === 'ERC1155') {
       if (!tokenId) {
@@ -149,6 +175,10 @@ class ClaimLink implements IClaimLinkSDK {
     if (feeToken) {
       this.feeToken = feeToken.toLowerCase()
     }
+    this.pendingBlocks = pendingBlocks
+    this.pendingTxSubmittedAt = pendingTxSubmittedAt
+    this.pendingTxSubmittedBn = pendingTxSubmittedBn
+    this.pendingTxs = pendingTxs
     if (tokenType !== 'ERC721' && !amount) {
       throw new ValidationError(
         errors.argument_not_provided('amount', String(amount)),
@@ -212,10 +242,10 @@ class ClaimLink implements IClaimLinkSDK {
         this.chainId
       )) {
         throw new Error(errors.escrow_is_not_correct())
-      }  
+      }
     }
 
-    
+
     if (!transferId) {
       throw new ValidationError(
         errors.argument_not_provided('transferId', String(transferId)),
@@ -234,6 +264,45 @@ class ClaimLink implements IClaimLinkSDK {
     }
 
     this.baseUrl = baseUrl || configs.baseUrl
+  }
+
+  addMessage: TAddMessage = async ({
+    message,
+    signTypedData,
+    encryptionKeyLength = 12
+  }) => {
+
+    if (this.deposited) {
+      throw new Error(errors.cannot_add_message_after_deposit())
+    }
+  
+    if (message.length > configs.MAX_MESSAGE_TEXT_LENGTH) {
+      throw new Error(errors.message_text_length_failed())
+    }
+
+    if (encryptionKeyLength > configs.MAX_MESSAGE_ENCRYPTION_KEY_LENGTH || encryptionKeyLength < configs.MIN_MESSAGE_ENCRYPTION_KEY_LENGTH) {
+      throw new Error(errors.encryption_key_length_failed())
+    }
+
+    if (!message) {
+      throw new Error(errors.argument_not_provided('message', message))
+    }
+
+    if (!signTypedData) {
+      throw new Error(errors.argument_not_provided('signTypedData', signTypedData))
+    }
+
+    const result = await encryptMessage({
+      message: message,
+      signTypedData,
+      transferId: this.transferId,
+      chainId: this.chainId,
+      encryptionKeyLength,
+      getRandomBytes: this.getRandomBytes
+    })
+
+    this.encryptedSenderMessage = result.encryptedSenderMessage
+    this.encryptionKey = result.encryptionKey
   }
 
   getDepositParams: TGetDepositParams = () => {
@@ -283,7 +352,7 @@ class ClaimLink implements IClaimLinkSDK {
         this.feeAuthorization
       ])
     }
- 
+
     const value = this._defineValue(
       this.token,
       this.feeToken,
@@ -318,7 +387,7 @@ class ClaimLink implements IClaimLinkSDK {
     if (!this.claimUrl) {
       throw new Error(errors.cannot_redeem_before_deposit())
     }
-  
+
     if (this.source === 'd') {
       const claimCode = getClaimCodeFromDashboardLink(this.claimUrl)
       const linkKey = ethers.id(claimCode)
@@ -396,7 +465,38 @@ class ClaimLink implements IClaimLinkSDK {
   _defineDomain: TDefineDomain = () => {
     return defineDomain(this.chainId, this.token)
   }
-  
+
+  decryptSenderMessage: TDecryptSenderMessage = async ({
+    signTypedData
+  }) => {
+    if (this.#forRecipient) {
+      throw new Error(errors.link_only_for_claim())
+    }
+
+    if (!this.encryptedSenderMessage) {
+      return ''
+    }
+
+    const encryptionKeyLengthAsHex = this.encryptedSenderMessage.slice(0, 2)
+    const encryptionKeyLength = hexToNumber(encryptionKeyLengthAsHex)
+
+    const {
+      encryptionKey
+    } = await createMessageEncyptionKey({
+      transferId: this.transferId,
+      signTypedData,
+      encryptionKeyLength,
+      chainId: this.chainId
+    })
+
+    const decryptedMessage = decrypt({
+      encoded: this.encryptedSenderMessage,
+      symKey: encryptionKey
+    })
+
+    return decryptedMessage
+  }
+
   _defineValue: TDefineValue = (
     tokenAddress,
     feeToken,
@@ -411,7 +511,7 @@ class ClaimLink implements IClaimLinkSDK {
       // native token
       return totalAmount
     }
-  
+
     // erc20
     return feeAmount
   }
@@ -419,12 +519,12 @@ class ClaimLink implements IClaimLinkSDK {
   _depositERC20: TDepositERC20 = async ({
     sendTransaction
   }) => {
-    if (this.forRecipient) {
+    if (this.#forRecipient) {
       throw new Error(errors.link_only_for_claim())
     }
 
     const { data, value, to } = this.getDepositParams()
-    
+
     const { hash: txHash } = await sendTransaction({
       data,
       value,
@@ -445,14 +545,16 @@ class ClaimLink implements IClaimLinkSDK {
       this.amount,
       this.feeAmount,
       this.totalAmount,
-      this.feeToken
+      this.feeToken,
+      this.encryptedSenderMessage
     )
 
     const linkParams: TLink = {
       linkKey: this.linkKey as string,
       transferId: this.transferId,
       chainId: this.chainId,
-      sender: this.sender.toLowerCase()
+      sender: this.sender.toLowerCase(),
+      encryptionKey: this.encryptionKey
     }
 
     const claimUrl = encodeLink(
@@ -477,12 +579,12 @@ class ClaimLink implements IClaimLinkSDK {
   _depositNative: TDepositNative = async ({
     sendTransaction
   }) => {
-    if (this.forRecipient) {
+    if (this.#forRecipient) {
       throw new Error(errors.link_only_for_claim())
     }
 
     const { data, value, to } = this.getDepositParams()
-    
+
     const { hash: txHash } = await sendTransaction({
       data,
       value,
@@ -503,14 +605,16 @@ class ClaimLink implements IClaimLinkSDK {
       this.amount,
       this.feeAmount,
       this.totalAmount,
-      this.feeToken
+      this.feeToken,
+      this.encryptedSenderMessage
     )
 
     const linkParams: TLink = {
       linkKey: this.linkKey as string,
       transferId: this.transferId,
       chainId: this.chainId,
-      sender: this.sender.toLowerCase()
+      sender: this.sender.toLowerCase(),
+      encryptionKey: this.encryptionKey
     }
 
     const claimUrl = encodeLink(
@@ -535,7 +639,7 @@ class ClaimLink implements IClaimLinkSDK {
   _depositERC1155: TDepositERC1155 = async ({
     sendTransaction
   }) => {
-    if (this.forRecipient) {
+    if (this.#forRecipient) {
       throw new Error(errors.link_only_for_claim())
     }
 
@@ -561,14 +665,16 @@ class ClaimLink implements IClaimLinkSDK {
       this.amount,
       this.feeAmount,
       this.totalAmount,
-      this.feeToken
+      this.feeToken,
+      this.encryptedSenderMessage
     )
 
     const linkParams: TLink = {
       linkKey: this.linkKey as string,
       transferId: this.transferId,
       chainId: this.chainId,
-      sender: this.sender.toLowerCase()
+      sender: this.sender.toLowerCase(),
+      encryptionKey: this.encryptionKey
     }
 
     const claimUrl = encodeLink(
@@ -593,12 +699,12 @@ class ClaimLink implements IClaimLinkSDK {
   _depositERC721: TDepositERC721 = async ({
     sendTransaction
   }) => {
-    if (this.forRecipient) {
+    if (this.#forRecipient) {
       throw new Error(errors.link_only_for_claim())
     }
 
     const { data, value, to } = this.getDepositParams()
-    
+
     const { hash: txHash } = await sendTransaction({
       data,
       value,
@@ -619,14 +725,16 @@ class ClaimLink implements IClaimLinkSDK {
       this.tokenId,
       this.feeAmount,
       this.totalAmount,
-      this.feeToken
+      this.feeToken,
+      this.encryptedSenderMessage
     )
 
     const linkParams: TLink = {
       linkKey: this.linkKey as string,
       transferId: this.transferId,
       chainId: this.chainId,
-      sender: this.sender.toLowerCase()
+      sender: this.sender.toLowerCase(),
+      encryptionKey: this.encryptionKey
     }
 
     const claimUrl = encodeLink(
@@ -651,7 +759,7 @@ class ClaimLink implements IClaimLinkSDK {
   deposit: TDeposit = async ({
     sendTransaction
   }) => {
-    if (this.forRecipient) {
+    if (this.#forRecipient) {
       throw new Error(errors.link_only_for_claim())
     }
 
@@ -698,7 +806,7 @@ class ClaimLink implements IClaimLinkSDK {
       return this._depositERC1155({
         sendTransaction
       })
-    } 
+    }
   }
 
   isDepositWithAuthorizationAvailable: TIsDepositWithAuthorizationAvailable = (
@@ -712,7 +820,7 @@ class ClaimLink implements IClaimLinkSDK {
     signTypedData,
     authConfig
   }) => {
-    if (this.forRecipient) {
+    if (this.#forRecipient) {
       throw new Error(errors.link_only_for_claim())
     }
 
@@ -790,6 +898,7 @@ class ClaimLink implements IClaimLinkSDK {
       this.chainId,
       this.token,
       this.feeAmount,
+      authSelector,
 
       // if last param exists, then return needed type of authorization
       // otherwise define it dynamically with chain and token
@@ -810,7 +919,8 @@ class ClaimLink implements IClaimLinkSDK {
       this.feeAuthorization,
       this.amount,
       this.feeAmount,
-      this.totalAmount
+      this.totalAmount,
+      this.encryptedSenderMessage
     )
 
     const { tx_hash } = result
@@ -819,7 +929,8 @@ class ClaimLink implements IClaimLinkSDK {
       linkKey: this.linkKey,
       transferId: this.transferId,
       chainId: this.chainId,
-      sender: this.sender.toLowerCase()
+      sender: this.sender.toLowerCase(),
+      encryptionKey: this.encryptionKey
     }
 
     const claimUrl = encodeLink(
@@ -841,7 +952,10 @@ class ClaimLink implements IClaimLinkSDK {
     }
   }
 
-  _getCurrentFee: TGetCurrentFee = async (newAmount) => {
+  getCurrentFee: TGetCurrentFee = async (newAmount) => {
+    if (this.#forRecipient) {
+      throw new Error(errors.link_only_for_claim())
+    }
     const result = await linkApi.getFee(
       this.apiUrl,
       this.#apiKey,
@@ -853,12 +967,12 @@ class ClaimLink implements IClaimLinkSDK {
       newAmount,
       this.tokenId
     )
-  
+
     return result
   }
 
   updateAmount: TUpdateAmount = async (amount) => {
-    if (this.forRecipient) {
+    if (this.#forRecipient) {
       throw new Error(errors.link_only_for_claim())
     }
     if (this.tokenType === 'ERC721') {
@@ -874,7 +988,7 @@ class ClaimLink implements IClaimLinkSDK {
       max_transfer_amount: maxTransferAmount,
       fee_authorization: feeAuthorization,
       fee_token: feeToken
-    } = await this._getCurrentFee(
+    } = await this.getCurrentFee(
       amount as string
     )
 
@@ -956,7 +1070,7 @@ class ClaimLink implements IClaimLinkSDK {
   generateClaimUrl: TGenerateClaimUrl = async ({
     signTypedData
   }) => {
-    if (this.forRecipient) {
+    if (this.#forRecipient) {
       throw new Error(errors.link_only_for_claim())
     }
     if (!this.getRandomBytes) {
@@ -984,12 +1098,25 @@ class ClaimLink implements IClaimLinkSDK {
     )
 
     const { linkKey, senderSig } = result
-
     const linkParams: TLink = {
       linkKey,
       senderSig,
       transferId: this.transferId,
-      chainId: this.chainId
+      chainId: this.chainId,
+    }
+    if (this.encryptedSenderMessage) {
+      const encryptionKeyLengthAsHex = this.encryptedSenderMessage.slice(0, 2)
+      const encryptionKeyLength = hexToNumber(encryptionKeyLengthAsHex)
+
+      const {
+        encryptionKeyLinkParam
+      } = await createMessageEncyptionKey({
+        transferId: this.transferId,
+        signTypedData,
+        encryptionKeyLength: encryptionKeyLength,
+        chainId: this.chainId
+      })
+      linkParams.encryptionKey = encryptionKeyLinkParam
     }
 
     const claimUrl = encodeLink(

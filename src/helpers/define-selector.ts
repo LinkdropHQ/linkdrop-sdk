@@ -5,6 +5,10 @@ const defineSelector = (authorizationMethod: TAuthorizationMethod) => {
     return ESelectors.approveWithAuthorization
   }
 
+  if (authorizationMethod === 'ReceiveWithAuthorizationEOA') {
+    return ESelectors.receiveWithAuthorizationEOA
+  }
+
   return ESelectors.receiveWithAuthorization
 }
 

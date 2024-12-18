@@ -68,6 +68,10 @@ type TGetFeeResponse = {
   fee_amount: string
   fee_authorization: string
   success: boolean
+  pending_txs: number
+  pending_blocks: number | null
+  pending_tx_submitted_bn: number | null
+  pending_tx_submitted_at: number | null
 }
 
 type TGetFee = (

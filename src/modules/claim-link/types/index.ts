@@ -14,9 +14,11 @@ import TDepositERC721 from './deposit-erc721'
 import TDepositERC1155 from './deposit-erc1155'
 import TIsDepositWithAuthorizationAvailable from './is-deposit-with-authorization-available' 
 import TGetDepositParams from './get-deposit-params'
+import TAddMessage from './add-message'
+import TDecryptSenderMessage from './decrypt-sender-message'
 
 interface IClaimLink {
-  _getCurrentFee: TGetCurrentFee
+  getCurrentFee: TGetCurrentFee
   redeem: TRedeem
   depositWithAuthorization: TDepositWithAuthorization
   updateAmount: TUpdateAmount
@@ -24,6 +26,7 @@ interface IClaimLink {
   generateClaimUrl: TGenerateClaimUrl
   getStatus: TGetStatus
   deposit: TDeposit
+  addMessage: TAddMessage
   _defineValue: TDefineValue
   _depositERC20: TDepositERC20
   getDepositParams: TGetDepositParams
@@ -31,12 +34,14 @@ interface IClaimLink {
   _depositERC721: TDepositERC721
   _depositERC1155: TDepositERC1155
   isDepositWithAuthorizationAvailable: TIsDepositWithAuthorizationAvailable
+  decryptSenderMessage: TDecryptSenderMessage
 }
 
 export {
   TGetCurrentFee,
   TRedeem,
   TDepositERC1155,
+  TDecryptSenderMessage,
   TDepositWithAuthorization,
   TIsDepositWithAuthorizationAvailable,
   TDepositERC721,

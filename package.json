@@ -1,6 +1,6 @@
 {
   "name": "linkdrop-sdk",
-  "version": "3.13.1-beta",
+  "version": "3.14.0-beta",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -31,6 +31,8 @@
     "ethers": "^6.8.0",
     "linkdrop-p2p-sdk2": "npm:linkdrop-p2p-sdk@2.0.1",
     "linkdrop-p2p-sdk3.11.0-beta": "npm:linkdrop-p2p-sdk@3.11.0-beta",
+    "text-encoding": "^0.7.0",
+    "tweetnacl": "^1.0.3",
     "typescript": "^4.8.2"
   },
   "devDependencies": {
