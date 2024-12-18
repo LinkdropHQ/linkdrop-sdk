@@ -307,7 +307,7 @@ class ClaimLink implements IClaimLinkSDK {
     if (!signTypedData) {
       throw new Error(errors.argument_not_provided('signTypedData', signTypedData))
     }
-    
+
     const result = await encryptMessage({
       message: message,
       signTypedData,
@@ -502,13 +502,12 @@ class ClaimLink implements IClaimLinkSDK {
       chainId: this.chainId
     })
 
-    const dcryptedMessage = decrypt({
+    const decryptedMessage = decrypt({
       encoded: this.encryptedSenderMessage,
-      symKey: encryptionKey,
-      randomBytes: this.getRandomBytes
+      symKey: encryptionKey
     })
 
-    return dcryptedMessage
+    return decryptedMessage
   }
 
   _defineValue: TDefineValue = (
