@@ -307,9 +307,11 @@ await claimLink.addMessage({
 
 ```js
 import { ClaimLink } from 'linkdrop-sdk';
+
 const claimLink = await sdk.retrieveClaimLink({
   ...
 })
+
 if (claimLink && claimLink instanceof ClaimLink) {
   const signTypedData = (domain, types, message) => signer.signTypedData(domain, types, message)
 
