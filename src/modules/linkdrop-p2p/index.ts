@@ -37,7 +37,6 @@ import {
   THistoryItem
 } from '../../types'
 import * as configs from '../../configs'
-import * as LinkdropP2P2 from 'linkdrop-p2p-sdk2'
 
 
 class LinkdropP2P implements ILinkdropP2P {
@@ -460,17 +459,6 @@ class LinkdropP2P implements ILinkdropP2P {
       chainId,
     } = decodeLink(claimUrl)
 
-    const version = this.getVersionFromClaimUrl(claimUrl)
-
-    if (version === '2') {
-      const linkdropP2P2 = new LinkdropP2P2.LinkdropP2P({
-        baseUrl: this.baseUrl,
-        apiKey: String(this.#apiKey)
-      })
-
-      return await linkdropP2P2.getClaimLink(claimUrl)
-    }
-
     const apiHost = defineApiHost(chainId, this.apiUrl)
 
     if (!apiHost) {
@@ -627,18 +615,6 @@ class LinkdropP2P implements ILinkdropP2P {
         deployment: this.deployment
       }
 
-      if (version.toString() === '2') {
-        const linkdropP2P2 = new LinkdropP2P2.LinkdropP2P({
-          baseUrl: this.baseUrl,
-          apiKey: String(this.#apiKey),
-          getRandomBytes: this.getRandomBytes
-        })
-  
-        return await linkdropP2P2.retrieveClaimLink({
-          txHash,
-          chainId
-        })
-      }
       return this._initializeClaimLink(claimLinkData)
     } else {
       throw new ValidationError(
