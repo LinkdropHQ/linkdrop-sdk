@@ -1,7 +1,10 @@
 # Linkdrop SDK
 
+## 3.15.0-beta
+- contract updates for senderMessage
+
 ## 3.14.0-beta
-- message available for claim links
+- senderMessage available for claim links
 
 ## 3.13.4-alpha-rc.0
 - 404 Error handling
