@@ -217,14 +217,13 @@ const version = sdk.getVersionFromEscrowContract(escrowAddress)
 ## ClaimLink
 ClaimLink object contains methods and properties to facilitate both creation and redemption of the claim link. ClaimLink class has been updated over different versions of the library. Specifically, there are multiple versions of ClaimLink with different features:
 
-- Version 2 (ClaimLinkV2)
 - Version 3.11 (ClaimLinkV3_11)
 - Version 3.14 (latest)
 
 To handle the different versions of ClaimLink, the retrieveClaimLink method of the SDK can return an instance of ClaimLink from any of the supported versions. 
 
 ```ts
-import { ClaimLink, ClaimLinkV2, ClaimLinkV3_11 } from 'linkdrop-sdk';
+import { ClaimLink, ClaimLinkV3_11 } from 'linkdrop-sdk';
 const claimLink = await sdk.retrieveClaimLink({
   ...
 });
@@ -234,8 +233,6 @@ if (claimLink instanceof ClaimLink) {
   // call methods for the latest version of Linkdrop SDK ClaimLink
 } else if (claimLink instanceof ClaimLinkV3_11) {
   // call methods for version 3.11 of Linkdrop SDK ClaimLink
-} else if (claimLink instanceof ClaimLinkV2) {
-  // call methods for version 2 of Linkdrop SDK ClaimLink
 }
 ```
 
