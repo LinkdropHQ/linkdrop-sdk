@@ -1,7 +1,12 @@
 # Linkdrop SDK
 
+## 3.15.0-beta
+- contract updates for senderMessage
+- removed V2 links support
+- removed sepolia, baseGoeli, gnosis and immutableZkevm network support
+
 ## 3.14.0-beta
-- message available for claim links
+- senderMessage available for claim links
 
 ## 3.13.3-beta
 - added pending data to ClaimLink instance and /fee endpoint

@@ -1,8 +1,7 @@
 import * as configs from '../configs'
 import {
   TDeploymentType,
-  TTokenType,
-  EChains
+  TTokenType
 } from '../types'
 
 type TDefineEscrowAddress = (
@@ -36,14 +35,7 @@ const defineEscrowAddress: TDefineEscrowAddress = (
   }
 
   if (tokenType === 'ERC1155' || tokenType === 'ERC721') {
-    if (chainId === EChains.immutableZkevm) {
-      return configs.immutableZkevmContractNFT
-    }
     return configs.mainEscrowContractNFT
-  }
-
-  if (chainId === EChains.immutableZkevm) {
-    return configs.immutableZkevmContract
   }
   
   return configs.mainEscrowContract
