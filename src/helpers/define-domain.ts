@@ -7,9 +7,7 @@ import {
   optimismUSDC,
   avalancheUSDC,
   arbitrumUSDC,
-  baseGoerliUSDC,
   baseUSDC,
-  sepoliaUSDC,
   baseEURC,
   baseCBBTC
 } from '../domains'
@@ -41,14 +39,6 @@ const defineDomain: TDefineDomain = (
   if (chainId === EChains.arbitrum) { // arbitrum
     if (tokenAddress === ETokenAddress.usdcArbitrum) return arbitrumUSDC
   }
-
-  if (chainId === EChains.baseGoerli) {// Base Goerli
-    if (tokenAddress === ETokenAddress.usdcBaseGoerli) return baseGoerliUSDC
-  }
-
-  if (chainId === EChains.sepolia) { // Sepolia
-    if (tokenAddress === ETokenAddress.usdcSepolia) return sepoliaUSDC
-  } 
 
   if (chainId === EChains.base) { // Base
     if (tokenAddress === ETokenAddress.usdcBase) return baseUSDC

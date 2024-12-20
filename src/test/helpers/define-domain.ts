@@ -7,9 +7,7 @@ import {
   optimismUSDC,
   avalancheUSDC,
   arbitrumUSDC,
-  baseGoerliUSDC,
-  baseUSDC,
-  sepoliaUSDC
+  baseUSDC
 } from '../../domains'
 
 describe("defineDomain", () => {
@@ -53,14 +51,6 @@ describe("defineDomain", () => {
     expect(avalancheUSDC).to.deep.equal(result)
   })
 
-  it("should return base goerli usdc domain", () => {
-    const result = defineDomain(
-      EChains.baseGoerli,
-      ETokenAddress.usdcBaseGoerli
-    )
-    expect(baseGoerliUSDC).to.deep.equal(result)
-  })
-
   it("should return base usdc domain", () => {
     const result = defineDomain(
       EChains.base,
@@ -69,19 +59,4 @@ describe("defineDomain", () => {
     expect(baseUSDC).to.deep.equal(result)
   })
 
-  it("should return sepolia usdc domain", () => {
-    const result = defineDomain(
-      EChains.sepolia,
-      ETokenAddress.usdcSepolia
-    )
-    expect(sepoliaUSDC).to.deep.equal(result)
-  })
-
-  it("should return null as domain", () => {
-    const result = defineDomain(
-      EChains.base,
-      ETokenAddress.usdcSepolia
-    )
-    expect(null).to.equal(result)
-  })
 })
