@@ -7,8 +7,7 @@ describe("defineIfEscrowAddressIsCorrect", () => {
     const result = defineIfEscrowAddressIsCorrect(
       configs.cbwEscrowContract,
       'ERC20',
-      'CBW',
-      8453
+      'CBW'
     )
     expect(true).to.equal(result)
   })
@@ -17,8 +16,7 @@ describe("defineIfEscrowAddressIsCorrect", () => {
     const result = defineIfEscrowAddressIsCorrect(
       configs.cbwEscrowContract,
       'ERC20',
-      'LD',
-      8453
+      'LD'
     )
     expect(false).to.equal(result)
   })
@@ -27,8 +25,7 @@ describe("defineIfEscrowAddressIsCorrect", () => {
     const result = defineIfEscrowAddressIsCorrect(
       configs.mainEscrowContract,
       'ERC721',
-      'LD',
-      8453
+      'LD'
     )
     expect(false).to.equal(result)
   })
@@ -37,8 +34,7 @@ describe("defineIfEscrowAddressIsCorrect", () => {
     const result = defineIfEscrowAddressIsCorrect(
       configs.mainEscrowContract,
       'ERC1155',
-      'LD',
-      8453
+      'LD'
     )
     expect(false).to.equal(result)
   })
@@ -47,8 +43,7 @@ describe("defineIfEscrowAddressIsCorrect", () => {
     const result = defineIfEscrowAddressIsCorrect(
       configs.mainEscrowContractNFT,
       'ERC1155',
-      'LD',
-      8453
+      'LD'
     )
     expect(true).to.equal(result)
   })
@@ -57,8 +52,7 @@ describe("defineIfEscrowAddressIsCorrect", () => {
     const result = defineIfEscrowAddressIsCorrect(
       configs.mainEscrowContractNFT,
       'ERC721',
-      'LD',
-      8453
+      'LD'
     )
     expect(true).to.equal(result)
   })
@@ -67,8 +61,7 @@ describe("defineIfEscrowAddressIsCorrect", () => {
     const result = defineIfEscrowAddressIsCorrect(
       configs.mainEscrowContract,
       'ERC20',
-      'LD',
-      8453
+      'LD'
     )
     expect(true).to.equal(result)
   })

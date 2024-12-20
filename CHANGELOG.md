@@ -3,6 +3,7 @@
 ## 3.15.0-beta
 - contract updates for senderMessage
 - removed V2 links support
+- removed sepolia, baseGoeli, gnosis and immutableZkevm network support
 
 ## 3.14.0-beta
 - senderMessage available for claim links

@@ -199,11 +199,6 @@ describe("LinkdropSDK  NATIVE link creation", () => {
     })
   })
 
-  it("should return a current claim link with sepolia tokens", async () => {
-    const link: ClaimLink = await linkdropSDK.getClaimLink(preparedLink)
-    expect(link.chainId).to.be.equal(11155111)
-  })
-
   it("should return a current claim link status as deposited", async () => {
     const link: ClaimLink = await linkdropSDK.getClaimLink(preparedLink)
     const { status } = await link.getStatus()

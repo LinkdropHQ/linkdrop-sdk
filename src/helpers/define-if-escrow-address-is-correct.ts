@@ -5,15 +5,13 @@ import defineVersionByEscrow from './define-version-by-escrow'
 type TDefineIfEscrowAddressIsCorrect = (
   escrowAddress: string,
   tokenType: TTokenType,
-  deployment: TDeploymentType,
-  chainId: number | null
+  deployment: TDeploymentType
 ) => boolean
 
 const defineIfEscrowAddressIsCorrect: TDefineIfEscrowAddressIsCorrect = (
   escrowAddress,
   tokenType,
-  deployment,
-  chainId
+  deployment
 ) => {
 
   if (!escrowAddress || !tokenType) {
@@ -42,13 +40,6 @@ const defineIfEscrowAddressIsCorrect: TDefineIfEscrowAddressIsCorrect = (
       return false
     }
     return true
-  }
-
-  if (chainId === EChains.immutableZkevm) {
-    if (tokenType === 'ERC1155' || tokenType === 'ERC721') {
-      return escrowAddress === configs.immutableZkevmContractNFT
-    }
-    return escrowAddress === configs.immutableZkevmContract
   }
 
   if (tokenType === 'ERC1155' || tokenType === 'ERC721') {

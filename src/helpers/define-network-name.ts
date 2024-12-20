@@ -8,13 +8,9 @@ const defineNetworkName: TDefineNetworkName = (chainId) => {
   switch (Number(chainId)) {
     case EChains.polygon: return 'polygon'
     case EChains.base: return 'base'
-    case EChains.sepolia: return 'sepolia'
-    case EChains.baseGoerli: return 'goerli'
     case EChains.avalanche: return 'avalanche'
     case EChains.optimism: return 'optimism'
     case EChains.arbitrum: return 'arbitrum'
-    case EChains.gnosis: return 'gnosis'
-    case EChains.immutableZkevm: return 'immutableZkevm'
 
     default:
       return null
