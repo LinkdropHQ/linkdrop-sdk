@@ -24,6 +24,10 @@ const escrows = {
     '0xff3471dfdc6f82694e5ad4d4e7ffedf23e1e38e0',
     '0x139b79602b68e8198ea3d57f5e6311fd98262269',
     '0xe0cec4f0b66257fc6b13652c303237de0fd92ed8'
+  ],
+  "3.2": [
+    '0x5badb0143f69015c5c86cbd9373474a9c8ab713b',
+    '0x3c74782de03c0402d207fe41307fe50fe9b6b5c7'
   ]
 }
 
