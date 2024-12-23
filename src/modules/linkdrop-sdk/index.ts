@@ -38,9 +38,7 @@ import {
   THistoryItem
 } from '../../types'
 import * as configs from '../../configs'
-import * as LinkdropP2PV2 from 'linkdrop-p2p-sdk2'
-import * as LinkdropP2PV3_11 from 'linkdrop-p2p-sdk3.11.0-beta'
-
+import * as LinkdropP2PV3_11 from 'linkdrop-p2p-sdk3.11.1-beta'
 
 class LinkdropSDK implements ILinkdropSDK {
   #apiKey: string | null
@@ -523,17 +521,6 @@ class LinkdropSDK implements ILinkdropSDK {
       encryptionKey
     } = decodeLink(claimUrl)
 
-    const version = this.getVersionFromClaimUrl(claimUrl)
-
-    if (version === '2') {
-      const linkdropP2P2 = new LinkdropP2PV2.LinkdropP2P({
-        baseUrl: this.baseUrl,
-        apiKey: String(this.#apiKey)
-      })
-
-      return await linkdropP2P2.getClaimLink(claimUrl)
-    }
-
     const apiHost = defineApiHost(chainId, this.apiUrl)
 
     if (!apiHost) {
@@ -773,18 +760,7 @@ class LinkdropSDK implements ILinkdropSDK {
         encryptedSenderMessage: encrypted_sender_message
       }
 
-      if (defineVersionByEscrow(escrow) === '2') {
-        const linkdropP2P2 = new LinkdropP2PV2.LinkdropP2P({
-          baseUrl: this.baseUrl,
-          apiKey: String(this.#apiKey),
-          getRandomBytes: this.getRandomBytes
-        })
-  
-        return await linkdropP2P2.retrieveClaimLink({
-          txHash,
-          chainId
-        })
-      } else if (defineVersionByEscrow(escrow) === '3') {
+      if (defineVersionByEscrow(escrow) === '3') {
         const linkdropP2P2 = new LinkdropP2PV3_11.LinkdropP2P({
           baseUrl: this.baseUrl,
           apiKey: String(this.#apiKey),

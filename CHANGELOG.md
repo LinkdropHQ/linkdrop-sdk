@@ -2,6 +2,7 @@
 
 ## 3.15.0-beta
 - contract updates for senderMessage
+- removed V2 links support
 
 ## 3.14.0-beta
 - senderMessage available for claim links

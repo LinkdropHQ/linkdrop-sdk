@@ -349,7 +349,8 @@ class ClaimLink implements IClaimLinkSDK {
         this.expiration,
         this.feeToken,
         this.feeAmount,
-        this.feeAuthorization
+        this.feeAuthorization,
+        this.encryptedSenderMessage ? `0x${this.encryptedSenderMessage}` : '0x'
       ])
     } else if (this.tokenType === 'NATIVE') {
       const iface = new ethers.Interface(LinkdropEscrowToken.abi)
@@ -358,7 +359,8 @@ class ClaimLink implements IClaimLinkSDK {
         this.totalAmount,
         this.expiration,
         this.feeAmount,
-        this.feeAuthorization
+        this.feeAuthorization,
+        this.encryptedSenderMessage ? `0x${this.encryptedSenderMessage}` : '0x'
       ])
     } else if (this.tokenType === 'ERC721') {
       const iface = new ethers.Interface(LinkdropEscrowNFT.abi)
@@ -368,7 +370,8 @@ class ClaimLink implements IClaimLinkSDK {
         this.tokenId,
         this.expiration,
         this.feeAmount,
-        this.feeAuthorization
+        this.feeAuthorization,
+        this.encryptedSenderMessage ? `0x${this.encryptedSenderMessage}` : '0x'
       ])
     } else {
       const iface = new ethers.Interface(LinkdropEscrowNFT.abi)
@@ -379,7 +382,8 @@ class ClaimLink implements IClaimLinkSDK {
         this.amount,
         this.expiration,
         this.feeAmount,
-        this.feeAuthorization
+        this.feeAuthorization,
+        this.encryptedSenderMessage ? `0x${this.encryptedSenderMessage}` : '0x'
       ])
     }
 
