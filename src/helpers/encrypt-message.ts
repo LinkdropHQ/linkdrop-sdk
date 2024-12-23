@@ -15,7 +15,7 @@ type TEncryptMessage = ({
   chainId: number,
   getRandomBytes: TGetRandomBytes
 }) => Promise<{
-  encryptedMessage: string
+  encryptedSenderMessage: string
   encryptionKey: string
 }>
 
@@ -46,13 +46,13 @@ const encryptMessage: TEncryptMessage = async ({
   const encryptionKeyInitial = ethers.sha256(signature)
   const encryptionKeyModified = encryptionKeyInitial.slice(0, 12)
   const encryptionKeyFinal = ethers.sha256(encryptionKeyModified).replace('0x', '')
-  const encryptedMessage = encrypt({
+  const encryptedSenderMessage = encrypt({
     message,
     symKey: encryptionKeyFinal,
     randomBytes: getRandomBytes
   })
   return {
-    encryptedMessage,
+    encryptedSenderMessage,
     encryptionKey: encryptionKeyModified // уйдет в линк
   }
 }

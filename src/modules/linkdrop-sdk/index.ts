@@ -215,7 +215,7 @@ class LinkdropSDK implements ILinkdropSDK {
         feeAmount: claimLink.fee_amount,
         createdAt: claimLink.created_at,
         updatedAt: claimLink.updated_at,
-        encryptedMessage: claimLink.encrypted_message
+        encryptedSenderMessage: claimLink.encrypted_sender_message
       }
 
       delete claimLinkUpdated.transfer_id
@@ -227,7 +227,7 @@ class LinkdropSDK implements ILinkdropSDK {
       delete claimLinkUpdated.token_id
       delete claimLinkUpdated.fee_token
       delete claimLinkUpdated.fee_amount
-      delete claimLinkUpdated.encrypted_message
+      delete claimLinkUpdated.encrypted_sender_message
 
       return claimLinkUpdated
     })
@@ -309,8 +309,8 @@ class LinkdropSDK implements ILinkdropSDK {
     let pendingTxSubmittedAt = claimLinkData.pendingTxSubmittedAt
     let message = claimLinkData.message
     let signTypedData = claimLinkData.signTypedData
-    let encryptedMessage = claimLinkData.encryptedMessage
-    let decryptedMessage = claimLinkData.decryptedMessage
+    let encryptedSenderMessage = claimLinkData.encryptedSenderMessage
+    let senderMessage = claimLinkData.senderMessage
     let keyPair
     if (!transferId) {
       keyPair = await generateKeypair(this.getRandomBytes)
@@ -412,8 +412,8 @@ class LinkdropSDK implements ILinkdropSDK {
       preferredWalletOn: claimLinkData.preferredWalletOn,
       additionalWalletsOn: claimLinkData.additionalWalletsOn,
       weiAmount: claimLinkData.claimingFinishedDescription,
-      encryptedMessage,
-      decryptedMessage
+      encryptedSenderMessage,
+      senderMessage
     })
 
     if (message) {
@@ -497,7 +497,7 @@ class LinkdropSDK implements ILinkdropSDK {
         wallet,
         preferred_wallet_on,
         additional_wallets_on,
-        encrypted_message
+        encrypted_sender_message
       } = claim_link
 
       const apiHost = defineApiHost(chainId, this.apiUrl)
@@ -540,7 +540,7 @@ class LinkdropSDK implements ILinkdropSDK {
         preferredWalletOn: preferred_wallet_on,
         additionalWalletsOn: additional_wallets_on,
         weiAmount: wei_amount,
-        encryptedMessage: encrypted_message
+        encryptedSenderMessage: encrypted_sender_message
       }
 
       return this._initializeClaimLink(claimLinkData)
@@ -600,7 +600,7 @@ class LinkdropSDK implements ILinkdropSDK {
       wallet,
       preferred_wallet_on,
       additional_wallets_on,
-      encrypted_message
+      encrypted_sender_message
     } = claim_link
 
     const actualVersion = defineVersionByEscrow(escrow) 
@@ -647,9 +647,9 @@ class LinkdropSDK implements ILinkdropSDK {
       preferredWalletOn: preferred_wallet_on,
       additionalWalletsOn: additional_wallets_on,
       weiAmount: wei_amount,
-      encryptedMessage: encrypted_message,
-      decryptedMessage: (encrypted_message && encryptionKey) ? decryptMessage({
-        message: encrypted_message,
+      encryptedSenderMessage: encrypted_sender_message,
+      senderMessage: (encrypted_sender_message && encryptionKey) ? decryptMessage({
+        message: encrypted_sender_message,
         encryptionKey,
         getRandomBytes: this.getRandomBytes
       }) : undefined
@@ -699,7 +699,7 @@ class LinkdropSDK implements ILinkdropSDK {
         wallet,
         preferred_wallet_on,
         additional_wallets_on,
-        encrypted_message
+        encrypted_sender_message
       } = claim_link
 
       const claimLinkData = {
@@ -731,7 +731,7 @@ class LinkdropSDK implements ILinkdropSDK {
         preferredWalletOn: preferred_wallet_on,
         additionalWalletsOn: additional_wallets_on,
         weiAmount: wei_amount,
-        encryptedMessage: encrypted_message
+        encryptedSenderMessage: encrypted_sender_message
       }
 
       return this._initializeClaimLink(claimLinkData)
@@ -766,7 +766,7 @@ class LinkdropSDK implements ILinkdropSDK {
         wallet,
         preferred_wallet_on,
         additional_wallets_on,
-        encrypted_message
+        encrypted_sender_message
       } = claim_link
 
       const claimLinkData = {
@@ -798,7 +798,7 @@ class LinkdropSDK implements ILinkdropSDK {
         preferredWalletOn: preferred_wallet_on,
         additionalWalletsOn: additional_wallets_on,
         weiAmount: wei_amount,
-        encryptedMessage: encrypted_message
+        encryptedSenderMessage: encrypted_sender_message
       }
 
       if (defineVersionByEscrow(escrow) === '2') {

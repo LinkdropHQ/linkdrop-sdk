@@ -38,5 +38,5 @@ export type TClaimLinkItem = {
   preferred_wallet_on: boolean | null
   additional_wallets_on: boolean | null
   wei_amount: string | null
-  encrypted_message?: string
+  encrypted_sender_message?: string
 }
