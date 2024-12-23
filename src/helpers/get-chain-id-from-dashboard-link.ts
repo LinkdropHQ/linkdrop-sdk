@@ -4,8 +4,8 @@ import { EChains } from '../types'
 type TGetChainIdFromDashboardLink = (claimUrl: string) => EChains
 
 const getChainIdFromDashboardLink: TGetChainIdFromDashboardLink = (claimUrl) => {
-  const paramsString = claimUrl.split('?')[1]
-  const parsedParams = parseQueryParams(paramsString)
+  const url = new URL(claimUrl)
+  const parsedParams = parseQueryParams(url.search.replace('?', ''))
   const chainId = parsedParams["c"]
   if (!chainId) {
     return EChains.polygon
