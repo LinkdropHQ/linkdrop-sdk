@@ -14,6 +14,7 @@ import TDepositERC721 from './deposit-erc721'
 import TDepositERC1155 from './deposit-erc1155'
 import TIsDepositWithAuthorizationAvailable from './is-deposit-with-authorization-available' 
 import TGetDepositParams from './get-deposit-params'
+import TAddMessage from './add-message'
 
 interface IClaimLink {
   getCurrentFee: TGetCurrentFee
@@ -24,6 +25,7 @@ interface IClaimLink {
   generateClaimUrl: TGenerateClaimUrl
   getStatus: TGetStatus
   deposit: TDeposit
+  addMessage: TAddMessage
   _defineValue: TDefineValue
   _depositERC20: TDepositERC20
   getDepositParams: TGetDepositParams

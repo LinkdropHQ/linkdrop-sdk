@@ -1,6 +1,5 @@
 import { TTokenType, TClaimLinkSource, TOperationStatus } from ".."
 
-
 export type TClaimLinkItemStatus = 'created' | 'depositing' | 'deposited' | 'redeemed'| 'redeeming' | 'error' | 'refunded' | 'refunding' | 'cancelled'
 
 export type TClaimLinkItemOperation = {
@@ -30,8 +29,6 @@ export type TClaimLinkItem = {
   status: TClaimLinkItemStatus
   operations:  TClaimLinkItemOperation[]
   source: TClaimLinkSource
-
-
   wallet: string | null
   claiming_finished_description: string | null
   claiming_finished_button_title: string  | null
@@ -41,4 +38,5 @@ export type TClaimLinkItem = {
   preferred_wallet_on: boolean | null
   additional_wallets_on: boolean | null
   wei_amount: string | null
+  encrypted_message?: string
 }

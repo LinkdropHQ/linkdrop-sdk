@@ -1,4 +1,7 @@
-import { TTokenType } from "../../../../types"
+import {
+  TTokenType,
+  TSignTypedData
+} from "../../../../types"
 import ClaimLink from "../../../claim-link"
 
 export type TCreateClaimLinkArgs = {
@@ -9,6 +12,8 @@ export type TCreateClaimLinkArgs = {
   amount?: string
   expiration?: number
   tokenId?: string
+  message?: string
+  signTypedData?: TSignTypedData,
 }
 
 type TCreateClaimLink = ({
@@ -18,7 +23,9 @@ type TCreateClaimLink = ({
   tokenType,
   amount,
   expiration,
-  tokenId
+  tokenId,
+  message,
+  signTypedData
 }: TCreateClaimLinkArgs) => Promise<ClaimLink>
 
 export default TCreateClaimLink

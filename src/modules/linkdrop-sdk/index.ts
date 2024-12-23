@@ -19,7 +19,6 @@ import {
   updateOperations,
   getVersionFromClaimUrl,
   getLinkSourceFromClaimUrl,
-  getClaimCodeFromDashboardLink,
   getChainIdFromDashboardLink,
   defineDashboardApiHost,
   defineVersionByEscrow,
@@ -100,7 +99,9 @@ class LinkdropSDK implements ILinkdropSDK {
     amount,
     from,
     tokenType,
-    tokenId
+    tokenId,
+    message,
+    signTypedData
   }) => {
     if (!chainId) {
       throw new ValidationError(
@@ -136,6 +137,15 @@ class LinkdropSDK implements ILinkdropSDK {
       )
     }
 
+    if (message) {
+      if (!signTypedData) {
+        throw new ValidationError(
+          errors.argument_not_provided('signTypedData', String(token)),
+          'SIGN_TYPED_DATA_NOT_PROVIDED'
+        )
+      }
+    }
+
     return this._initializeClaimLink({
       token: token as ETokenAddress || configs.nativeTokenAddress,
       expiration: expiration ||  Math.floor(Date.now() / 1000 + 60 * 60 * 24 * 15),
@@ -157,7 +167,9 @@ class LinkdropSDK implements ILinkdropSDK {
       claimingFinishedAutoRedirect: null,
       preferredWalletOn: null,
       additionalWalletsOn: null,
-      weiAmount: null 
+      weiAmount: null,
+      message,
+      signTypedData
     })
   }
 
@@ -201,7 +213,8 @@ class LinkdropSDK implements ILinkdropSDK {
         feeToken: claimLink.fee_token,
         feeAmount: claimLink.fee_amount,
         createdAt: claimLink.created_at,
-        updatedAt: claimLink.updated_at
+        updatedAt: claimLink.updated_at,
+        encryptedMessage: claimLink.encrypted_message
       }
 
       delete claimLinkUpdated.transfer_id
@@ -213,6 +226,7 @@ class LinkdropSDK implements ILinkdropSDK {
       delete claimLinkUpdated.token_id
       delete claimLinkUpdated.fee_token
       delete claimLinkUpdated.fee_amount
+      delete claimLinkUpdated.encrypted_message
 
       return claimLinkUpdated
     })
@@ -292,6 +306,9 @@ class LinkdropSDK implements ILinkdropSDK {
     let pendingBlocks = claimLinkData.pendingBlocks
     let pendingTxSubmittedBn = claimLinkData.pendingTxSubmittedBn
     let pendingTxSubmittedAt = claimLinkData.pendingTxSubmittedAt
+    let message = claimLinkData.message
+    let signTypedData = claimLinkData.signTypedData
+    let encryptedMessage = claimLinkData.encryptedMessage
 
     let keyPair
     if (!transferId) {
@@ -385,8 +402,6 @@ class LinkdropSDK implements ILinkdropSDK {
       pendingTxSubmittedBn,
       pendingTxSubmittedAt,
       pendingBlocks,
-
-
       wallet: claimLinkData.wallet,
       claimingFinishedDescription: claimLinkData.claimingFinishedDescription,
       claimingFinishedButtonTitle: claimLinkData.claimingFinishedButtonTitle,
@@ -395,8 +410,23 @@ class LinkdropSDK implements ILinkdropSDK {
       claimingFinishedAutoRedirect: claimLinkData.claimingFinishedAutoRedirect,
       preferredWalletOn: claimLinkData.preferredWalletOn,
       additionalWalletsOn: claimLinkData.additionalWalletsOn,
-      weiAmount: claimLinkData.claimingFinishedDescription
+      weiAmount: claimLinkData.claimingFinishedDescription,
+      encryptedMessage
     })
+
+    if (message) {
+      if (signTypedData) {
+        await claimLink.addMessage({
+          message,
+          signTypedData
+        })
+      } else {
+        throw new Error(errors.argument_not_provided(
+          'signTypedData',
+          String(signTypedData),
+        ))
+      }
+    } 
 
     return claimLink
   }
@@ -464,7 +494,8 @@ class LinkdropSDK implements ILinkdropSDK {
         wei_amount,
         wallet,
         preferred_wallet_on,
-        additional_wallets_on
+        additional_wallets_on,
+        encrypted_message
       } = claim_link
 
       const apiHost = defineApiHost(chainId, this.apiUrl)
@@ -506,7 +537,8 @@ class LinkdropSDK implements ILinkdropSDK {
         claimingFinishedAutoRedirect: claiming_finished_auto_redirect,
         preferredWalletOn: preferred_wallet_on,
         additionalWalletsOn: additional_wallets_on,
-        weiAmount: wei_amount
+        weiAmount: wei_amount,
+        encryptedMessage: encrypted_message
       }
 
       return this._initializeClaimLink(claimLinkData)
@@ -564,7 +596,8 @@ class LinkdropSDK implements ILinkdropSDK {
       wei_amount,
       wallet,
       preferred_wallet_on,
-      additional_wallets_on
+      additional_wallets_on,
+      encrypted_message
     } = claim_link
 
     const actualVersion = defineVersionByEscrow(escrow) 
@@ -602,7 +635,6 @@ class LinkdropSDK implements ILinkdropSDK {
       status,
       source: linkSource,
       deployment: this.deployment,
-
       wallet,
       claimingFinishedDescription: claiming_finished_description,
       claimingFinishedButtonTitle: claiming_finished_button_title,
@@ -611,7 +643,8 @@ class LinkdropSDK implements ILinkdropSDK {
       claimingFinishedAutoRedirect: claiming_finished_auto_redirect,
       preferredWalletOn: preferred_wallet_on,
       additionalWalletsOn: additional_wallets_on,
-      weiAmount: wei_amount
+      weiAmount: wei_amount,
+      encryptedMessage: encrypted_message
     }
     return this._initializeClaimLink(claimLinkData)
   }
@@ -657,7 +690,8 @@ class LinkdropSDK implements ILinkdropSDK {
         wei_amount,
         wallet,
         preferred_wallet_on,
-        additional_wallets_on
+        additional_wallets_on,
+        encrypted_message
       } = claim_link
 
       const claimLinkData = {
@@ -688,7 +722,8 @@ class LinkdropSDK implements ILinkdropSDK {
         claimingFinishedAutoRedirect: claiming_finished_auto_redirect,
         preferredWalletOn: preferred_wallet_on,
         additionalWalletsOn: additional_wallets_on,
-        weiAmount: wei_amount
+        weiAmount: wei_amount,
+        encryptedMessage: encrypted_message
       }
 
       return this._initializeClaimLink(claimLinkData)
@@ -711,7 +746,6 @@ class LinkdropSDK implements ILinkdropSDK {
         fee_token,
         fee_amount,
         total_amount,
-        version,
         status,
         token_id,
         escrow,
@@ -723,7 +757,8 @@ class LinkdropSDK implements ILinkdropSDK {
         wei_amount,
         wallet,
         preferred_wallet_on,
-        additional_wallets_on
+        additional_wallets_on,
+        encrypted_message
       } = claim_link
 
       const claimLinkData = {
@@ -754,7 +789,8 @@ class LinkdropSDK implements ILinkdropSDK {
         claimingFinishedAutoRedirect: claiming_finished_auto_redirect,
         preferredWalletOn: preferred_wallet_on,
         additionalWalletsOn: additional_wallets_on,
-        weiAmount: wei_amount
+        weiAmount: wei_amount,
+        encryptedMessage: encrypted_message
       }
 
       if (defineVersionByEscrow(escrow) === '2') {

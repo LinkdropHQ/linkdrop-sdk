@@ -1,4 +1,4 @@
-import { TTokenType, ETokenAddress, TClaimLinkSource, TDeploymentType } from "../../../../types"
+import { TTokenType, ETokenAddress, TClaimLinkSource, TDeploymentType, TSignTypedData } from "../../../../types"
 import ClaimLink from "../../../claim-link"
 
 export type TInitializeClaimLinkArgs = {
@@ -36,6 +36,9 @@ export type TInitializeClaimLinkArgs = {
   pendingBlocks?: number | null
   pendingTxSubmittedBn?: number | null
   pendingTxSubmittedAt?: number | null
+  signTypedData?: TSignTypedData
+  message?: string
+  encryptedMessage?: string
 }
 
 type TInitializeClaimLink = (data: TInitializeClaimLinkArgs) => Promise<(ClaimLink)>

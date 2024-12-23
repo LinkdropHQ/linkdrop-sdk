@@ -39,8 +39,6 @@ type TConstructorArgs = {
   pendingTxSubmittedBn?: number | null
   pendingTxSubmittedAt?: number | null
   status?: TClaimLinkItemStatus
-
-
   // data for dashboard links, otherwise null 
   wallet: string | null
   claimingFinishedDescription: string | null
@@ -51,7 +49,7 @@ type TConstructorArgs = {
   preferredWalletOn: boolean | null
   additionalWalletsOn: boolean | null
   weiAmount: string | null
-
+  encryptedMessage?: string
 }
 
 

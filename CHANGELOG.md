@@ -1,5 +1,8 @@
 # Linkdrop SDK
 
+## 3.14.0-beta
+- message added
+
 ## 3.13.4-alpha-rc.0
 - 404 Error handling
 - export of error classes
