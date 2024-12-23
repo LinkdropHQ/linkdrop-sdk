@@ -1,19 +1,24 @@
 import { TGetRandomBytes, TSignTypedData } from '../types'
-import { ethers } from 'ethers'
+import { ethers, encodeBase58 } from 'ethers'
 import { encrypt } from '../crypto'
+import {
+  createMessageEncyptionKey
+} from '.'
 
 type TEncryptMessage = ({
   message,
   signTypedData,
   chainId,
   transferId,
-  getRandomBytes
+  getRandomBytes,
+  encryptionKeyLength
 }: {
   message: string,
   signTypedData: TSignTypedData,
   transferId: string,
   chainId: number,
-  getRandomBytes: TGetRandomBytes
+  getRandomBytes: TGetRandomBytes,
+  encryptionKeyLength?: number
 }) => Promise<{
   encryptedSenderMessage: string
   encryptionKey: string
@@ -24,36 +29,29 @@ const encryptMessage: TEncryptMessage = async ({
   transferId,
   message,
   signTypedData,
-  getRandomBytes
+  getRandomBytes,
+  encryptionKeyLength
 }) => {
 
-  const domain = {
-    name: "MyEncryptionScheme",
-    version: "1",
-    chainId: chainId
-  }
+  const {
+    encryptionKey, // used to encrypt message
+    encryptionKeyLinkParam
+  } = await createMessageEncyptionKey({
+    transferId,
+    signTypedData,
+    encryptionKeyLength,
+    chainId
+  })
 
-  const types = {
-    EncryptionMessage: [
-      { name: "seed", type: "string" }
-    ]
-  }
-
-  const seed = `Encrypting message (transferId: ${transferId})`
-  const value = { seed }
-  const signature = await signTypedData(domain, types, value)
-
-  const encryptionKeyInitial = ethers.sha256(signature)
-  const encryptionKeyModified = encryptionKeyInitial.slice(0, 12)
-  const encryptionKeyFinal = ethers.sha256(encryptionKeyModified).replace('0x', '')
   const encryptedSenderMessage = encrypt({
     message,
-    symKey: encryptionKeyFinal,
+    symKey: encryptionKey,
     randomBytes: getRandomBytes
   })
+
   return {
-    encryptedSenderMessage,
-    encryptionKey: encryptionKeyModified // уйдет в линк
+    encryptedSenderMessage, // encrypted sender message
+    encryptionKey: encryptionKeyLinkParam // goes to link as `m=...` query param
   }
 }
 

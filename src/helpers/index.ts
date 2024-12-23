@@ -22,9 +22,13 @@ import defineSelector from './define-selector'
 import getTransferIdFromDashboardLink from './get-transfer-id-from-dashboard-link'
 import encryptMessage from './encrypt-message'
 import decryptMessage from './decrypt-message'
+import createMessageEncyptionKey from './create-message-encryption-key'
+import convertBase58ToUint8array from './convert-base58-to-uint8array'
 
 export {
   defineDomain,
+  convertBase58ToUint8array,
+  createMessageEncyptionKey,
   decryptMessage,
   encryptMessage,
   defineSelector,

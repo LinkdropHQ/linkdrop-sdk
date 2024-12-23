@@ -100,9 +100,7 @@ class LinkdropSDK implements ILinkdropSDK {
     amount,
     from,
     tokenType,
-    tokenId,
-    message,
-    signTypedData
+    tokenId
   }) => {
     if (!chainId) {
       throw new ValidationError(
@@ -138,15 +136,6 @@ class LinkdropSDK implements ILinkdropSDK {
       )
     }
 
-    if (message) {
-      if (!signTypedData) {
-        throw new ValidationError(
-          errors.argument_not_provided('signTypedData', String(signTypedData)),
-          'SIGN_TYPED_DATA_NOT_PROVIDED'
-        )
-      }
-    }
-
     return this._initializeClaimLink({
       token: token as ETokenAddress || configs.nativeTokenAddress,
       expiration: expiration ||  Math.floor(Date.now() / 1000 + 60 * 60 * 24 * 15),
@@ -169,8 +158,6 @@ class LinkdropSDK implements ILinkdropSDK {
       preferredWalletOn: null,
       additionalWalletsOn: null,
       weiAmount: null,
-      message,
-      signTypedData
     })
   }
 
@@ -307,8 +294,6 @@ class LinkdropSDK implements ILinkdropSDK {
     let pendingBlocks = claimLinkData.pendingBlocks
     let pendingTxSubmittedBn = claimLinkData.pendingTxSubmittedBn
     let pendingTxSubmittedAt = claimLinkData.pendingTxSubmittedAt
-    let message = claimLinkData.message
-    let signTypedData = claimLinkData.signTypedData
     let encryptedSenderMessage = claimLinkData.encryptedSenderMessage
     let senderMessage = claimLinkData.senderMessage
     let keyPair
@@ -415,20 +400,6 @@ class LinkdropSDK implements ILinkdropSDK {
       encryptedSenderMessage,
       senderMessage
     })
-
-    if (message) {
-      if (signTypedData) {
-        await claimLink.addMessage({
-          message,
-          signTypedData
-        })
-      } else {
-        throw new Error(errors.argument_not_provided(
-          'signTypedData',
-          String(signTypedData),
-        ))
-      }
-    } 
 
     return claimLink
   }
@@ -648,6 +619,7 @@ class LinkdropSDK implements ILinkdropSDK {
       additionalWalletsOn: additional_wallets_on,
       weiAmount: wei_amount,
       encryptedSenderMessage: encrypted_sender_message,
+      encryptionKey,
       senderMessage: (encrypted_sender_message && encryptionKey) ? decryptMessage({
         message: encrypted_sender_message,
         encryptionKey,
@@ -701,7 +673,7 @@ class LinkdropSDK implements ILinkdropSDK {
         additional_wallets_on,
         encrypted_sender_message
       } = claim_link
-
+      
       const claimLinkData = {
         token: token as ETokenAddress,
         expiration,

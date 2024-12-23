@@ -14,8 +14,10 @@ import IClaimLinkSDK, {
   TDepositERC721,
   TDepositERC1155,
   TGetDepositParams,
-  TIsDepositWithAuthorizationAvailable
+  TIsDepositWithAuthorizationAvailable,
+  TDecryptSenderMessage
 } from './types'
+import { decrypt } from '../../crypto'
 import { toBigInt } from 'ethers'
 import {
   TEscrowPaymentDomain,
@@ -49,7 +51,8 @@ import {
   defineVersionByEscrow,
   getClaimCodeFromDashboardLink,
   defineSelector,
-  encryptMessage
+  encryptMessage,
+  createMessageEncyptionKey
 } from '../../helpers'
 import { errors } from '../../texts'
 import * as configs from '../../configs'
@@ -296,6 +299,7 @@ class ClaimLink implements IClaimLinkSDK {
     message,
     signTypedData
   }) => {
+
     if (!message) {
       throw new Error(errors.argument_not_provided('message', message))
     }
@@ -309,6 +313,7 @@ class ClaimLink implements IClaimLinkSDK {
       signTypedData,
       transferId: this.transferId,
       chainId: this.chainId,
+      encryptionKeyLength: 12,
       getRandomBytes: this.getRandomBytes
     })
 
@@ -475,6 +480,35 @@ class ClaimLink implements IClaimLinkSDK {
 
   _defineDomain: TDefineDomain = () => {
     return defineDomain(this.chainId, this.token)
+  }
+
+  decryptSenderMessage: TDecryptSenderMessage = async ({
+    signTypedData
+  }) => {
+    if (this.#forRecipient) {
+      throw new Error(errors.link_only_for_claim())
+    }
+
+    if (!this.encryptedSenderMessage) {
+      throw new Error(errors.property_not_provided('encryptedSenderMessage', String(this.encryptedSenderMessage)))
+    }
+
+    const {
+      encryptionKey
+    } = await createMessageEncyptionKey({
+      transferId: this.transferId,
+      signTypedData,
+      encryptionKeyLength: 12,
+      chainId: this.chainId
+    })
+
+    const dcryptedMessage = decrypt({
+      encoded: this.encryptedSenderMessage,
+      symKey: encryptionKey,
+      randomBytes: this.getRandomBytes
+    })
+
+    return dcryptedMessage
   }
 
   _defineValue: TDefineValue = (
@@ -739,7 +773,6 @@ class ClaimLink implements IClaimLinkSDK {
   deposit: TDeposit = async ({
     sendTransaction
   }) => {
-    let encryptedSenderMessage: string | undefined
     if (this.#forRecipient) {
       throw new Error(errors.link_only_for_claim())
     }
@@ -1079,13 +1112,22 @@ class ClaimLink implements IClaimLinkSDK {
     )
 
     const { linkKey, senderSig } = result
-
     const linkParams: TLink = {
       linkKey,
       senderSig,
       transferId: this.transferId,
       chainId: this.chainId,
-      encryptionKey: this.encryptionKey
+    }
+    if (this.encryptedSenderMessage) {
+      const {
+        encryptionKeyLinkParam
+      } = await createMessageEncyptionKey({
+        transferId: this.transferId,
+        signTypedData,
+        encryptionKeyLength: 12,
+        chainId: this.chainId
+      })
+      linkParams.encryptionKey = encryptionKeyLinkParam
     }
 
     const claimUrl = encodeLink(
