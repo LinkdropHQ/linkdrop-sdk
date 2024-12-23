@@ -22,7 +22,8 @@ import {
   getChainIdFromDashboardLink,
   defineDashboardApiHost,
   defineVersionByEscrow,
-  getTransferIdFromDashboardLink
+  getTransferIdFromDashboardLink,
+  decryptMessage
 } from '../../helpers'
 import { generateKeypair } from '../../utils'
 import { toBigInt, ethers } from 'ethers'
@@ -309,7 +310,7 @@ class LinkdropSDK implements ILinkdropSDK {
     let message = claimLinkData.message
     let signTypedData = claimLinkData.signTypedData
     let encryptedMessage = claimLinkData.encryptedMessage
-
+    let decryptedMessage = claimLinkData.decryptedMessage
     let keyPair
     if (!transferId) {
       keyPair = await generateKeypair(this.getRandomBytes)
@@ -411,7 +412,8 @@ class LinkdropSDK implements ILinkdropSDK {
       preferredWalletOn: claimLinkData.preferredWalletOn,
       additionalWalletsOn: claimLinkData.additionalWalletsOn,
       weiAmount: claimLinkData.claimingFinishedDescription,
-      encryptedMessage
+      encryptedMessage,
+      decryptedMessage
     })
 
     if (message) {
@@ -547,6 +549,7 @@ class LinkdropSDK implements ILinkdropSDK {
     const {
       transferId,
       chainId,
+      encryptionKey
     } = decodeLink(claimUrl)
 
     const version = this.getVersionFromClaimUrl(claimUrl)
@@ -644,7 +647,11 @@ class LinkdropSDK implements ILinkdropSDK {
       preferredWalletOn: preferred_wallet_on,
       additionalWalletsOn: additional_wallets_on,
       weiAmount: wei_amount,
-      encryptedMessage: encrypted_message
+      encryptedMessage: encrypted_message,
+      decryptedMessage: (encrypted_message && encryptionKey) ? decryptMessage({
+        message: encrypted_message,
+        encryptionKey
+      }) : undefined
     }
     return this._initializeClaimLink(claimLinkData)
   }

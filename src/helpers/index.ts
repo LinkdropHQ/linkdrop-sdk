@@ -21,9 +21,11 @@ import checkApiKeyFormatValidity from './check-api-key-format-validity'
 import defineSelector from './define-selector'
 import getTransferIdFromDashboardLink from './get-transfer-id-from-dashboard-link'
 import encryptMessage from './encrypt-message'
+import decryptMessage from './decrypt-message'
 
 export {
   defineDomain,
+  decryptMessage,
   encryptMessage,
   defineSelector,
   getClaimCodeFromDashboardLink,

@@ -39,8 +39,38 @@ export type TInitializeClaimLinkArgs = {
   signTypedData?: TSignTypedData
   message?: string
   encryptedMessage?: string
+  decryptedMessage?: string
 }
 
 type TInitializeClaimLink = (data: TInitializeClaimLinkArgs) => Promise<(ClaimLink)>
+type TInitializeClaimLink = ({
+  token,
+  expiration,
+  chainId,
+  baseUrl,
+  amount,
+  sender, 
+  apiUrl, 
+  apiKey,
+  transferId,
+  claimUrl,
+  tokenType,
+  feeAmount,
+  totalAmount,
+  pendingTxs,
+  pendingBlocks,
+  pendingTxSubmittedBn,
+  pendingTxSubmittedAt,
+  feeAuthorization,
+  feeToken,
+  tokenId,
+  forRecipient,
+  source,
+  deployment,
+  message,
+  signTypedData,
+  encryptedMessage,
+  decryptedMessage
+}: TInitializeClaimLinkArgs) => Promise<(ClaimLink)>
 
 export default TInitializeClaimLink

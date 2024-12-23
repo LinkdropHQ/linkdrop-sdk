@@ -50,6 +50,7 @@ type TConstructorArgs = {
   additionalWalletsOn: boolean | null
   weiAmount: string | null
   encryptedMessage?: string
+  decryptedMessage?: string
 }
 
 

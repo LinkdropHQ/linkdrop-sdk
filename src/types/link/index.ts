@@ -5,4 +5,5 @@ export type TLink = {
   transferId: string
   chainId: number
   version?: string
+  encryptionKey?: string
 }
