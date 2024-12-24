@@ -89,9 +89,7 @@ class ClaimLink implements IClaimLinkSDK {
   #forRecipient: boolean
 
   deployment: TDeploymentType
-
   status: TClaimLinkItemStatus
-
 
   pendingTxs?: number
   pendingTxSubmittedBn?: null | number
@@ -268,7 +266,8 @@ class ClaimLink implements IClaimLinkSDK {
       if (!defineIfEscrowAddressIsCorrect(
         this.escrowAddress as string,
         this.tokenType,
-        this.deployment
+        this.deployment,
+        this.chainId
       )) {
         throw new Error(errors.escrow_is_not_correct())
       }
