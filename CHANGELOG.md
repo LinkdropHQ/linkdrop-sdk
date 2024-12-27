@@ -1,5 +1,9 @@
 # Linkdrop SDK
 
+## 3.15.1-beta
+- SSR links supports
+- tests fix
+
 ## 3.15.0-beta
 - contract updates for senderMessage
 - removed V2 links support
