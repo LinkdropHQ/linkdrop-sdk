@@ -6,7 +6,7 @@ type TGetChainIdFromDashboardLink = (claimUrl: string) => EChains
 const getChainIdFromDashboardLink: TGetChainIdFromDashboardLink = (claimUrl) => {
   const url = new URL(claimUrl)
 
-  if (!url.hash) {
+  if (!url.hash && !url.pathname.startsWith('/redeem/0x')) {
     // custom host from dashboard
     const parsedParams = parseQueryParams(url.search)
     const chainId = parsedParams["c"]

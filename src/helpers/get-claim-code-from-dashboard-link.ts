@@ -2,7 +2,7 @@ type TGetClaimCodeFromDashboardLink = (claimUrl: string) => string
 
 const getClaimCodeFromDashboardLink: TGetClaimCodeFromDashboardLink = (claimUrl) => {
   const url = new URL(claimUrl)
-  if (!url.hash) {
+  if (!url.hash && !url.pathname.startsWith('/redeem/0x')) {
     // custom url from dashboard
     return url.pathname
       .replace('/redeem/', '')

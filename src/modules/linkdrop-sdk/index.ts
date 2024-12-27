@@ -435,9 +435,9 @@ class LinkdropSDK implements ILinkdropSDK {
       // const transferId = new ethers.Wallet(linkKey).address
 
       const transferId = getTransferIdFromDashboardLink(claimUrl)
-
       const chainId = getChainIdFromDashboardLink(claimUrl)
       const customApiHost = defineDashboardApiHost(claimUrl)
+
       const { claim_link } = await linkApi.getTransferStatus(
         customApiHost,
         this.#apiKey,

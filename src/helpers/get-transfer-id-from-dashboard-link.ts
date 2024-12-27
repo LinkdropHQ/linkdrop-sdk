@@ -7,7 +7,8 @@ const getTransferIdFromDashboardLink: TGetTransferIdFromDashboardLink = (claimUr
   // old format dashboard link, ssr link or custom link
   const url = new URL(claimUrl)
 
-  if (!url.hash) {
+
+  if (!url.hash && !url.pathname.startsWith('/redeem/0x')) {
     // custom host from dashboard
     const claimCode = getClaimCodeFromDashboardLink(claimUrl)
     const linkKey = ethers.id(claimCode)
