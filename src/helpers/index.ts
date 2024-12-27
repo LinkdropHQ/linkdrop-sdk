@@ -1,4 +1,5 @@
 import defineNetworkName from './define-network-name'
+import defineSignature from './define-signature'
 import encodeLink from './encode-link'
 import decodeLink from './decode-link'
 import defineApiHost from './define-api-host'
@@ -29,6 +30,7 @@ import hexToNumber from './hex-to-number'
 
 export {
   defineDomain,
+  defineSignature,
   numberToHex,
   hexToNumber,
   convertBase58ToUint8array,

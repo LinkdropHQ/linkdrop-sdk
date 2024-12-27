@@ -1,28 +1,26 @@
-import { parseQueryParams } from '.'
-
 type TGetClaimCodeFromDashboardLink = (claimUrl: string) => string
 
 const getClaimCodeFromDashboardLink: TGetClaimCodeFromDashboardLink = (claimUrl) => {
-
-  if (claimUrl.includes('redeem')) {
-    if (claimUrl.includes('?src=d#')) {
-      // new format
-      const linkParts = claimUrl.split('#')
-      return linkParts[linkParts.length - 1]
+  const url = new URL(claimUrl)
+  if (!url.hash) {
+    // custom url from dashboard
+    return url.pathname
+      .replace('/redeem/', '')
+  
+  } else {
+    // old dashboard link or ssr link
+    if (!url.search) {
+      // old dashboard link
+      return url.hash
+        .replace('#', '')
+        .replace('/redeem/', '')
+        .split('?')[0]
 
     } else {
-      // old format
-
-      const linkParts = claimUrl.split('/')
-      const claimCode = linkParts[linkParts.length - 1].split('?')[0]
-      return claimCode
+      // ssr link
+      return url.hash
+        .replace('#', '')
     }
-
-  } else {
-    const paramsString = claimUrl.split('?')[1]
-    const parsedParams = parseQueryParams(paramsString)
-    const claimCode = parsedParams["k"]
-    return claimCode
   }
 }
 

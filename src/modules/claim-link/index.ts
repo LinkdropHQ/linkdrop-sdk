@@ -312,11 +312,11 @@ class ClaimLink implements IClaimLinkSDK {
     }
 
     if (!message) {
-      throw new Error(errors.argument_not_provided('message', message))
+      throw new Error(errors.argument_not_provided('message', String(message)))
     }
 
     if (!signTypedData) {
-      throw new Error(errors.argument_not_provided('signTypedData', signTypedData))
+      throw new Error(errors.argument_not_provided('signTypedData', String(signTypedData)))
     }
 
     const result = await encryptMessage({

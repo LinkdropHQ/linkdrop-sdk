@@ -1,6 +1,6 @@
 {
   "name": "linkdrop-sdk",
-  "version": "3.15.1-alpha-rc.0",
+  "version": "3.15.1-alpha-rc.2",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -9,7 +9,7 @@
   "scripts": {
     "build": "rm -rf ./dist && webpack && yarn build:types",
     "build:types": "tsc --emitDeclarationOnly",
-    "test": "env-cmd mocha './src/test/{,+(helpers|modules)}/**/*.ts' --timeout 5000"
+    "test": "env TS_NODE_PROJECT=\"tsconfig.testing.json\" mocha --require ts-node/register 'src/test/**/*.ts'"
   },
   "repository": {
     "type": "git",

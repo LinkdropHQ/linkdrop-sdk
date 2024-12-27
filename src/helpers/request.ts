@@ -16,14 +16,14 @@ async function request<TResponse>(
     if (res.ok) {
       return res.json()
     }
-    const responseData = await res.json()
+    const responseData = (await res.json()) as Record<string, any>
 
     const responseCode = res.status
 
     // error.message
     const responseMessage = defineErrorText(res.status, responseData)
     // 
-    const responseErrors = responseData.errors as string[]
+    const responseErrors =  responseData.errors as string[]
 
     // error.error
     const responseErrorText = (responseErrors && responseErrors.length) ? responseErrors[0] : 'SERVER_ERROR'

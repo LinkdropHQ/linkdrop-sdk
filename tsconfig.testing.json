@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es2015",
+    "lib": ["es2022", "dom"],
+    "noImplicitAny": false,
+    "removeComments": true,
+    "inlineSourceMap": true,
+
+    "declaration": true,
+    "strictNullChecks": true,
+    "moduleResolution": "node",
+    "inlineSources": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "declarationMap": true,
+    "sourceMap": true
+  },
+  "include": ["src/**/*"]
+}

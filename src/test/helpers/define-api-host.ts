@@ -1,6 +1,6 @@
 import { defineApiHost } from "../../helpers"
 import { apiUrl } from '../../configs/index'
-import { expect} from "chai"
+import { expect } from "chai"
 
 describe("defineApiHost", () => {
   it("should return polygon api url", () => {

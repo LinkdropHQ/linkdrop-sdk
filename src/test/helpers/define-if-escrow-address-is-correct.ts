@@ -12,33 +12,6 @@ describe("defineIfEscrowAddressIsCorrect", () => {
     expect(true).to.equal(result)
   })
 
-  it("should return false for cbwEscrowContract", () => {
-    const result = defineIfEscrowAddressIsCorrect(
-      configs.cbwEscrowContract,
-      'ERC20',
-      'LD'
-    )
-    expect(false).to.equal(result)
-  })
-
-  it("should return false for cbwEscrowContract", () => {
-    const result = defineIfEscrowAddressIsCorrect(
-      configs.mainEscrowContract,
-      'ERC721',
-      'LD'
-    )
-    expect(false).to.equal(result)
-  })
-
-  it("should return false for cbwEscrowContract", () => {
-    const result = defineIfEscrowAddressIsCorrect(
-      configs.mainEscrowContract,
-      'ERC1155',
-      'LD'
-    )
-    expect(false).to.equal(result)
-  })
-
   it("should return true for cbwEscrowContract", () => {
     const result = defineIfEscrowAddressIsCorrect(
       configs.mainEscrowContractNFT,

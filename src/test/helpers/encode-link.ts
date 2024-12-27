@@ -21,7 +21,6 @@ const link1 = {
 describe("encodeLink", () => {
   it("should return expected string", async () => {
     // const keyPair = await generateKeypair(this.getRandomBytes)
-
     const result = encodeLink(
       claimHost1,
       link1
