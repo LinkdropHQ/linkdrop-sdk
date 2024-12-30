@@ -8,8 +8,8 @@ const dashboardLinkBase = 'https://claim.linkdrop.io/#/redeem/7qu7bC43CVKv?src=d
 const dashboardCustomHostLinkBase = 'https://customhost.io/redeem/7qu7bC43CVKv?src=d&c=8453'
 const dashboardCustomHostLinkPolygon = 'https://customhost.io/redeem/7qu7bC43CVKv?src=d&c=137'
 
-const dashboardSSRLinkBase = 'https://dev.claim.linkdrop.io/redeem/0xD875346dD38000e9919b83e21556520F94feCcaa?src=d&c=8453#7BRRj83EsMLL'
-const dashboardSSRLinkPolygon = 'https://dev.claim.linkdrop.io/redeem/0xD875346dD38000e9919b83e21556520F94feCcaa?src=d&c=137#7BRRj83EsMLL'
+const dashboardSSRLinkBase = 'https://dev.claim.linkdrop.io/redeem/0xD875346dD38000e9919b83e21556520F94feCcaa?src=d&c=8453'
+const dashboardSSRLinkPolygon = 'https://dev.claim.linkdrop.io/redeem/0xD875346dD38000e9919b83e21556520F94feCcaa?src=d&c=137'
 
 describe("getChainIdFromDashboardLink", () => {
   it(`should return 137 for dashboard old format link ${dashboardLinkPolygon}`, () => {
