@@ -444,10 +444,6 @@ class LinkdropSDK implements ILinkdropSDK {
         transferId
       )
 
-      console.log({ 
-        claim_link
-      })
-
       const {
         token,
         expiration,
