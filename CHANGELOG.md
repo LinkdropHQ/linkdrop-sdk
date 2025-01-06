@@ -3,6 +3,7 @@
 ## 3.15.1-beta
 - SSR links supports
 - tests fix
+- bug fix for weiAmount
 
 ## 3.15.0-beta
 - contract updates for senderMessage

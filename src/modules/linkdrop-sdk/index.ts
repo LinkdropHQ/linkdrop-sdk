@@ -394,7 +394,7 @@ class LinkdropSDK implements ILinkdropSDK {
       claimingFinishedAutoRedirect: claimLinkData.claimingFinishedAutoRedirect,
       preferredWalletOn: claimLinkData.preferredWalletOn,
       additionalWalletsOn: claimLinkData.additionalWalletsOn,
-      weiAmount: claimLinkData.claimingFinishedDescription,
+      weiAmount: claimLinkData.weiAmount,
       encryptedSenderMessage,
       senderMessage
     })
@@ -443,6 +443,10 @@ class LinkdropSDK implements ILinkdropSDK {
         this.#apiKey,
         transferId
       )
+
+      console.log({ 
+        claim_link
+      })
 
       const {
         token,
