@@ -32,6 +32,9 @@ export type TInitializeClaimLinkArgs = {
   additionalWalletsOn: boolean | null
   weiAmount: string | null
 
+  tokenImage: string | null
+  tokenName: string | null
+
   pendingTxs?: number
   pendingBlocks?: number | null
   pendingTxSubmittedBn?: number | null

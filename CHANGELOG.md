@@ -4,6 +4,7 @@
 - SSR links supports
 - tests fix
 - bug fix for weiAmount
+- tokenImage and tokenName properties added to ClaimLink for dashboard links
 
 ## 3.15.0-beta
 - contract updates for senderMessage

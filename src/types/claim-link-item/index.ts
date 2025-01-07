@@ -30,6 +30,7 @@ export type TClaimLinkItem = {
   operations:  TClaimLinkItemOperation[]
   source: TClaimLinkSource
   wallet: string | null
+  
   claiming_finished_description: string | null
   claiming_finished_button_title: string  | null
   claiming_finished_button_url: string | null
@@ -39,4 +40,8 @@ export type TClaimLinkItem = {
   additional_wallets_on: boolean | null
   wei_amount: string | null
   encrypted_sender_message?: string
+
+  // ONLY FOR SBT TOKENS
+  token_image: string | null
+  token_name: string | null
 }

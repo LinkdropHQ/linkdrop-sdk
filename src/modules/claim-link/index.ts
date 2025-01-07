@@ -98,6 +98,8 @@ class ClaimLink implements IClaimLinkSDK {
   wallet: string | null
   claimingFinishedDescription: string | null
   claimingFinishedButtonTitle: string  | null
+  tokenImage: string | null
+  tokenName: string  | null
   claimingFinishedButtonURL: string | null
   claimingFinishedButtonOn: boolean | null
   claimingFinishedAutoRedirect: boolean | null
@@ -110,6 +112,8 @@ class ClaimLink implements IClaimLinkSDK {
 
   constructor({
     weiAmount,
+    tokenImage,
+    tokenName,
     additionalWalletsOn,
     preferredWalletOn,
     claimingFinishedAutoRedirect,
@@ -118,7 +122,6 @@ class ClaimLink implements IClaimLinkSDK {
     claimingFinishedButtonTitle,
     claimingFinishedDescription,
     wallet,
-
     sender,
     token,
     amount,
@@ -205,6 +208,8 @@ class ClaimLink implements IClaimLinkSDK {
     this.claimingFinishedButtonURL = claimingFinishedButtonURL
     this.claimingFinishedButtonTitle = claimingFinishedButtonTitle
     this.claimingFinishedDescription = claimingFinishedDescription
+    this.tokenImage = tokenImage
+    this.tokenName = tokenName
     this.wallet = wallet
   
     if (tokenType !== 'ERC721' && !amount) {

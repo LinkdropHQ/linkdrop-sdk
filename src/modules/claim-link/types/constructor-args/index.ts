@@ -46,6 +46,11 @@ type TConstructorArgs = {
   claimingFinishedButtonURL: string | null
   claimingFinishedButtonOn: boolean | null
   claimingFinishedAutoRedirect: boolean | null
+
+  // for SBT tokens created with dashboard
+  tokenName: string | null
+  tokenImage: string | null
+
   preferredWalletOn: boolean | null
   additionalWalletsOn: boolean | null
   weiAmount: string | null
