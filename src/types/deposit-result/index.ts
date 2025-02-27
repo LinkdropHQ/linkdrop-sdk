@@ -1,5 +1,5 @@
 export type TDepositResult = {
-  txHash: string,
+  hash: string,
   transferId: string,
   claimUrl: string
 }

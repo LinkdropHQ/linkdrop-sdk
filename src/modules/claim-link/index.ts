@@ -574,7 +574,7 @@ class ClaimLink implements IClaimLinkSDK {
     this.deposited = true
 
     return {
-      txHash: hash,
+      hash,
       transferId: this.transferId,
       claimUrl
     }
@@ -635,7 +635,7 @@ class ClaimLink implements IClaimLinkSDK {
     this.deposited = true
 
     return {
-      txHash: hash,
+      hash,
       transferId: this.transferId,
       claimUrl
     }
@@ -696,7 +696,7 @@ class ClaimLink implements IClaimLinkSDK {
     this.deposited = true
 
     return {
-      txHash: hash,
+      hash,
       transferId: this.transferId,
       claimUrl
     }
@@ -757,7 +757,7 @@ class ClaimLink implements IClaimLinkSDK {
     this.deposited = true
 
     return {
-      txHash: hash,
+      hash,
       transferId: this.transferId,
       claimUrl
     }
@@ -953,7 +953,7 @@ class ClaimLink implements IClaimLinkSDK {
     this.deposited = true
 
     return {
-      txHash: tx_hash,
+      hash: tx_hash,
       claimUrl: this.claimUrl,
       transferId: this.transferId
     }

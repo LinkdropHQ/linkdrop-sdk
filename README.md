@@ -132,7 +132,7 @@ const authConfig = {
   authorizationMethod // "ApproveWithAuthorization" || "ReceiveWithAuthorization"
 }
 
-const { claimUrl, transferId, txHash } = await claimLink.depositWithAuthorization({
+const { claimUrl, transferId, hash } = await claimLink.depositWithAuthorization({
   signTypedData,
   authConfig
 }) 
@@ -145,7 +145,7 @@ const sendTransaction = async ({ to, value, data }) => {
   const tx = await signer.sendTransaction({ to, value, data })
   return { hash: tx.hash, type: 'tx' }
 }
-const { claimUrl, transferId, txHash } = await claimLink.deposit({ sendTransaction }) 
+const { claimUrl, transferId, hash } = await claimLink.deposit({ sendTransaction }) 
 ```
 For ERC20 (except USDC tokens), ERC721, and ERC1155 you need to approve tokens so that the contract has the opportunity to send them to the recipient
 
