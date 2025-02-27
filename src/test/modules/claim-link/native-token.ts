@@ -1,207 +1,207 @@
-// import { LinkdropSDK, ClaimLink } from "../../.."
-// import { expect } from "chai"
-// import randomBytes from 'randombytes'
-// import { beforeEach } from "mocha"
-// import { nativeTokenAddress } from "../../../configs"
-// global.fetch = require('node-fetch')
-// const getRandomBytes = (length: number) => new Uint8Array(randomBytes(length)) 
-// const baseUrl = 'https://localhost:3000'
-// const apiKey = process.env.ZUPLO_API_KEY
-// const userAccount = '0xb4c3d57327d4fc9bcc3499963e21db1a5435d537'
-// const token = nativeTokenAddress
-// const chainId = 11155111
-//   const preparedLink = 'https://p2p.linkdrop.io/#/code?k=EZsMmw7XRDiFLAgBTfkLa6WafjVaikbH8YaGYaDrpd9Z&c=11155111&v=3&src=p2p&w=metamask&theme=light'
+import { LinkdropSDK, ClaimLink } from "../../.."
+import { expect } from "chai"
+import randomBytes from 'randombytes'
+import { beforeEach } from "mocha"
+import { nativeTokenAddress } from "../../../configs"
+global.fetch = require('node-fetch')
+const getRandomBytes = (length: number) => new Uint8Array(randomBytes(length)) 
+const baseUrl = 'https://localhost:3000'
+const apiKey = '<ZUPLO_KEY>'
+const userAccount = '0xb4c3d57327d4fc9bcc3499963e21db1a5435d537'
+const chainId = 8453
 
-// let linkdropSDK
+const preparedLink = 'https://p2p.linkdrop.io/#/code?k=EZsMmw7XRDiFLAgBTfkLa6WafjVaikbH8YaGYaDrpd9Z&c=8453&v=3&src=p2p&w=metamask&theme=light'
 
-// beforeEach(() => {
-//   linkdropSDK = new LinkdropSDK({
-//     baseUrl,
-//     getRandomBytes,
-//     apiKey
-//   })
-// })
+let linkdropSDK
 
-// describe("LinkdropSDK  NATIVE link creation", () => {
-//   it("should throw an error that nativeTokenAddress is not a valid ERC20 token", () => {
-//     const amount = '10001'
-//     return new Promise(function (resolve, reject) {
-//       linkdropSDK.createClaimLink({
-//         from: userAccount,
-//         chainId,
-//         token,
-//         tokenType: 'ERC20',
-//         amount
-//       }).catch(err => {
-//         expect(err.error).to.be.equal('INVALID_ERC20_TOKEN')
-//         resolve(true)
-//       })
-//     })
-//   })
+beforeEach(() => {
+  linkdropSDK = new LinkdropSDK({
+    baseUrl,
+    getRandomBytes,
+    apiKey
+  })
+})
 
-//   it("should throw an error that amount is less than min limit", () => {
-//     const amount = '10001'
-//     return new Promise(function (resolve, reject) {
-//       linkdropSDK.createClaimLink({
-//         from: userAccount,
-//         chainId,
-//         token,
-//         tokenType: 'NATIVE',
-//         amount
-//       }).catch(err => {
-//         expect(err.error).to.be.equal('DEPOSIT_AMOUNT_LESS_THAN_MIN')
-//         resolve(true)
-//       })
-//     })
-//   })
+describe("LinkdropSDK  NATIVE link creation", () => {
+  it("should throw an error that nativeTokenAddress is not a valid ERC20 token", () => {
+    const amount = '10001'
+    return new Promise(function (resolve, reject) {
+      linkdropSDK.createClaimLink({
+        from: userAccount,
+        chainId,
+        token: nativeTokenAddress,
+        tokenType: 'ERC20',
+        amount
+      }).catch(err => {
+        expect(err.error).to.be.equal('INVALID_ERC20_TOKEN')
+        resolve(true)
+      })
+    })
+  })
 
-//   it("should throw an error that amount is more than max limit", () => {
-//     const amount = '1000000000000000000'
-//     return new Promise(function (resolve, reject) {
-//       linkdropSDK.createClaimLink({
-//         from: userAccount,
-//         chainId,
-//         token,
-//         tokenType: 'NATIVE',
-//         amount
-//       }).catch(err => {
-//         expect(err.error).to.be.equal('DEPOSIT_AMOUNT_EXCEEDED')
-//         resolve(true)
-//       })
-//     })
-//   })
+  it("should throw an error that amount is less than min limit", () => {
+    const amount = '10001'
+    return new Promise(function (resolve, reject) {
+      linkdropSDK.createClaimLink({
+        from: userAccount,
+        chainId,
+        token: nativeTokenAddress,
+        tokenType: 'NATIVE',
+        amount
+      }).catch(err => {
+        expect(err.error).to.be.equal('DEPOSIT_AMOUNT_LESS_THAN_MIN')
+        resolve(true)
+      })
+    })
+  })
 
-
-//   it("should return a current claim link", () => {
-//     const amount = '50000000000000000'
-//     return new Promise(function (resolve, reject) {
-//       linkdropSDK.createClaimLink({
-//         from: userAccount,
-//         chainId,
-//         token,
-//         tokenType: 'NATIVE',
-//         amount
-//       })
-//       .then(link => {
-//         expect(link.tokenType).to.be.equal('NATIVE')
-//         resolve(true)
-//       })
-//     })
-//   })
-
-//   it("should return a current claim link with total amount equals to feeAmount + amount", () => {
-//     const amount = '50000000000000000'
-//     return new Promise(function (resolve, reject) {
-//       linkdropSDK.createClaimLink({
-//         from: userAccount,
-//         chainId,
-//         token,
-//         tokenType: 'NATIVE',
-//         amount
-//       })
-//       .then(link => {
-//         const totalAmount = BigInt(link.feeAmount) + BigInt(amount)
-//         expect(link.totalAmount).to.be.equal(totalAmount.toString())
-//         resolve(true)
-//       })
-//     })
-//   })
-
-//   it("should return a current claim link with no possibility to use depositWithAuthorization method", () => {
-//     const amount = '50000000000000000'
-//     return new Promise(async function (resolve, reject) {
-//       const link: ClaimLink = await linkdropSDK.createClaimLink({
-//         from: userAccount,
-//         chainId,
-//         token,
-//         tokenType: 'NATIVE',
-//         amount
-//       })
-
-//       const isDepositWithAuthorizationAvailable = link.isDepositWithAuthorizationAvailable(token)
-//       expect(isDepositWithAuthorizationAvailable).to.be.equal(false)
-//       resolve(true)
-//     })
-//   })
-
-//   it("should return a current claim link and fail with getLink method", () => {
-//     const amount = '50000000000000000'
-//     return new Promise(async function (resolve, reject) {
-//       const link: ClaimLink = await linkdropSDK.createClaimLink({
-//         from: userAccount,
-//         chainId,
-//         token,
-//         tokenType: 'NATIVE',
-//         amount
-//       })
-//       link.getStatus().catch(err => {
-//         expect(err.error).to.be.equal('ESCROW_PAYMENT_NOT_FOUND')
-//       })
-//       resolve(true)
-//     })
-//   })
+  it("should throw an error that amount is more than max limit", () => {
+    const amount = '1000000000000000000'
+    return new Promise(function (resolve, reject) {
+      linkdropSDK.createClaimLink({
+        from: userAccount,
+        chainId,
+        token: nativeTokenAddress,
+        tokenType: 'NATIVE',
+        amount
+      }).catch(err => {
+        expect(err.error).to.be.equal('DEPOSIT_AMOUNT_EXCEEDED')
+        resolve(true)
+      })
+    })
+  })
 
 
-//   it("should return a current claim link and fail with redeem method", () => {
-//     const amount = '50000000000000000'
-//     return new Promise(async function (resolve, reject) {
-//       const link: ClaimLink = await linkdropSDK.createClaimLink({
-//         from: userAccount,
-//         chainId,
-//         token,
-//         tokenType: 'NATIVE',
-//         amount
-//       })
-//       link
-//         .redeem(userAccount)
-//         .catch(err => {
-//           expect(err.message).to.be.equal('Tokens should be deposited before redeem')
-//           resolve(true)
-//         })
-//     })
-//   })
+  it("should return a current claim link", () => {
+    const amount = '50000000000000000'
+    return new Promise(function (resolve, reject) {
+      linkdropSDK.createClaimLink({
+        from: userAccount,
+        chainId,
+        token: nativeTokenAddress,
+        tokenType: 'NATIVE',
+        amount
+      })
+      .then(link => {
+        expect(link.tokenType).to.be.equal('NATIVE')
+        resolve(true)
+      })
+    })
+  })
 
-//   it("should return a current claim link and fail with updateAmount method with DEPOSIT_AMOUNT_EXCEEDED error", () => {
-//     const initialAmount = '50000000000000000'
-//     const updatedAmount = '10000000000000000000'
+  it("should return a current claim link with total amount equals to feeAmount + amount", () => {
+    const amount = '50000000000000000'
+    return new Promise(function (resolve, reject) {
+      linkdropSDK.createClaimLink({
+        from: userAccount,
+        chainId,
+        token: nativeTokenAddress,
+        tokenType: 'NATIVE',
+        amount
+      })
+      .then(link => {
+        const totalAmount = BigInt(link.feeAmount) + BigInt(amount)
+        expect(link.totalAmount).to.be.equal(totalAmount.toString())
+        resolve(true)
+      })
+    })
+  })
 
-//     return new Promise(async function (resolve, reject) {
-//       const link: ClaimLink = await linkdropSDK.createClaimLink({
-//         from: userAccount,
-//         chainId,
-//         token,
-//         tokenType: 'NATIVE',
-//         amount: initialAmount
-//       })
-//       link.updateAmount(updatedAmount).catch(err => {
-//         expect(err.error).to.be.equal('DEPOSIT_AMOUNT_EXCEEDED')
-//         resolve(true)
-//       })
-//     })
-//   })
+  it("should return a current claim link with no possibility to use depositWithAuthorization method", () => {
+    const amount = '50000000000000000'
+    return new Promise(async function (resolve, reject) {
+      const link: ClaimLink = await linkdropSDK.createClaimLink({
+        from: userAccount,
+        chainId,
+        token: nativeTokenAddress,
+        tokenType: 'NATIVE',
+        amount
+      })
 
-//   it("should return a current claim link and fail with updateAmount method with DEPOSIT_AMOUNT_LESS_THAN_MIN error", () => {
-//     const initialAmount = '50000000000000000'
-//     const updatedAmount = '10000'
+      const isDepositWithAuthorizationAvailable = link.isDepositWithAuthorizationAvailable(nativeTokenAddress)
+      expect(isDepositWithAuthorizationAvailable).to.be.equal(false)
+      resolve(true)
+    })
+  })
 
-//     return new Promise(async function (resolve, reject) {
-//       const link: ClaimLink = await linkdropSDK.createClaimLink({
-//         from: userAccount,
-//         chainId,
-//         token,
-//         tokenType: 'NATIVE',
-//         amount: initialAmount
-//       })
-//       link.updateAmount(updatedAmount).catch(err => {
-//         expect(err.error).to.be.equal('DEPOSIT_AMOUNT_LESS_THAN_MIN')
-//         resolve(true)
-//       })
-//     })
-//   })
+  it("should return a current claim link and fail with getLink method", () => {
+    const amount = '50000000000000000'
+    return new Promise(async function (resolve, reject) {
+      const link: ClaimLink = await linkdropSDK.createClaimLink({
+        from: userAccount,
+        chainId,
+        token: nativeTokenAddress,
+        tokenType: 'NATIVE',
+        amount
+      })
+      link.getStatus().catch(err => {
+        expect(err.error).to.be.equal('ESCROW_PAYMENT_NOT_FOUND')
+      })
+      resolve(true)
+    })
+  })
 
-//   it("should return a current claim link status as deposited", async () => {
-//     const link: ClaimLink = await linkdropSDK.getClaimLink(preparedLink)
-//     const { status } = await link.getStatus()
-//     expect(status).to.be.equal('deposited')
-//   })
-// })
+
+  it("should return a current claim link and fail with redeem method", () => {
+    const amount = '50000000000000000'
+    return new Promise(async function (resolve, reject) {
+      const link: ClaimLink = await linkdropSDK.createClaimLink({
+        from: userAccount,
+        chainId,
+        token: nativeTokenAddress,
+        tokenType: 'NATIVE',
+        amount
+      })
+      link
+        .redeem(userAccount)
+        .catch(err => {
+          expect(err.message).to.be.equal('Tokens should be deposited before redeem')
+          resolve(true)
+        })
+    })
+  })
+
+  it("should return a current claim link and fail with updateAmount method with DEPOSIT_AMOUNT_EXCEEDED error", () => {
+    const initialAmount = '50000000000000000'
+    const updatedAmount = '10000000000000000000'
+
+    return new Promise(async function (resolve, reject) {
+      const link: ClaimLink = await linkdropSDK.createClaimLink({
+        from: userAccount,
+        chainId,
+        token: nativeTokenAddress,
+        tokenType: 'NATIVE',
+        amount: initialAmount
+      })
+      link.updateAmount(updatedAmount).catch(err => {
+        expect(err.error).to.be.equal('DEPOSIT_AMOUNT_EXCEEDED')
+        resolve(true)
+      })
+    })
+  })
+
+  it("should return a current claim link and fail with updateAmount method with DEPOSIT_AMOUNT_LESS_THAN_MIN error", () => {
+    const initialAmount = '50000000000000000'
+    const updatedAmount = '10000'
+
+    return new Promise(async function (resolve, reject) {
+      const link: ClaimLink = await linkdropSDK.createClaimLink({
+        from: userAccount,
+        chainId,
+        token: nativeTokenAddress,
+        tokenType: 'NATIVE',
+        amount: initialAmount
+      })
+      link.updateAmount(updatedAmount).catch(err => {
+        expect(err.error).to.be.equal('DEPOSIT_AMOUNT_LESS_THAN_MIN')
+        resolve(true)
+      })
+    })
+  })
+
+  // it("should return a current claim link status as deposited", async () => {
+  //   const link: ClaimLink = await linkdropSDK.getClaimLink(preparedLink)
+  //   const { status } = await link.getStatus()
+  //   expect(status).to.be.equal('deposited')
+  // })
+})

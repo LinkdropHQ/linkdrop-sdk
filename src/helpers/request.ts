@@ -11,13 +11,13 @@ async function request<TResponse>(
   config: RequestInit = {}
 ) {
   try {
+
     const res = await fetch(url, config)
 
     if (res.ok) {
       return res.json()
     }
     const responseData = (await res.json()) as Record<string, any>
-
     const responseCode = res.status
 
     // error.message
