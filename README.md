@@ -143,11 +143,15 @@ To avoid asking for sender private key directly, we ask to pass a function that 
 ```js
 const sendTransaction = async ({ to, value, data }) => { 
   const tx = await signer.sendTransaction({ to, value, data })
-  return { hash: tx.hash }
+  return { hash: tx.hash, type: 'tx' }
 }
 const { claimUrl, transferId, txHash } = await claimLink.deposit({ sendTransaction }) 
 ```
 For ERC20 (except USDC tokens), ERC721, and ERC1155 you need to approve tokens so that the contract has the opportunity to send them to the recipient
+
+For SCW transactions you need to use `type: 'userOp'`. Default value for the `type` property is `'tx'`
+
+
 
 **3. Re-generate Claim URL:**
 Sender can generate a new claim URL (if the original claim URL is lost):

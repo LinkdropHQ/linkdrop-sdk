@@ -1,8 +1,7 @@
-import { TTokenType } from '../../../types'
+import { TTokenType, TTransactionType } from '../../../types'
 
 type TDepositResponse = {
   success: boolean,
-  tx_hash: string
 }
 
 export type TDeposit = (
@@ -14,7 +13,8 @@ export type TDeposit = (
   escrow: string,
   transfer_id: string,
   expiration: number,
-  tx_hash: string,
+  hash: string,
+  transaction_type: TTransactionType,
   fee_authorization: string,
   amount: string,
   fee_amount: string,

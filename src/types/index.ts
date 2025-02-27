@@ -4,7 +4,6 @@ import type { TLink } from './link'
 import type { TTransferStatus } from './transfer-status'
 import type { TSignTypedData } from './sign-typed-data'
 import type { TGetRandomBytes } from './get-random-bytes'
-import type { TSendTransaction } from './send-transaction'
 import type { TDepositResult } from './deposit-result'
 import { EChains } from './chains'
 import { ETokenAddress } from './token-address'
@@ -22,9 +21,12 @@ import type { TOperationStatus } from './operation-status'
 import type { TClaimLinkOperation } from './claim-link-operation'
 import type { TDeploymentType } from './deployment-type'
 import type { TAuthorizationMethod } from './authorization-method'
+import type { TTransactionType } from './transaction-type'
+import type { TSendTransaction } from './send-transaction'
 
 export {
   TTokenType,
+  TTransactionType,
   TAuthorizationMethod,
   ESelectors,
   TDeploymentType,
@@ -38,12 +40,12 @@ export {
   ETokenSymbol,
   TClaimLinkItemOperation,
   TClaimLinkItemStatus,
-  TSendTransaction,
   TDomain,
   TClaimLinkSource,
   TEscrowPaymentDomain,
   TLink,
   TTransferStatus,
   TSignTypedData,
-  TGetRandomBytes
+  TGetRandomBytes,
+  TSendTransaction,
 }
