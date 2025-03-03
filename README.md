@@ -169,6 +169,9 @@ const claimLink = await sdk.retrieveClaimLink({ chainId, txHash })
 
 // or by using transferId
 const claimLink = await sdk.retrieveClaimLink({ chainId, transferId }) 
+
+// or by user operation hashч
+const claimLink = await sdk.retrieveClaimLink({ chainId, opHash }) 
 ```
 
 ### Fetching claim links created by the sender

@@ -4,6 +4,7 @@ import { ClaimLinkV3_11 } from '../../../../index'
 export type TRetrieveClaimLinkArgs = {
   chainId: number
   txHash?: string
+  opHash?: string
   sender?: string
   transferId?: string
   customApiHost?: string
