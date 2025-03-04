@@ -1,1 +1,1 @@
-export type TTransactionType = 'userOp' | 'tx'
+export type TTransactionType = string
