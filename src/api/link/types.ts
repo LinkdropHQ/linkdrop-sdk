@@ -59,6 +59,17 @@ type TGetTransferDataByTxHash = (
   tx_hash: string,
 ) => Promise<TGetTransferDataByTxHashResponse>
 
+type TGetTransferDataByOpHashResponse = {
+  claim_link: TClaimLinkItem,
+  success: boolean
+}
+
+type TGetTransferDataByOpHash = (
+  apiHost: string,
+  apiKey: string | null,
+  op_hash: string,
+) => Promise<TGetTransferDataByOpHashResponse>
+
 type TGetFeeResponse = {
   amount: string
   total_amount: string
@@ -127,6 +138,7 @@ export type TRequests = {
   depositWithAuthorization: TDepositWithAuth
   getTransferStatus: TGetTransferData
   getTransferStatusByTxHash: TGetTransferDataByTxHash
+  getTransferStatusByOpHash: TGetTransferDataByOpHash
   getFee: TGetFee,
   deposit: TDeposit,
   depositERC721: TDepositERC721,

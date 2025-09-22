@@ -10,7 +10,8 @@ const depositERC721: TDepositERC1155 = (
   escrow,
   transfer_id,
   expiration,
-  tx_hash,
+  hash,
+  transaction_type,
   fee_authorization,
   token_id,
   amount,
@@ -29,14 +30,15 @@ const depositERC721: TDepositERC1155 = (
       token,
       token_type,
       expiration,
-      tx_hash,
+      hash,
       fee_authorization,
       token_id,
       amount,
       fee_amount,
       total_amount,
       fee_token,
-      encrypted_sender_message
+      encrypted_sender_message,
+      transaction_type
     })
   })
 }

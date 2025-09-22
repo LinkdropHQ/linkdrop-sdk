@@ -10,7 +10,8 @@ const deposit: TDeposit = (
   escrow,
   transfer_id,
   expiration,
-  tx_hash,
+  hash,
+  transaction_type,
   fee_authorization,
   amount,
   fee_amount,
@@ -28,13 +29,14 @@ const deposit: TDeposit = (
       token,
       token_type,
       expiration,
-      tx_hash,
+      hash,
       fee_authorization,
       amount,
       fee_amount,
       total_amount,
       fee_token,
-      encrypted_sender_message
+      encrypted_sender_message,
+      transaction_type
     })
   })
 }

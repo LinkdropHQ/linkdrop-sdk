@@ -80,6 +80,16 @@ const requests: TRequests = {
     })
   },
 
+  getTransferStatusByOpHash: (
+    apiHost,
+    apiKey,
+    opHash
+  ) => {
+    return request(`${apiHost}/payment-status/user-operation/${opHash}`, {
+      headers: defineHeaders(apiKey),
+    })
+  },
+
   getFee: (
     apiHost,
     apiKey,

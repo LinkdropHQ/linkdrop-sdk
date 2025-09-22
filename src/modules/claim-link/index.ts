@@ -528,7 +528,7 @@ class ClaimLink implements IClaimLinkSDK {
 
     const { data, value, to } = this.getDepositParams()
 
-    const { hash: txHash } = await sendTransaction({
+    const { hash, type } = await sendTransaction({
       data,
       value,
       to
@@ -543,7 +543,8 @@ class ClaimLink implements IClaimLinkSDK {
       this.escrowAddress as string,
       this.transferId,
       this.expiration,
-      txHash,
+      hash,
+      type || 'tx',
       this.feeAuthorization,
       this.amount,
       this.feeAmount,
@@ -573,7 +574,7 @@ class ClaimLink implements IClaimLinkSDK {
     this.deposited = true
 
     return {
-      txHash,
+      hash,
       transferId: this.transferId,
       claimUrl
     }
@@ -588,7 +589,7 @@ class ClaimLink implements IClaimLinkSDK {
 
     const { data, value, to } = this.getDepositParams()
 
-    const { hash: txHash } = await sendTransaction({
+    const { hash, type } = await sendTransaction({
       data,
       value,
       to
@@ -603,7 +604,8 @@ class ClaimLink implements IClaimLinkSDK {
       this.escrowAddress as string,
       this.transferId,
       this.expiration,
-      txHash,
+      hash,
+      type || 'tx',
       this.feeAuthorization,
       this.amount,
       this.feeAmount,
@@ -633,7 +635,7 @@ class ClaimLink implements IClaimLinkSDK {
     this.deposited = true
 
     return {
-      txHash,
+      hash,
       transferId: this.transferId,
       claimUrl
     }
@@ -647,7 +649,7 @@ class ClaimLink implements IClaimLinkSDK {
     }
 
     const { data, value, to } = this.getDepositParams()
-    const { hash: txHash } = await sendTransaction({
+    const { hash, type } = await sendTransaction({
       data,
       value,
       to
@@ -662,7 +664,8 @@ class ClaimLink implements IClaimLinkSDK {
       this.escrowAddress as string,
       this.transferId,
       this.expiration,
-      txHash,
+      hash,
+      type || 'tx',
       this.feeAuthorization,
       this.tokenId,
       this.amount,
@@ -693,7 +696,7 @@ class ClaimLink implements IClaimLinkSDK {
     this.deposited = true
 
     return {
-      txHash,
+      hash,
       transferId: this.transferId,
       claimUrl
     }
@@ -708,7 +711,7 @@ class ClaimLink implements IClaimLinkSDK {
 
     const { data, value, to } = this.getDepositParams()
 
-    const { hash: txHash } = await sendTransaction({
+    const { hash, type } = await sendTransaction({
       data,
       value,
       to
@@ -723,7 +726,8 @@ class ClaimLink implements IClaimLinkSDK {
       this.escrowAddress as string,
       this.transferId,
       this.expiration,
-      txHash,
+      hash,
+      type || 'tx',
       this.feeAuthorization,
       this.tokenId,
       this.feeAmount,
@@ -753,7 +757,7 @@ class ClaimLink implements IClaimLinkSDK {
     this.deposited = true
 
     return {
-      txHash,
+      hash,
       transferId: this.transferId,
       claimUrl
     }
@@ -949,7 +953,7 @@ class ClaimLink implements IClaimLinkSDK {
     this.deposited = true
 
     return {
-      txHash: tx_hash,
+      hash: tx_hash,
       claimUrl: this.claimUrl,
       transferId: this.transferId
     }

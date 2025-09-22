@@ -1,8 +1,7 @@
-import { TTokenType } from '../../../types'
+import { TTokenType, TTransactionType } from '../../../types'
 
 type TDepositERC721Response = {
   success: boolean,
-  tx_hash: string
 }
 
 export type TDepositERC721 = (
@@ -14,7 +13,8 @@ export type TDepositERC721 = (
   escrow: string,
   transfer_id: string,
   expiration: number,
-  tx_hash: string,
+  hash: string,
+  transaction_type: TTransactionType,
   fee_authorization: string,
   token_id: string,
   fee_amount: string,

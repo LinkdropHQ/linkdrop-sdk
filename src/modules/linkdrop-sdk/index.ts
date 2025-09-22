@@ -564,8 +564,10 @@ class LinkdropSDK implements ILinkdropSDK {
   retrieveClaimLink: TRetrieveClaimLink = async ({
     chainId,
     txHash,
+    opHash,
     transferId,
-    customApiHost
+    customApiHost,
+    
   }) => {
     const apiHost = customApiHost || defineApiHost(chainId, this.apiUrl)
     if (!apiHost) {
@@ -683,9 +685,57 @@ class LinkdropSDK implements ILinkdropSDK {
         })
       }
       return this._initializeClaimLink(claimLinkData)
+    } else if (opHash) {
+      const { claim_link } = await linkApi.getTransferStatusByOpHash(
+        apiHost,
+        this.#apiKey,
+        opHash
+      )
+
+      const {
+        token,
+        expiration,
+        amount,
+        sender,
+        transfer_id,
+        token_type,
+        operations,
+        fee_token,
+        fee_amount,
+        total_amount,
+        status,
+        token_id,
+        escrow,
+        encrypted_sender_message
+      } = claim_link
+
+      const claimLinkData = {
+        token: token as ETokenAddress,
+        expiration,
+        chainId,
+        amount,
+        sender: sender.toLowerCase(),
+        apiUrl: apiHost,
+        apiKey: this.#apiKey,
+        transferId: (transfer_id as string).toLowerCase(),
+        tokenType: (token_type as TTokenType),
+        operations: updateOperations(operations),
+        baseUrl: this.baseUrl,
+        feeAmount: fee_amount,
+        feeToken: fee_token,
+        tokenId: token_id,
+        totalAmount: total_amount as string,
+        status,
+        escrow,
+        source: 'p2p' as TClaimLinkSource,
+        deployment: this.deployment,
+        encryptedSenderMessage: encrypted_sender_message
+      }
+      return this._initializeClaimLink(claimLinkData)
+
     } else {
       throw new ValidationError(
-        errors.at_least_one_argument_not_provided(['txHash', 'transferId'])
+        errors.at_least_one_argument_not_provided(['txHash', 'transferId', 'opHash'])
       )
     }
   }

@@ -1,5 +1,9 @@
 # Linkdrop SDK
 
+
+## 3.15.2-beta
+- transaction_type added to sendTransaction method
+
 ## 3.15.0-beta
 - contract updates for senderMessage
 - removed V2 links support

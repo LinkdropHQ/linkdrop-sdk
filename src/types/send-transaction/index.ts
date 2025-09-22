@@ -1,3 +1,5 @@
+import type { TTransactionType } from '../transaction-type'
+
 type TSendTransactionArgs = {
   to: string,
   value: string,
@@ -9,5 +11,6 @@ export type TSendTransaction = ({
   value,
   data
 }: TSendTransactionArgs) => Promise<{
-  hash: string
+  hash: string,
+  type?: TTransactionType
 }>
